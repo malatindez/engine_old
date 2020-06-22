@@ -38,7 +38,7 @@ class Texture {
     Texture& operator=(Texture&& other) noexcept { }
 
 
-    static const std::string types[17] {
+    const std::string types[17] {
         "diffuse", "specular", "ambient", "emissive", 
         "height", "normals", "shininess", "opacity",
         "displacement", "lightmap", "reflection",
