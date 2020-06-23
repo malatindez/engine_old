@@ -29,6 +29,12 @@ public:
 
     ~ShaderProgram();
 
+    void use() const noexcept {
+        glUseProgram(ID);
+    }
+    void operator()() const noexcept {
+        use();
+    }
     void setBool(const std::string& name, bool value) const;
     void setInt(const std::string& name, int value) const;
     void setUInt(const std::string& name, unsigned int value) const;
