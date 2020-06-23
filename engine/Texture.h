@@ -32,10 +32,10 @@ class Texture {
     Texture(Texture&& other) noexcept : type(Type::DIFFUSE)  {  }
 
     // copy assignment
-    Texture& operator=(const Texture& other) noexcept { }
+    Texture& operator=(const Texture& other) noexcept { return *this; }
 
     // move assignment
-    Texture& operator=(Texture&& other) noexcept { }
+    Texture& operator=(Texture&& other) noexcept { return *this;  }
 
 
     const std::string types[17] {
