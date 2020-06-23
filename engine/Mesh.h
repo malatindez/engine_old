@@ -69,7 +69,7 @@ public:
         glDeleteVertexArrays(1, &VAO);
     }
 
-    void Draw(ShaderProgram& shader) {
+    void Draw(std::shared_ptr<ShaderProgram> shader) const noexcept {
         unsigned int diffuseNr = 1;
         unsigned int specularNr = 1;
         for (unsigned int i = 0; i < textures.size(); i++) {
@@ -77,10 +77,10 @@ public:
             // retrieve texture number (the N in diffuse_textureN)
             std::string number;
             if (textures[i]->type == Texture::Type::DIFFUSE) {
-                shader.setInt(("material.diffuse[" + std::to_string(diffuseNr++) + "]").c_str(), i);
+                shader->setInt(("material.diffuse[" + std::to_string(diffuseNr++) + "]").c_str(), i);
             }
             else if (textures[i]->type == Texture::Type::SPECULAR) {
-                shader.setInt(("material.specular[" + std::to_string(specularNr++) + "]").c_str(), i);
+                shader->setInt(("material.specular[" + std::to_string(specularNr++) + "]").c_str(), i);
             }
             glBindTexture(GL_TEXTURE_2D, textures[i]->getID());
         }
