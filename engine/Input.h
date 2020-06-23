@@ -6,7 +6,7 @@
 #include <mutex>
 #include <set>
 #include <algorithm>
-#include "Ticker.h"
+#include "FrameTicker.h"
 double scrollOffsetx = 0, scrollOffsety = 0;
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
     scrollOffsetx = xoffset;
@@ -95,7 +95,7 @@ struct KeySequence {
     }
 };
 
-class Input : public Ticker<1> {
+class Input : public FrameTicker<1> {
 public:
     static bool processKeySeq(GLFWwindow* win, KeySequence seq) {
         bool flag = true;
@@ -126,10 +126,10 @@ public:
     ~Input() {
         delete[] keys;
     }
-    void addCheckingKey(uint16_t key) {
+    void addCheckingKey(uint16_t key) noexcept {
         checking.insert(key);
     }
-    bool checkSequence(KeySequence seq) {
+    bool checkSequence(KeySequence seq) const noexcept {
         for (size_t i = 0; i < seq.size; i++) {
             if (not keys[seq.sequence[i]]) {
                 return false;
@@ -137,10 +137,13 @@ public:
         }
         return true;
     }
-    std::pair<double, double> getScrollOffset() {
+    bool checkKey(uint16_t key) const noexcept {
+        return keys[key];
+    }
+    std::pair<double, double> getScrollOffset() const noexcept {
         return std::pair<double, double>(xoffset, yoffset);
     }
-    std::pair<double, double> getMousePosition() {
+    std::pair<double, double> getMousePosition() const noexcept {
         return std::pair<double, double>(xpos, ypos);
     }
     virtual void Update(const unsigned int, const float) noexcept {
