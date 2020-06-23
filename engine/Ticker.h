@@ -8,7 +8,7 @@ public:
 		return tickrate; 
 	}
 	// Parameter of this function is a current global tick(from a game start)
-	void Update(const unsigned int tick) noexcept {
+	void Update(const unsigned int tick, const float delta) noexcept {
 		
 	}
 };
