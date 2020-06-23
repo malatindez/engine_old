@@ -21,7 +21,7 @@ class Object : public Model {
 public:
 	// angle should be defined in radians
 	Object(std::string path, TextureManager* const mngr, 
-		glm::vec3 coords = glm::vec3(1.0f), glm::vec3 angle = glm::vec3(1.0f),
+		glm::vec3 coords = glm::vec3(0.0f), glm::vec3 angle = glm::vec3(0.0f),
 		glm::vec3 scale = glm::vec3(1.0f)
 	) : Model(path, mngr) {
 		this->move(coords);
