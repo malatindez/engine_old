@@ -70,12 +70,12 @@ class Model {
             vector.y = mesh->mVertices[i].y;
             vector.z = mesh->mVertices[i].z;
             vertex.Position = vector;
-
-            vector.x = mesh->mNormals[i].x;
-            vector.y = mesh->mNormals[i].y;
-            vector.z = mesh->mNormals[i].z;
-            vertex.Normal = vector;
-
+            if (mesh->HasNormals()) {
+                vector.x = mesh->mNormals[i].x;
+                vector.y = mesh->mNormals[i].y;
+                vector.z = mesh->mNormals[i].z;
+                vertex.Normal = vector;
+            }
             if (mesh->mTextureCoords[0]) { // does the mesh contain texture coordinates?
                 glm::vec2 vec;
                 vec.x = mesh->mTextureCoords[0][i].x;
@@ -101,6 +101,8 @@ class Model {
 #define load_textures_from_material(x,y) \
 z = loadMaterialTextures(material, x, y); \
 textures.insert(textures.end(), z.begin(), z.end());
+            load_textures_from_material(aiTextureType_NONE, Texture::Type::DIFFUSE);
+            load_textures_from_material(aiTextureType_UNKNOWN, Texture::Type::DIFFUSE);
             load_textures_from_material(aiTextureType_DIFFUSE, Texture::Type::DIFFUSE);
             load_textures_from_material(aiTextureType_SPECULAR, Texture::Type::SPECULAR);
             load_textures_from_material(aiTextureType_AMBIENT, Texture::Type::AMBIENT);
@@ -140,10 +142,13 @@ textures.insert(textures.end(), z.begin(), z.end());
     }
 public:
     TextureManager *const textureManager;
-    Model(std::string path, TextureManager *const mngr) : textureManager(mngr) {
+    Model(std::string path, TextureManager* const mngr) : textureManager(mngr) {
         loadModel(path);
     }
-    void Draw(ShaderProgram& shader) {
+    Model(std::vector<std::shared_ptr<Mesh>> meshes, TextureManager* const mngr) : textureManager(mngr) {
+        this->meshes = meshes;
+    }
+    void Draw(std::shared_ptr<ShaderProgram> shader) const noexcept {
         for (auto itr = meshes.begin(); itr != meshes.end(); itr++) {
             (*itr)->Draw(shader);
         }
