@@ -1,19 +1,33 @@
 #include "Object.h"
 
+#include<glm/gtx/string_cast.hpp>
+#include <iostream>
+int i = 0;
 void Object::UpdateFullMatrix() noexcept {
 	bool flag = false;
 	if (bufTranslationMatrix != translationMatrix) {
 		bufTranslationMatrix = translationMatrix;
+		flag = true;
 	}
-	if (bufRotationMatrix != bufRotationMatrix) {
+	if (bufRotationMatrix != rotationMatrix) {
 		bufRotationMatrix = rotationMatrix;
+		flag = true;
 	}
-	if (bufScaleMatrix != bufScaleMatrix) {
+	if (bufScaleMatrix != scaleMatrix) {
 		bufScaleMatrix = scaleMatrix;
+		flag = true;
+	}
+	if (i % 15 == 0) {
+		std::cout << glm::to_string(translationMatrix) << std::endl;
+		std::cout << glm::to_string(rotationMatrix) << std::endl;
+		std::cout << glm::to_string(scaleMatrix) << std::endl;
+		std::cout << glm::to_string(fullMatrix) << std::endl;
+		std::cout << std::endl << std::endl;
 	}
 	if (flag) {
 		fullMatrix = translationMatrix * rotationMatrix * scaleMatrix;
 	}
+	i++;
 }
 glm::mat4 Object::getObjectMatrix() noexcept {
 	UpdateFullMatrix();
@@ -33,7 +47,9 @@ void Object::move(const float x, const float y, const float z) noexcept {
 
 
 void Object::rotate(const float anglex, const float angley, const float anglez) noexcept {
-	rotationMatrix = glm::rotate(rotationMatrix, 3.1415927f, glm::vec3(anglex / 3.1415927f, angley / 3.1415927f, anglez / 3.1415927f));
+	rotateX(anglex);
+	rotateX(angley);
+	rotateX(anglez);
 }
 
 void Object::rotate(const glm::vec3 angle) noexcept {
@@ -41,15 +57,16 @@ void Object::rotate(const glm::vec3 angle) noexcept {
 }
 
 void Object::rotateX(const float angle) noexcept {
-	rotationMatrix = glm::rotate(rotationMatrix, angle, glm::vec3(1, 0, 0));
+	rotationMatrix = glm::rotate(rotationMatrix, angle, glm::vec3(1.0f, 0.0f, 0.0f));
 }
 
 void Object::rotateY(const float angle) noexcept {
-	rotationMatrix = glm::rotate(rotationMatrix, angle, glm::vec3(0, 1, 0));
+	rotationMatrix = glm::rotate(rotationMatrix, angle, glm::vec3(0.0f, 1.0f, 0.0f));
+		
 }
 
 void Object::rotateZ(const float angle) noexcept {
-	rotationMatrix = glm::rotate(rotationMatrix, angle, glm::vec3(0, 1, 1));
+	rotationMatrix = glm::rotate(rotationMatrix, angle, glm::vec3(0.0f,0.0f,1.0f));
 }
 
 
