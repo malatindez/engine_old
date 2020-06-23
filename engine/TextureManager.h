@@ -9,7 +9,7 @@ class TextureManager : public Ticker<4096> {
 	std::unordered_map<XXH32_hash_t, std::shared_ptr<Texture>> textures;
 public:
 	TextureManager() { }
-	virtual void Update(const unsigned int tick) {
+	virtual void Update(const unsigned int tick, const float deltaTime) noexcept {
 		if (tick % getTickRate() == 0) {
 			std::vector<XXH32_hash_t> valuesToErase;
 			for (auto kv : textures) {
