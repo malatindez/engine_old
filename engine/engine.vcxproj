@@ -72,7 +72,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>G:\glad\include;G:\glfw\include;G:\glm\include;G:\assimp-5.0.1\build32\include;G:\assimp-5.0.1\include;$(IncludePath)</IncludePath>
-    <LibraryPath>G:\glfw\lib\win32;G:\assimp-5.0.1\build32\Debug;$(LibraryPath)</LibraryPath>
+    <LibraryPath>G:\glfw\lib\win32;G:\assimp-5.0.1\build32\code\Debug;$(LibraryPath)</LibraryPath>
     <SourcePath>G:\glad\src;$(SourcePath)</SourcePath>
     <ExecutablePath>G:\assimp-5.0.1\build32\code\Debug;$(VC_ExecutablePath_x86);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
@@ -98,7 +98,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc142-mtd.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -147,12 +147,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="core.h" />
+    <ClInclude Include="FrameTicker.h" />
     <ClInclude Include="hash\xxh3.h" />
     <ClInclude Include="hash\xxhash.h" />
     <ClInclude Include="exceptions.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="render.h" />
     <ClInclude Include="ShaderProgram.h" />
