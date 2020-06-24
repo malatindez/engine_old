@@ -140,11 +140,11 @@ public:
     bool checkKey(uint16_t key) const noexcept {
         return keys[key];
     }
-    std::pair<double, double> getScrollOffset() const noexcept {
-        return std::pair<double, double>(xoffset, yoffset);
+    std::pair<float, float> getScrollOffset() const noexcept {
+        return std::pair<float, float>(xoffset, yoffset);
     }
-    std::pair<double, double> getMousePosition() const noexcept {
-        return std::pair<double, double>(xpos, ypos);
+    std::pair<float, float> getMousePosition() const noexcept {
+        return std::pair<float, float>(xpos, ypos);
     }
     virtual void Update(const unsigned int, const float) noexcept {
         for (std::set<uint16_t>::iterator i = checking.begin(); i != checking.end(); i++) {
