@@ -7,8 +7,7 @@ out vec3 Normal;
 out vec2 TexCoords;
 out vec3 pos;
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+uniform mat4 fullMatrix;
 uniform sampler2D normals;
 void main()
 {
@@ -16,6 +15,6 @@ void main()
     Normal = mat3(transpose(inverse(model))) * texture(normals,aTexCoords).xyz;  
     TexCoords = aTexCoords;
     
-    gl_Position = projection * view * vec4(FragPos, 1.0);
+    gl_Position = fullMatrix * vec4(FragPos,1.0);
     pos = vec3(gl_Position);
 }
