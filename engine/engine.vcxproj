@@ -149,6 +149,7 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="core.h" />
+    <ClInclude Include="defines.h" />
     <ClInclude Include="FrameTicker.h" />
     <ClInclude Include="hash\xxh3.h" />
     <ClInclude Include="hash\xxhash.h" />
@@ -175,6 +176,7 @@
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="clouds.frag" />
     <None Include="triangle.frag" />
     <None Include="triangle.vert" />
   </ItemGroup>
