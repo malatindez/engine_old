@@ -78,6 +78,9 @@
     <ClInclude Include="Planet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="defines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -101,6 +104,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="triangle.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="clouds.frag">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
