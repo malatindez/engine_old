@@ -271,7 +271,8 @@ private:
     const std::vector<glTexParameterValues> values;
 public:
 
-	Texture(unsigned char* data, int width, int height, int channels, std::vector<glTexParameterValues> values, Type type) : values(values), type(type) {
+	Texture(unsigned char* data, int width, int height, int channels, std::vector<glTexParameterValues> values, Type type, std::string path = "") : values(values), type(type) {
+        this->path = path;
         glGenTextures(1, &id);
         glBindTexture(GL_TEXTURE_2D, id);
 
