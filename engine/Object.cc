@@ -1,6 +1,5 @@
 #include "Object.h"
 
-#include<glm/gtx/string_cast.hpp>
 #include <iostream>
 int i = 0;
 void Object::UpdateFullMatrix() noexcept {
@@ -16,13 +15,6 @@ void Object::UpdateFullMatrix() noexcept {
 	if (bufScaleMatrix != scaleMatrix) {
 		bufScaleMatrix = scaleMatrix;
 		flag = true;
-	}
-	if (i % 15 == 0) {
-		std::cout << glm::to_string(translationMatrix) << std::endl;
-		std::cout << glm::to_string(rotationMatrix) << std::endl;
-		std::cout << glm::to_string(scaleMatrix) << std::endl;
-		std::cout << glm::to_string(fullMatrix) << std::endl;
-		std::cout << std::endl << std::endl;
 	}
 	if (flag) {
 		fullMatrix = translationMatrix * rotationMatrix * scaleMatrix;
