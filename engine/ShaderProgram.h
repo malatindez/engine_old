@@ -1,5 +1,6 @@
 #ifndef SHADER_PROGRAM_H
 #define SHADER_PROGRAM_H
+#include "defines.h"
 #ifdef CERR_OUTPUT
 #include <iostream>
 #endif
