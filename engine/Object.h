@@ -41,7 +41,8 @@ public:
 
 	void move(const glm::vec3 coords) noexcept;
 	void move(const float x, const float y, const float z) noexcept;
-
+	void setTranslationMatrix(const glm::mat4 mat) noexcept;
+	void setPosition(const glm::vec3 pos) noexcept;
 
 	// angle should be defined in radians
 	void rotate(const float anglex, const float angley, const float anglez) noexcept;
@@ -49,12 +50,17 @@ public:
 	void rotateX(const float angle) noexcept;
 	void rotateY(const float angle) noexcept;
 	void rotateZ(const float angle) noexcept;
+	void setRotationMatrix(const glm::mat4 mat) noexcept;
+	void setRotation(const glm::vec3 angle) noexcept;
+
 
 	void scale(const glm::vec3 scale) noexcept;
 	void scale(const int x, const int y, const int z) noexcept;
 	void scaleX(const int scale) noexcept;
 	void scaleY(const int scale) noexcept;
 	void scaleZ(const int scale) noexcept;
+	void setScaleMatrix(const glm::mat4 mat) noexcept;
+	void setScale(const glm::vec3 scale) noexcept;
 
 	virtual void Draw(std::shared_ptr<ShaderProgram> program) noexcept {
 		program->setMat4("model", getObjectMatrix());
