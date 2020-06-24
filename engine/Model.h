@@ -69,21 +69,15 @@ class Model {
             vector.x = mesh->mVertices[i].x;
             vector.y = mesh->mVertices[i].y;
             vector.z = mesh->mVertices[i].z;
-            vertex.Position = vector;
-            if (mesh->HasNormals()) {
-                vector.x = mesh->mNormals[i].x;
-                vector.y = mesh->mNormals[i].y;
-                vector.z = mesh->mNormals[i].z;
-                vertex.Normal = vector;
-            }
+            vertex.position = vector;
             if (mesh->mTextureCoords[0]) { // does the mesh contain texture coordinates?
                 glm::vec2 vec;
                 vec.x = mesh->mTextureCoords[0][i].x;
                 vec.y = mesh->mTextureCoords[0][i].y;
-                vertex.TexCoords = vec;
+                vertex.texCoords = vec;
             }
             else {
-                vertex.TexCoords = glm::vec2(0.0f);
+                vertex.texCoords = glm::vec2(0.0f);
             }
             vertices.push_back(vertex);
         }
