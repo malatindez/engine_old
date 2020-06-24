@@ -36,6 +36,13 @@ void Object::move(const float x, const float y, const float z) noexcept {
 	translationMatrix = glm::translate(translationMatrix, glm::vec3(x, y, z));
 }
 
+void Object::setTranslationMatrix(const glm::mat4 mat) noexcept {
+	this->translationMatrix = mat;
+}
+void Object::setPosition(const glm::vec3 pos) noexcept {
+	this->translationMatrix = glm::translate(glm::mat4(1.0f), pos);
+}
+
 
 
 void Object::rotate(const float anglex, const float angley, const float anglez) noexcept {
@@ -61,6 +68,16 @@ void Object::rotateZ(const float angle) noexcept {
 	rotationMatrix = glm::rotate(rotationMatrix, angle, glm::vec3(0.0f,0.0f,1.0f));
 }
 
+void Object::setRotationMatrix(const glm::mat4 mat) noexcept {
+	this->rotationMatrix = mat;
+}
+void Object::setRotation(const glm::vec3 angle) noexcept {
+	this->rotationMatrix = glm::mat4(1.0f);
+	this->rotateX(angle.x);
+	this->rotateX(angle.y);
+	this->rotateX(angle.z);
+}
+
 
 
 void Object::scale(const glm::vec3 scale) noexcept {
@@ -78,4 +95,13 @@ void Object::scaleY(const int scale) noexcept {
 }
 void Object::scaleZ(const int scale) noexcept {
 	scaleMatrix = glm::scale(scaleMatrix, glm::vec3(0, 0, scale));
+}
+
+void Object::setScaleMatrix(const glm::mat4 mat) noexcept {
+	this->scaleMatrix = mat;
+
+}
+
+void Object::setScale(const glm::vec3 scale) noexcept {
+	this->scaleMatrix = glm::scale(glm::mat4(1.0f), scale);
 }
