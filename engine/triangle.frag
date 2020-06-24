@@ -44,7 +44,7 @@ struct SpotLight {
     float quadratic;
 };
 
-in vec3 FragPos;  
+in vec3 FragPos;
 in vec3 Normal;  
 in vec2 TexCoords;
 in vec3 pos;
