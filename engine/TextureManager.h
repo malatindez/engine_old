@@ -24,14 +24,18 @@ public:
 	}
 	std::shared_ptr<Texture> Load(std::string path, std::vector<Texture::glTexParameterValues> values, Texture::Type type) {
 		int width, height, nrChannels;
-		stbi_set_flip_vertically_on_load(true);
+		//stbi_set_flip_vertically_on_load(true);
+		
 		unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
-		try {
-			return Load(data, width, height, nrChannels, values, type);
-		}
-		catch (EXCEPTIONS::FILE) {
-			stbi_image_free(data);
+		if (data == nullptr) {
 			throw EXCEPTIONS::FILE::PATH_NOT_FOUND;
+		}
+		try {
+			return Load(data, width, height, nrChannels, values, type, path);
+		}
+		catch (EXCEPTIONS::HASH e) {
+			stbi_image_free(data);
+			throw e;
 		}
 		stbi_image_free(data);
 
@@ -89,12 +93,12 @@ private:
 		return hash;
 	}
 public:
-	std::shared_ptr<Texture> Load(unsigned char* data, int width, int height, int channels, std::vector<Texture::glTexParameterValues> values, Texture::Type type) {
+	std::shared_ptr<Texture> Load(unsigned char* data, int width, int height, int channels, std::vector<Texture::glTexParameterValues> values, Texture::Type type, std::string path = "") {
 		XXH32_hash_t hash = CalculateTextureHash(data, width, height, channels, values);
 		if (textures.find(hash) != textures.end()) {
 			return textures.at(hash);
 		}
-		std::shared_ptr<Texture> returnValue(new Texture(data, width, height, channels, values, type));
+		std::shared_ptr<Texture> returnValue(new Texture(data, width, height, channels, values, type, path));
 		textures[hash] = returnValue;
 		return returnValue;
 	}
