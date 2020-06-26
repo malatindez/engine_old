@@ -11,19 +11,19 @@ public:
 private:
     //  render data
     unsigned int VAO = -1, VBO = -1, EBO = -1;
-
-    void setupMesh() {
+    unsigned int indices_size;
+    void setupMesh(std::shared_ptr<std::vector<Vertex>> vertices, std::shared_ptr<std::vector<unsigned int>> indices) {
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
         glGenBuffers(1, &EBO);
 
         glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, vertices->size() * sizeof(Vertex), &(*vertices)[0], GL_STATIC_DRAW);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int),
-            &indices[0], GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices->size() * sizeof(unsigned int),
+            &(*indices)[0], GL_STATIC_DRAW);
 
         // vertex positions
         glEnableVertexAttribArray(0);
@@ -33,40 +33,28 @@ private:
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex,texCoords));
 
         glBindVertexArray(0);
-    }
-
+        this->indices_size = indices->size();
+}
+// no copy neither move construtors/assignments
     // move constructor
     Mesh(Mesh&& other) noexcept {  }
 
-
     // move assignment
     Mesh& operator=(Mesh&& other) noexcept { }
-public:
+
     // copy constructor
-    Mesh(const Mesh& other) noexcept {
-        this->vertices = other.vertices;
-        this->indices = other.indices;
-        this->textures = other.textures;
-        setupMesh();
-    }
+    Mesh(const Mesh& other) noexcept { }
     // copy assignment
-    Mesh& operator=(const Mesh& other) noexcept {
-        this->vertices = other.vertices;
-        this->indices = other.indices;
-        this->textures = other.textures;
-        setupMesh();
-    }
+    Mesh& operator=(const Mesh& other) noexcept { }
+
+public:
     // mesh data
-    std::vector<Vertex>       vertices;
-    std::vector<unsigned int> indices;
     std::vector<std::shared_ptr<Texture>>      textures;
 
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<std::shared_ptr<Texture>> textures) {
-        this->vertices = vertices;
-        this->indices = indices;
+    Mesh(std::shared_ptr<std::vector<Vertex>> vertices, std::shared_ptr<std::vector<unsigned int>> indices, std::vector<std::shared_ptr<Texture>> textures) {
         this->textures = textures;
 
-        setupMesh();
+        setupMesh(vertices, indices);
     }
     ~Mesh() {
         glDeleteBuffers(1, &EBO);
@@ -99,7 +87,7 @@ public:
 
         // draw mesh
         glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, indices_size, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
     }
 
