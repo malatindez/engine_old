@@ -116,7 +116,7 @@ textures.insert(textures.end(), z.begin(), z.end());
             load_textures_from_material(aiTextureType_AMBIENT_OCCLUSION, Texture::Type::AMBIENT_OCCLUSION);
         }
 
-        return std::shared_ptr<Mesh>(new Mesh(vertices, indices, textures));
+        return std::shared_ptr<Mesh>(new Mesh(std::shared_ptr<std::vector<Mesh::Vertex>>(&vertices), std::shared_ptr<std::vector<unsigned int>>(&indices), textures));
     }
     std::vector<std::shared_ptr<Texture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, Texture::Type textureType) {
         std::vector<std::shared_ptr<Texture>> textures;
