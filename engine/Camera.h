@@ -9,7 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Input.h"
-class Camera : FrameTicker<1> {
+class Camera : FrameTicker {
     glm::vec3 front = glm::vec3(0.0f);
     glm::vec3 up = glm::vec3(0.0f);
     glm::vec3 right = glm::vec3(0.0f);
@@ -23,7 +23,7 @@ class Camera : FrameTicker<1> {
     const Input* const input;
     bool constrainPitch = true;
 public:
-    Camera(const Input *const ref, glm::vec3 worldUp, float yaw, float pitch) : input(ref) { 
+    Camera(const Input *const ref, glm::vec3 worldUp, float yaw, float pitch) : input(ref), FrameTicker(1) { 
         this->worldUp = worldUp;
         this->yaw = yaw;
         this->pitch = pitch;
