@@ -2,33 +2,24 @@
 #define ACTOR_H
 #include "Object.h"
 #include "Ticker.h"
-template<int tickrate>
-class Actor : public Object, public Ticker<tickrate> {
+
+class Actor : public Object, public Ticker {
 public:
-	unsigned int getTickRate() const noexcept {
-		return tickrate;
-	}
 	virtual void Update(const unsigned int tick, const float deltaTime) noexcept {
 		if (tick % getTickRate() == 0) {
-			this->rotateZ(3.1415926f / 8 * deltaTime);
+			this->move(glm::vec3(0, 1, 0));
 		}
 	}
-	glm::vec3 velocity = glm::vec3(0.0f), acceleration = glm::vec3(0.0f, 0.01f, 0.0f);
-	void Move(const float deltaTime) noexcept {
-			float m = deltaTime * deltaTime;
-			this->move(this->velocity * deltaTime + acceleration * m);
-			this->velocity = this->velocity + acceleration * m;
-	}
 	
-	Actor(std::string path, TextureManager* const mngr,
+	Actor(unsigned int tickrate, std::string path, TextureManager* const mngr,
 		glm::vec3 coords = glm::vec3(0.0f), glm::vec3 angle = glm::vec3(2 * 3.1415927f),
-		glm::vec3 scale = glm::vec3(1.0f)) : Object(path, mngr, coords, angle, scale) {
+		glm::vec3 scale = glm::vec3(1.0f)) : Object(path, mngr, coords, angle, scale), Ticker(tickrate) {
 
 	}
-	Actor(std::vector<std::shared_ptr<Mesh>> meshes, TextureManager* const mngr,
+	Actor(unsigned int tickrate, std::vector<std::shared_ptr<Mesh>> meshes, TextureManager* const mngr,
 		glm::vec3 coords = glm::vec3(0.0f), glm::vec3 angle = glm::vec3(3.1415927f),
-		glm::vec3 scale = glm::vec3(1.0f)) : Object(meshes, mngr, coords, angle, scale) {
-
+		glm::vec3 scale = glm::vec3(1.0f)) : Object(meshes, mngr, coords, angle, scale), Ticker(tickrate) {
+		
 	}
 };
 #endif
