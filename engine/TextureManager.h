@@ -2,13 +2,13 @@
 #define TEXTURE_MANAGER_H
 #include "Texture.h"
 #include "hash/xxh3.h"
-#include "Ticker.h"
+#include "FrameTicker.h"
 #include <memory>
 #include <unordered_map>
-class TextureManager : public Ticker<4096> {
+class TextureManager : public FrameTicker {
 	std::unordered_map<XXH32_hash_t, std::shared_ptr<Texture>> textures;
 public:
-	TextureManager() { }
+	TextureManager() : FrameTicker(4096) { }
 	virtual void Update(const unsigned int tick, const float deltaTime) noexcept {
 		if (tick % getTickRate() == 0) {
 			std::vector<XXH32_hash_t> valuesToErase;
