@@ -77,6 +77,12 @@ void Object::setRotation(const glm::vec3 angle) noexcept {
 	this->rotateX(angle.y);
 	this->rotateX(angle.z);
 }
+void Object::setRotation(const float anglex, const float angley, const float anglez) noexcept {
+	this->rotationMatrix = glm::mat4(1.0f);
+	this->rotateX(anglex);
+	this->rotateX(angley);
+	this->rotateX(anglez);
+}
 
 
 
