@@ -1,13 +1,13 @@
 #include "FrameTicker.h"
 #include "Camera.h"
 #include "Input.h"
-class Player : public FrameTicker<1> {
+class Player : public FrameTicker {
 	glm::vec3 position;
 	float speed = 9.0f;
 public:
 	std::shared_ptr<Camera> camera;
 	const Input* const input;
-	Player(Input* const input, glm::vec3 worldUp, glm::vec3 position = glm::vec3(0.0f)) : input(input) {
+	Player(Input* const input, glm::vec3 worldUp, glm::vec3 position = glm::vec3(0.0f)) : input(input), FrameTicker(1) {
 		this->position = position;
 		input->addCheckingKey('W');
 		input->addCheckingKey('A');
