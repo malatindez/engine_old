@@ -2,9 +2,9 @@
 #define FRAME_TICKER_H
 
 #include "Ticker.h"
-template<int tick=1>
-class FrameTicker : public Ticker<tick> {
-
+class FrameTicker : public Ticker{
+public:
+	FrameTicker(const unsigned int tickrate ) : Ticker(tickrate) {}
 };
 
 #endif
