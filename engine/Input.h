@@ -95,7 +95,7 @@ struct KeySequence {
     }
 };
 
-class Input : public FrameTicker<1> {
+class Input : public FrameTicker {
 public:
     static bool processKeySeq(GLFWwindow* win, KeySequence seq) {
         bool flag = true;
@@ -114,7 +114,7 @@ private:
     bool* keys = new bool[65536];
     std::set<uint16_t> checking;
 public:
-    Input(GLFWwindow* win) {
+    Input(GLFWwindow* win) : FrameTicker(1) {
         memset(keys, 0, sizeof(bool) * 65536);
         window = win;
         glfwGetCursorPos(window, &xpos, &ypos);
