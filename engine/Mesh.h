@@ -35,7 +35,8 @@ private:
         glBindVertexArray(0);
         this->indices_size = indices->size();
 }
-// no copy neither move construtors/assignments
+// no copy neither move construtors/assignments allowed
+
     // move constructor
     Mesh(Mesh&& other) noexcept {  }
 
