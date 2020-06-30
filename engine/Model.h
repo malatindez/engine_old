@@ -58,8 +58,8 @@ class Model {
     }
 
     std::shared_ptr<Mesh> processMesh(aiMesh* mesh, const aiScene* scene) {
-        std::vector<Mesh::Vertex> vertices;
-        std::vector<unsigned int> indices;
+        std::shared_ptr<std::vector<Mesh::Vertex>> vertices(new std::vector<Mesh::Vertex>);
+        std::shared_ptr<std::vector<unsigned int>> indices(new std::vector<unsigned int>);
         std::vector<std::shared_ptr<Texture>> textures;
 
         for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
@@ -79,13 +79,13 @@ class Model {
             else {
                 vertex.texCoords = glm::vec2(0.0f);
             }
-            vertices.push_back(vertex);
+            vertices->push_back(vertex);
         }
         // process indices
         for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
             aiFace face = mesh->mFaces[i];
             for (unsigned int j = 0; j < face.mNumIndices; j++) {
-                indices.push_back(face.mIndices[j]);
+                indices->push_back(face.mIndices[j]);
             }
         }
         // process material
@@ -116,7 +116,7 @@ textures.insert(textures.end(), z.begin(), z.end());
             load_textures_from_material(aiTextureType_AMBIENT_OCCLUSION, Texture::Type::AMBIENT_OCCLUSION);
         }
 
-        return std::shared_ptr<Mesh>(new Mesh(std::shared_ptr<std::vector<Mesh::Vertex>>(&vertices), std::shared_ptr<std::vector<unsigned int>>(&indices), textures));
+        return std::shared_ptr<Mesh>(new Mesh(vertices, indices, textures));
     }
     std::vector<std::shared_ptr<Texture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, Texture::Type textureType) {
         std::vector<std::shared_ptr<Texture>> textures;
