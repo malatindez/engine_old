@@ -7,7 +7,7 @@ class Actor : public Object, public Ticker {
 public:
 	virtual void Update(const unsigned int tick, const float deltaTime) noexcept {
 		if (tick % getTickRate() == 0) {
-			this->move(glm::vec3(0, 1, 0));
+			//this->move(glm::vec3(0, 1, 0));
 		}
 	}
 	
