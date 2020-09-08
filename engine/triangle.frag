@@ -1,4 +1,4 @@
-#version 330 core
+#version 430 core
 out vec4 FragColor;
 
 #define MAX_TEXTURE_DIFFUSE_SIZE 8
@@ -61,12 +61,9 @@ uniform DirLight dirLights[NR_DIRECT_LIGHTS];
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 {
     vec3 lightDir = normalize(-light.direction);
-    // диффузное освещение
     float diff = max(dot(normal, lightDir), 0.0);
-    // освещение зеркальных бликов
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-    // комбинируем результаты
     vec3 ambient  = light.ambient  * vec3(texture(material.diffuseTextures[0], TexCoords));
     vec3 diffuse  = light.diffuse  * diff * vec3(texture(material.diffuseTextures[0], TexCoords));
     vec3 specular = light.specular * spec * vec3(texture(material.specularTextures[0], TexCoords));
@@ -78,16 +75,12 @@ uniform PointLight pointLights[NR_POINT_LIGHTS];
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 viewDir)
 {
     vec3 lightDir = normalize(light.position - FragPos);
-    // диффузное освещение
     float diff = max(dot(normal, lightDir), 0.0);
-    // освещение зеркальных бликов
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-    // затухание
     float distance    = length(light.position - FragPos);
     float attenuation = 1.0 / (light.constant + light.linear * distance + 
   			     light.quadratic * (distance * distance));    
-    // комбинируем результаты
     vec3 ambient  = light.ambient  * vec3(texture(material.diffuseTextures[0], TexCoords));
     vec3 diffuse  = light.diffuse  * diff * vec3(texture(material.diffuseTextures[0], TexCoords));
     vec3 specular = light.specular * spec * vec3(texture(material.specularTextures[0], TexCoords));
@@ -146,6 +139,28 @@ void main() {
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
     vec3 fColor = vec3(0);
+    vec2 newCoords = (TexCoords - 0.5) * 2; // [-1, 1]; [-1, 1]
+    // sqrt(ax-6) - sqrt(a-2x) =  0
+    double answer = (sqrt(double(newCoords.y*newCoords.x - 6)) - sqrt(double(newCoords.y - 2 * newCoords.x)));
+
+    if (TexCoords.x >= 0.99 && TexCoords.y >= 0.99) {
+        FragColor = vec4(1);
+    }
+    FragColor = vec4(0,0,0,1);
+    double i = 0; double temp = 0;
+    double x = 0, y = 0;
+    while((x * x + y * y) <= 4 && i < 1000) {
+        temp = x * x - y * y + newCoords.x;
+        y = 2 * x * y + newCoords.y;
+        x = temp;
+        i++;
+    }
+    i = 1 - i / 1000;
+    FragColor = vec4(
+    i,i,i,
+    1
+    );
+    return;
     FragColor = texture(material.diffuseTextures[0], TexCoords).rgba;
 	return;
     for(int i = 0; i < NR_DIRECT_LIGHTS; i++) {
