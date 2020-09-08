@@ -3,7 +3,7 @@
 #include "Input.h"
 class Player : public FrameTicker {
 	glm::vec3 position;
-	float speed = 9.0f;
+	float speed = 1.0f;
 public:
 	std::shared_ptr<Camera> camera;
 	const Input* const input;
@@ -31,6 +31,7 @@ public:
 	}
 	virtual void Update(const unsigned int tick, const float delta) noexcept {
 		float v = speed * delta;
+		v = v * log10(1+position.y);
 		if (input->checkSequence('W')) {
 			position += glm::vec3(
 				camera->getFront().x / cos(glm::radians(camera->getPitch())),
@@ -56,6 +57,9 @@ public:
 		}
 		if (input->checkSequence(GLFW_KEY_SPACE)) {
 			position += camera->getWorldUp() * v;
+		}
+		if (position.y < 0) {
+			position.y = 0;
 		}
 		this->camera->setPosition(this->position);
 		this->camera->Update(tick, delta);
