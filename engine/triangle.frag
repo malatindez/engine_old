@@ -149,17 +149,14 @@ void main() {
     FragColor = vec4(0,0,0,1);
     double i = 0; double temp = 0;
     double x = 0, y = 0;
-    while((x * x + y * y) <= 4 && i < 1000) {
+    while((x * x + y * y) <= 4 && i < 10000) {
         temp = x * x - y * y + newCoords.x;
         y = 2 * x * y + newCoords.y;
         x = temp;
         i++;
     }
-    i = 1 - i / 1000;
-    FragColor = vec4(
-    i,i,i,
-    1
-    );
+    i = 1 - i / 10000;
+    FragColor = vec4(i);
     return;
     FragColor = texture(material.diffuseTextures[0], TexCoords).rgba;
 	return;
@@ -170,7 +167,7 @@ void main() {
         fColor += CalcPointLight(pointLights[i], norm, viewDir);
     }
 #if NR_SPOT_LIGHTS != 0
-    for(int i = 0; i < NR_DIRECT_LIGHTS; i++) {
+    for(int i = 0; i < NR_SPOT_LIGHTS; i++) {
         fColor += CalcSpotLight(spotLights[i], norm, viewDir);
     }
 #endif
