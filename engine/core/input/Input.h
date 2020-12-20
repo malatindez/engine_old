@@ -6,7 +6,7 @@
 #include <mutex>
 #include <set>
 #include <algorithm>
-#include "FrameTicker.h"
+#include "../FrameTicker.h"
 double scrollOffsetx = 0, scrollOffsety = 0;
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
     scrollOffsetx = xoffset;
