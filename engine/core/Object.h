@@ -5,7 +5,7 @@
 #include <assimp/scene.h> // Output data structure
 #include <assimp/postprocess.h> // Post processing flags
 
-#include "Model.h"
+#include "../render/Model/Model.h"
 class Object : public Model {
 protected:
 	glm::mat4 translationMatrix = glm::mat4(1.0f);
