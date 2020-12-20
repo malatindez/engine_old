@@ -71,22 +71,31 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>G:\glad\include;G:\glfw\include;G:\glm\include;G:\assimp-5.0.1\build32\include;G:\assimp-5.0.1\include;$(IncludePath)</IncludePath>
+    <IncludePath>G:\glfw\include;G:\glad\include;G:\glm\include\;G:\assimp-5.0.1\include;G:\assimp-5.0.1\build32\include;$(IncludePath)</IncludePath>
     <LibraryPath>G:\glfw\lib\win32;G:\assimp-5.0.1\build32\code\Debug;$(LibraryPath)</LibraryPath>
     <SourcePath>G:\glad\src;$(SourcePath)</SourcePath>
     <ExecutablePath>G:\assimp-5.0.1\build32\code\Debug;$(VC_ExecutablePath_x86);$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>G:\glfw\include;$(IncludePath)</IncludePath>
+    <IncludePath>G:\glfw\include;G:\glad\include;G:\glm\include\;G:\assimp-5.0.1\include;G:\assimp-5.0.1\build\include;$(IncludePath)</IncludePath>
+    <ExecutablePath>G:\assimp-5.0.1\build\code\Debug;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
+    <LibraryPath>G:\glfw\lib\win64;G:\assimp-5.0.1\build\code\Debug;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <SourcePath>G:\glad\src;$(VC_SourcePath);</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>G:\glfw\include;$(IncludePath)</IncludePath>
+    <IncludePath>G:\glfw\include;G:\glad\include;G:\glm\include\;G:\assimp-5.0.1\include;G:\assimp-5.0.1\build32\include;$(IncludePath)</IncludePath>
+    <ExecutablePath>G:\assimp-5.0.1\build32\code\Release;$(VC_ExecutablePath_x86);$(CommonExecutablePath)</ExecutablePath>
+    <LibraryPath>G:\glfw\lib\win32;G:\assimp-5.0.1\build32\code\Release;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <SourcePath>G:\glad\src;$(VC_SourcePath);</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>G:\glfw\include;$(IncludePath)</IncludePath>
+    <IncludePath>G:\glfw\include;G:\glad\include;G:\glm\include\;G:\assimp-5.0.1\include;G:\assimp-5.0.1\build\include;$(IncludePath)</IncludePath>
+    <ExecutablePath>G:\assimp-5.0.1\build\code\Release;$(VC_ExecutablePath_x64);$(CommonExecutablePath)</ExecutablePath>
+    <LibraryPath>G:\glfw\lib\win64;G:\assimp-5.0.1\build\code\Release;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <SourcePath>G:\glad\src;$(VC_SourcePath);</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -111,6 +120,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>assimp-vc142-mtd.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -127,6 +137,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>assimp-vc142-mt.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -143,42 +154,36 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>assimp-vc142-mt.lib;glfw3.lib;G:\glfw\lib\win64;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Actor.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="core.h" />
-    <ClInclude Include="defines.h" />
-    <ClInclude Include="FrameTicker.h" />
-    <ClInclude Include="hash\xxh3.h" />
-    <ClInclude Include="hash\xxhash.h" />
-    <ClInclude Include="exceptions.h" />
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Model.h" />
-    <ClInclude Include="Planet.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="Object.h" />
-    <ClInclude Include="render.h" />
-    <ClInclude Include="ShaderProgram.h" />
-    <ClInclude Include="ShaderWorker.h" />
-    <ClInclude Include="stb_image.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="TextureManager.h" />
-    <ClInclude Include="Ticker.h" />
+    <ClInclude Include="core\Actor.h" />
+    <ClInclude Include="core\Core.h" />
+    <ClInclude Include="core\defines.h" />
+    <ClInclude Include="core\exceptions.h" />
+    <ClInclude Include="core\input\Input.h" />
+    <ClInclude Include="core\Object.h" />
+    <ClInclude Include="core\Player.h" />
+    <ClInclude Include="core\Ticker.h" />
+    <ClInclude Include="header_libs\hash\xxh3.h" />
+    <ClInclude Include="header_libs\hash\xxhash.h" />
+    <ClInclude Include="header_libs\stb_image.h" />
+    <ClInclude Include="render\Camera.h" />
+    <ClInclude Include="render\Model\Mesh.h" />
+    <ClInclude Include="render\Model\Model.h" />
+    <ClInclude Include="render\render.h" />
+    <ClInclude Include="render\Shader\ShaderProgram.h" />
+    <ClInclude Include="render\Shader\ShaderWorker.h" />
+    <ClInclude Include="render\Texture\Texture.h" />
+    <ClInclude Include="render\Texture\TextureManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="core\Object.cc" />
     <ClCompile Include="G:\glad\src\glad.c" />
-    <ClCompile Include="hash\xxhash.c" />
-    <ClCompile Include="Object.cc" />
-    <ClCompile Include="ShaderProgram.cc" />
+    <ClCompile Include="header_libs\hash\xxhash.c" />
+    <ClCompile Include="render\Shader\ShaderProgram.cc" />
     <ClCompile Include="Source.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="clouds.frag" />
-    <None Include="triangle.frag" />
-    <None Include="triangle.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
