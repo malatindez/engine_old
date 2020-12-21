@@ -34,11 +34,11 @@ class TextureManager : public FrameTicker {
     unsigned char* data =
         stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
     if (data == nullptr) {
-      throw EXCEPTIONS::FILE::PATH_NOT_FOUND;
+      throw std::exception("path_not_found");
     }
     try {
       return Load(data, width, height, nrChannels, values, type, path);
-    } catch (EXCEPTIONS::HASH e) {
+    } catch (std::exception e) {
       stbi_image_free(data);
       throw e;
     }
@@ -51,28 +51,28 @@ class TextureManager : public FrameTicker {
       std::vector<Texture::glTexParameterValues> values) {
     XXH32_state_t* const state = XXH32_createState();
     if (state == nullptr) {
-      throw EXCEPTIONS::HASH::FAILED_CREATING_STATE;
+      throw std::exception("failed_to_create_hash_state");
     }
 
     XXH64_hash_t const seed = 0; /* or any other value */
     if (XXH32_reset(state, seed) == XXH_ERROR) {
-      throw EXCEPTIONS::HASH::FAILED_INITIALIZING_STATE;
+      throw std::exception("failed_to_initialize_hash_state");
     }
 #pragma warning(disable : 26451)
     if (XXH32_update(state, data, (channels * width * height)) == XXH_ERROR) {
-      throw EXCEPTIONS::HASH::FAILED_UPDATING_HASH;
+      throw std::exception("failed_to_update_hash");
     }
 #pragma warning(disable : 26451)
     for (auto itr = values.begin(); itr != values.end(); itr++) {
       if (XXH32_update(state, &(*itr).target, sizeof(GLenum)) == XXH_ERROR) {
-        throw EXCEPTIONS::HASH::FAILED_UPDATING_HASH;
+        throw std::exception("failed_to_update_hash");
       }
       if (XXH32_update(state, &(*itr).pname, sizeof(GLenum)) == XXH_ERROR) {
-        throw EXCEPTIONS::HASH::FAILED_UPDATING_HASH;
+        throw std::exception("failed_to_update_hash");
       }
       if (XXH32_update(state, &(*itr).type,
                        sizeof(Texture::glTexParameterType)) == XXH_ERROR) {
-        throw EXCEPTIONS::HASH::FAILED_UPDATING_HASH;
+        throw std::exception("failed_to_update_hash");
       }
       int size = 0;
       switch ((*itr).type) {
@@ -94,7 +94,7 @@ class TextureManager : public FrameTicker {
           break;
       }
       if (XXH32_update(state, (*itr).ptr, size) == XXH_ERROR) {
-        throw EXCEPTIONS::HASH::FAILED_UPDATING_HASH;
+        throw std::exception("failed_to_update_hash");
       }
     }
 

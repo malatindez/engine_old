@@ -1,36 +1,39 @@
 ﻿#ifndef TEXTURE_H
 #define TEXTURE_H
-#include "../../header_libs/stb_image.h"
-#include "exceptions.h"
+#include <stdint.h>
+
+#include <string>
+#include <vector>
 #ifdef CERR_OUTPUT
 #include <iostream>
 #endif
-#include <stdint.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <string>
-#include <vector>
 
-// after creating this object you should bind it(glBindTexture(GL_TEXTURE_2D,
-// obj.getID()); and set parameters glTexParameteri(GL_TEXTURE_2D,
-// GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT
-// (default wrapping method) glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
-// GL_REPEAT); set texture filtering parameters glTexParameteri(GL_TEXTURE_2D,
-// GL_TEXTURE_MIN_FILTER, GL_LINEAR); glTexParameteri(GL_TEXTURE_2D,
-// GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+#include "../../header_libs/stb_image.h"
+
+// after creating this object you should bind it 
+// using glBindTexture(GL_TEXTURE_2D, obj.getID());
 //
+// and set parameters
+// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+//
+// and set texture filtering parameters
+// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 ;
 class Texture {
   uint32_t id = 0;
   std::string path;
 
   // copy constructor
-  Texture(const Texture&) noexcept : type(Type::DIFFUSE) {}
+  Texture(const Texture&) noexcept : type(Type::kDiffuse) {}
 
   // move constructor
-  Texture(Texture&&) noexcept : type(Type::DIFFUSE) {}
+  Texture(Texture&&) noexcept : type(Type::kDiffuse) {}
 
   // copy assignment
   Texture& operator=(const Texture&) noexcept { return *this; }
@@ -50,32 +53,32 @@ class Texture {
     /** The texture is combined with the result of the diffuse
      *  lighting equation.
      */
-    DIFFUSE,
+    kDiffuse,
     /** The texture is combined with the result of the specular
      *  lighting equation.
      */
-    SPECULAR,
+    kSpecular,
     /** The texture is combined with the result of the ambient
      *  lighting equation.
      */
-    AMBIENT,
+    kAmbient,
     /** The texture is added to the result of the lighting
      *  calculation. It isn't influenced by incoming light.
      */
-    EMISSIVE,
+    kEmissive,
     /** The texture is a height map.
      *
      *  By convention, higher gray-scale values stand for
      *  higher elevations from the base height.
      */
-    HEIGHT,
+    kHeight,
     /** The texture is a (tangent space) normal-map.
      *
      *  Again, there are several conventions for tangent-space
      *  normal maps. Assimp does (intentionally) not
      *  distinguish here.
      */
-    NORMALS,
+    kNormals,
     /** The texture defines the glossiness of the material.
      *
      *  The glossiness is in fact the exponent of the specular
@@ -83,19 +86,19 @@ class Texture {
      *  function defined to map the linear color values in the
      *  texture to a suitable exponent. Have fun.
      */
-    SHININESS,
+    kShininess,
     /** The texture defines per-pixel opacity.
      *
      *  Usually 'white' means opaque and 'black' means
      *  'transparency'. Or quite the opposite. Have fun.
      */
-    OPACITY,
+    kOpacity,
     /** Displacement texture
      *
      *  The exact purpose and format is application-dependent.
      *  Higher color values stand for higher vertex displacements.
      */
-    DISPLACEMENT,
+    kDisplacement,
     /** Lightmap texture (aka Ambient Occlusion)
      *
      *  Both 'Lightmaps' and dedicated 'ambient occlusion maps' are
@@ -103,52 +106,52 @@ class Texture {
      *  scaling value for the final color value of a pixel. Its
      *  intensity is not affected by incoming light.
      */
-    LIGHTMAP,
+    kLightmap,
     /** Reflection texture
      *
      * Contains the color of a perfect mirror reflection.
      * Rarely used, almost never for real-time applications.
      */
-    REFLECTION,
+    kReflection,
     /** PBR Materials
      * PBR definitions from maya and other modelling packages now use this
      * standard. This was originally introduced around 2012. Support for this is
      * in game engines like Godot, Unreal or Unity3D. Modelling packages which
      * use this are very common now.
      */
-    BASE_COLOR,
-    NORMAL_CAMERA,
-    EMISSION_COLOR,
-    METALNESS,
-    DIFFUSE_ROUGHNESS,
-    AMBIENT_OCCLUSION
+    kBaseColor,
+    kNormalCamera,
+    kEmissionColor,
+    kMetalness,
+    kDiffuseRoughness,
+    kAmbientOcclusion
   } type;
   enum class glTexParameterType {
-    FLOAT,
-    INTEGER,
-    FLOATVEC,
-    IINTVEC,
-    INTVEC,
-    IUINTVEC
+    kFloat,
+    kInteger,
+    kFloatVec,
+    kIIntVec,
+    kIntVec,
+    kIUIntVec
   };
   struct glTexParameterValues {
     // copy constructor
     glTexParameterValues(const glTexParameterValues& other) {
       switch (other.type) {
-        case glTexParameterType::FLOAT:
+        case glTexParameterType::kFloat:
           ptr = new GLfloat((*(GLfloat*)other.ptr));
           break;
-        case glTexParameterType::INTEGER:
+        case glTexParameterType::kInteger:
           ptr = new GLint((*(GLint*)other.ptr));
           break;
-        case glTexParameterType::FLOATVEC:
+        case glTexParameterType::kFloatVec:
           ptr = new glm::vec3((*(glm::vec3*)other.ptr));
           break;
-        case glTexParameterType::IINTVEC:
-        case glTexParameterType::INTVEC:
+        case glTexParameterType::kIIntVec:
+        case glTexParameterType::kIntVec:
           ptr = new glm::ivec3((*(glm::ivec3*)other.ptr));
           break;
-        case glTexParameterType::IUINTVEC:
+        case glTexParameterType::kIUIntVec:
           ptr = new glm::uvec3((*(glm::uvec3*)other.ptr));
           break;
       }
@@ -169,20 +172,20 @@ class Texture {
     // copy assignment
     glTexParameterValues& operator=(const glTexParameterValues& other) {
       switch (other.type) {
-        case glTexParameterType::FLOAT:
+        case glTexParameterType::kFloat:
           ptr = new GLfloat((*(GLfloat*)other.ptr));
           break;
-        case glTexParameterType::INTEGER:
+        case glTexParameterType::kInteger:
           ptr = new GLint((*(GLint*)other.ptr));
           break;
-        case glTexParameterType::FLOATVEC:
+        case glTexParameterType::kFloatVec:
           ptr = new glm::vec3((*(glm::vec3*)other.ptr));
           break;
-        case glTexParameterType::IINTVEC:
-        case glTexParameterType::INTVEC:
+        case glTexParameterType::kIIntVec:
+        case glTexParameterType::kIntVec:
           ptr = new glm::ivec3((*(glm::ivec3*)other.ptr));
           break;
-        case glTexParameterType::IUINTVEC:
+        case glTexParameterType::kIUIntVec:
           ptr = new glm::uvec3((*(glm::uvec3*)other.ptr));
           break;
       }
@@ -204,20 +207,20 @@ class Texture {
     ~glTexParameterValues() {
       if (ptr != nullptr) {
         switch (type) {
-          case glTexParameterType::FLOAT:
+          case glTexParameterType::kFloat:
             delete (GLfloat*)(ptr);
             break;
-          case glTexParameterType::INTEGER:
+          case glTexParameterType::kInteger:
             delete (GLint*)(ptr);
             break;
-          case glTexParameterType::FLOATVEC:
+          case glTexParameterType::kFloatVec:
             delete (glm::vec3*)(ptr);
             break;
-          case glTexParameterType::IINTVEC:
-          case glTexParameterType::INTVEC:
+          case glTexParameterType::kIIntVec:
+          case glTexParameterType::kIntVec:
             delete (glm::ivec3*)(ptr);
             break;
-          case glTexParameterType::IUINTVEC:
+          case glTexParameterType::kIUIntVec:
             delete (glm::uvec3*)(ptr);
             break;
         }
@@ -231,17 +234,17 @@ class Texture {
     glTexParameterValues(GLenum target, GLenum pname, GLfloat param) noexcept
         : target(target), pname(pname) {
       this->ptr = new GLfloat(param);
-      type = glTexParameterType::FLOAT;
+      type = glTexParameterType::kFloat;
     }
     glTexParameterValues(GLenum target, GLenum pname, GLint param) noexcept
         : target(target), pname(pname) {
       this->ptr = new GLint(param);
-      type = glTexParameterType::INTEGER;
+      type = glTexParameterType::kInteger;
     }
     glTexParameterValues(GLenum target, GLenum pname, glm::vec3 param) noexcept
         : target(target), pname(pname) {
       this->ptr = new glm::vec3(param);
-      type = glTexParameterType::FLOATVEC;
+      type = glTexParameterType::kFloatVec;
     }
     // modify = false -> glTexParameterIiv
     // modify = true -> glTexParameteriv
@@ -250,35 +253,35 @@ class Texture {
         : target(target), pname(pname) {
       this->ptr = new glm::ivec3(param);
       if (not modify) {
-        type = glTexParameterType::IINTVEC;
+        type = glTexParameterType::kIIntVec;
       } else {
-        type = glTexParameterType::INTVEC;
+        type = glTexParameterType::kIntVec;
       }
     }
     glTexParameterValues(GLenum target, GLenum pname, glm::uvec3 param) noexcept
         : target(target), pname(pname) {
       this->ptr = new glm::uvec3(param);
-      type = glTexParameterType::IUINTVEC;
+      type = glTexParameterType::kIUIntVec;
     }
     void execute() noexcept {
       if (ptr != nullptr) {
         switch (type) {
-          case glTexParameterType::FLOAT:
+          case glTexParameterType::kFloat:
             glTexParameterf(target, pname, (*((GLfloat*)ptr)));
             break;
-          case glTexParameterType::INTEGER:
+          case glTexParameterType::kInteger:
             glTexParameteri(target, pname, (*((GLint*)ptr)));
             break;
-          case glTexParameterType::FLOATVEC:
+          case glTexParameterType::kFloatVec:
             glTexParameterfv(target, pname, ((GLfloat*)ptr));
             break;
-          case glTexParameterType::IINTVEC:
+          case glTexParameterType::kIIntVec:
             glTexParameterIiv(target, pname, ((GLint*)ptr));
             break;
-          case glTexParameterType::INTVEC:
+          case glTexParameterType::kIntVec:
             glTexParameteriv(target, pname, ((GLint*)ptr));
             break;
-          case glTexParameterType::IUINTVEC:
+          case glTexParameterType::kIUIntVec:
             glTexParameterIuiv(target, pname, ((GLuint*)ptr));
             break;
         }
@@ -317,17 +320,14 @@ class Texture {
       }
 
     } else {
-#ifdef CERR_OUTPUT
-      std::cerr << "Failed to load texture" << std::endl;
-#endif
-      throw EXCEPTIONS::FILE::PATH_NOT_FOUND;
+      throw std::exception("Failed to load texture");
     }
   }
 
   ~Texture() { glDeleteTextures(1, &id); }
 
-  uint32_t getID() const noexcept { return id; }
-  std::string getPath() const noexcept { return path; }
+  uint32_t GetID() const noexcept { return id; }
+  std::string GetPath() const noexcept { return path; }
 };
 
 #endif
