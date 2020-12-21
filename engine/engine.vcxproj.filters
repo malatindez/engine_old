@@ -16,98 +16,111 @@
     <Filter Include="Hash">
       <UniqueIdentifier>{3736604f-1d9d-4fa0-9a6c-11bec1e608c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\render">
+      <UniqueIdentifier>{de38c364-4e56-470d-8833-221680ad3a55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\core">
+      <UniqueIdentifier>{633f260b-2e39-4131-84f2-919746550f3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\core\input">
+      <UniqueIdentifier>{90c419a4-479a-45ac-a095-61bca86844fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\header_libs">
+      <UniqueIdentifier>{f139dae1-354b-47fb-9d97-e1aee8340217}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\header_libs\hash">
+      <UniqueIdentifier>{19fd53ce-7f18-4489-a8f7-6ac51b63469b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\render\misc">
+      <UniqueIdentifier>{06c1d9e7-7f76-4c3b-8925-a2c6c9aabc4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\render\model">
+      <UniqueIdentifier>{08087a50-7cd8-4478-a6cc-07cd5a7b1638}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\render\shader">
+      <UniqueIdentifier>{2ae7d9b2-f08a-4a3b-b111-f7d5338200ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\render\texture">
+      <UniqueIdentifier>{59a7e91b-43db-4434-bbf2-d0db8e9c889f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="hash\xxh3.h">
-      <Filter>Hash</Filter>
+    <ClInclude Include="core\defines.h">
+      <Filter>Source Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="hash\xxhash.h">
-      <Filter>Hash</Filter>
+    <ClInclude Include="core\exceptions.h">
+      <Filter>Source Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="core.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="core\Object.h">
+      <Filter>Source Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="exceptions.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="core\Player.h">
+      <Filter>Source Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="core\Ticker.h">
+      <Filter>Source Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="core\Actor.h">
+      <Filter>Source Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="render.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="core\input\Input.h">
+      <Filter>Source Files\core\input</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderProgram.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="render\render.h">
+      <Filter>Source Files\render</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderWorker.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="render\Texture\TextureManager.h">
+      <Filter>Source Files\render\texture</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="render\Texture\Texture.h">
+      <Filter>Source Files\render\texture</Filter>
     </ClInclude>
-    <ClInclude Include="stb_image.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="render\Model\Mesh.h">
+      <Filter>Source Files\render\model</Filter>
     </ClInclude>
-    <ClInclude Include="TextureManager.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="render\Model\Model.h">
+      <Filter>Source Files\render\model</Filter>
     </ClInclude>
-    <ClInclude Include="Ticker.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="render\Shader\ShaderProgram.h">
+      <Filter>Source Files\render\shader</Filter>
     </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="render\Shader\ShaderWorker.h">
+      <Filter>Source Files\render\shader</Filter>
     </ClInclude>
-    <ClInclude Include="Actor.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="header_libs\stb_image.h">
+      <Filter>Source Files\header_libs</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="header_libs\hash\xxhash.h">
+      <Filter>Source Files\header_libs\hash</Filter>
     </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="header_libs\hash\xxh3.h">
+      <Filter>Source Files\header_libs\hash</Filter>
     </ClInclude>
-    <ClInclude Include="FrameTicker.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="core\Core.h">
+      <Filter>Source Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="render\misc\Camera.h">
+      <Filter>Source Files\render\misc</Filter>
     </ClInclude>
-    <ClInclude Include="Planet.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="defines.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="render\misc\Window.h">
+      <Filter>Source Files\render\misc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="G:\glad\src\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hash\xxhash.c">
-      <Filter>Hash</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderProgram.cc">
+    <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Object.cc">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="core\Object.cc">
+      <Filter>Source Files\core</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="triangle.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="triangle.vert">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="clouds.frag">
-      <Filter>Resource Files</Filter>
-    </None>
+    <ClCompile Include="render\Shader\ShaderProgram.cc">
+      <Filter>Source Files\render\shader</Filter>
+    </ClCompile>
+    <ClCompile Include="header_libs\hash\xxhash.c">
+      <Filter>Source Files\header_libs\hash</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
