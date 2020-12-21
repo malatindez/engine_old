@@ -1,11 +1,10 @@
 #ifndef SHADER_PROGRAM_H
 #define SHADER_PROGRAM_H
-#include "../../core/defines.h"
 #ifdef CERR_OUTPUT
 #include <iostream>
 #endif
-#include <GLFW/glfw3.h>
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
