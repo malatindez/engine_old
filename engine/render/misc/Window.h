@@ -22,13 +22,11 @@ class Window {
 
   GLFWwindow* GetPointer() const noexcept { return windowPtr; }
 
-  Window(std::vector<Hint> hints, glm::ivec2 resolution, std::string title,
-         GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL)
+  Window(glm::ivec2 resolution, std::string title, GLFWmonitor* monitor = NULL,
+         GLFWwindow* share = NULL)
       : title(title) {
-    for (int i = 0; i < hints.size(); i++) {
-      hints[i].Apply();
-    }
-    init(resolution, title, monitor, share);
+    windowPtr = glfwCreateWindow(resolution.x, resolution.y, title.c_str(),
+                                 monitor, share);
   }
 
   ~Window() { glfwDestroyWindow(windowPtr); }
@@ -284,12 +282,6 @@ class Window {
   // application, the system will end the request automatically.
   void RequestAttention() { glfwRequestWindowAttention(windowPtr); }
 
- private:
-  GLFWwindow* init(glm::ivec2 resolution, std::string title,
-                   GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL) {
-    windowPtr = glfwCreateWindow(resolution.x, resolution.y, title.c_str(),
-                                 monitor, share);
-  }
 };
 
 #pragma warning(default : 26495)
