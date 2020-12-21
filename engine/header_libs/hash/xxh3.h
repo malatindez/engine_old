@@ -1,3 +1,6 @@
+#pragma warning(push, 0)
+#pragma warning(disable:26451)
+#pragma warning(disable:26812)
 /*
  * xxHash - Extremely Fast Hash algorithm
  * Development source file for `xxh3`
@@ -2110,3 +2113,7 @@ XXH128_hashFromCanonical(const XXH128_canonical_t* src)
 #endif
 
 #endif  /* XXH3_H_1397135465 */
+
+#pragma warning(default:26451)
+#pragma warning(default:26812)
+#pragma warning(pop)
