@@ -45,9 +45,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core\defines.h">
-      <Filter>Source Files\core</Filter>
-    </ClInclude>
     <ClInclude Include="core\exceptions.h">
       <Filter>Source Files\core</Filter>
     </ClInclude>

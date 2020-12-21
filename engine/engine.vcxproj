@@ -168,7 +168,6 @@
   <ItemGroup>
     <ClInclude Include="core\Actor.h" />
     <ClInclude Include="core\Core.h" />
-    <ClInclude Include="core\defines.h" />
     <ClInclude Include="core\exceptions.h" />
     <ClInclude Include="core\input\Input.h" />
     <ClInclude Include="core\Object.h" />
