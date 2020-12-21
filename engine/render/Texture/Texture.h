@@ -14,7 +14,7 @@
 
 #include "../../header_libs/stb_image.h"
 
-// after creating this object you should bind it 
+// after creating this object you should bind it
 // using glBindTexture(GL_TEXTURE_2D, obj.getID());
 //
 // and set parameters
@@ -24,30 +24,7 @@
 // and set texture filtering parameters
 // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-;
 class Texture {
-  uint32_t id = 0;
-  std::string path;
-
-  // copy constructor
-  Texture(const Texture&) noexcept : type(Type::kDiffuse) {}
-
-  // move constructor
-  Texture(Texture&&) noexcept : type(Type::kDiffuse) {}
-
-  // copy assignment
-  Texture& operator=(const Texture&) noexcept { return *this; }
-
-  // move assignment
-  Texture& operator=(Texture&&) noexcept { return *this; }
-
-  const std::string types[17]{
-      "diffuse",          "specular",       "ambient",    "emissive",
-      "height",           "normals",        "shininess",  "opacity",
-      "displacement",     "lightmap",       "reflection", "base_color",
-      "normal_camera",    "emission_color", "metalness",  "diffuse_roughness",
-      "ambient_occlusion"};
-
  public:
   enum class Type {
     /** The texture is combined with the result of the diffuse
@@ -289,17 +266,13 @@ class Texture {
     }
   };
 
- private:
-  const std::vector<glTexParameterValues> values;
-
- public:
   Texture(unsigned char* data, int width, int height, int channels,
           std::vector<glTexParameterValues> values, Type type,
           std::string path = "")
-      : values(values), type(type) {
-    this->path = path;
-    glGenTextures(1, &id);
-    glBindTexture(GL_TEXTURE_2D, id);
+      : values_(values), type(type) {
+    this->path_ = path;
+    glGenTextures(1, &id_);
+    glBindTexture(GL_TEXTURE_2D, id_);
 
     if (data) {
       GLenum format = GL_RED;
@@ -310,7 +283,7 @@ class Texture {
       else if (channels == 4)
         format = GL_RGBA;
 
-      glBindTexture(GL_TEXTURE_2D, id);
+      glBindTexture(GL_TEXTURE_2D, id_);
       glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format,
                    GL_UNSIGNED_BYTE, data);
       glGenerateMipmap(GL_TEXTURE_2D);
@@ -324,10 +297,38 @@ class Texture {
     }
   }
 
-  ~Texture() { glDeleteTextures(1, &id); }
+  ~Texture() { glDeleteTextures(1, &id_); }
 
-  uint32_t GetID() const noexcept { return id; }
-  std::string GetPath() const noexcept { return path; }
+  uint32_t GetID() const noexcept { return id_; }
+  std::string GetPath() const noexcept { return path_; }
+
+ protected:
+  // copy constructor
+  Texture(const Texture&) noexcept : type(Type::kDiffuse) {}
+
+  // move constructor
+  Texture(Texture&&) noexcept : type(Type::kDiffuse) {}
+
+  // copy assignment
+  Texture& operator=(const Texture&) noexcept { return *this; }
+
+  // move assignment
+  Texture& operator=(Texture&&) noexcept { return *this; }
+
+  const std::string types_[17]{
+      "diffuse",          "specular",       "ambient",    "emissive",
+      "height",           "normals",        "shininess",  "opacity",
+      "displacement",     "lightmap",       "reflection", "base_color",
+      "normal_camera",    "emission_color", "metalness",  "diffuse_roughness",
+      "ambient_occlusion"};
+
+  // texture id in glfw context
+  uint32_t id_ = 0;
+  // Path to texture file
+  std::string path_;
+
+ private:
+  const std::vector<glTexParameterValues> values_;
 };
 
 #endif

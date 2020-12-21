@@ -1,9 +1,5 @@
 #ifndef CAMERA_H
 #define CAMERA_H
-#define YAW -90.0f
-#define PITCH 0.0f
-#define SENSIVITY 0.1f
-#define MAX_FOV 120.0f
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -11,84 +7,88 @@
 
 #include "../core/input/Input.h"
 class Camera : FrameTicker {
-  glm::vec3 front = glm::vec3(0.0f);
-  glm::vec3 up = glm::vec3(0.0f);
-  glm::vec3 right = glm::vec3(0.0f);
-  glm::vec3 worldUp = glm::vec3(0.0f);
-  glm::vec3 position = glm::vec3(0.0f);
-  float yaw = -90.0f;
-  float pitch = 0.0f;
-  float sensivity = 0.1f;
-  float fov = 90.0f;
-
-  const Input* const input;
-  bool constrainPitch = true;
-
  public:
-  Camera(const Input* const ref, glm::vec3 worldUp, float yaw, float pitch)
-      : input(ref), FrameTicker(1) {
-    this->worldUp = worldUp;
-    this->yaw = yaw;
-    this->pitch = pitch;
+  const float kDefaultYaw = -90.0f;
+  const float kDefaultPitch = 0;
+  const float kDefaultSensivity = 0.1f;
+  const float kDefaultFOV = 90.0f;
+  const float kMaxFOV = 120.0f;
+
+  Camera(const Input* const ref, glm::vec3 world_up, float yaw, float pitch)
+      : input_(ref), FrameTicker(1) {
+    this->world_up_ = world_up;
+    this->yaw_ = yaw;
+    this->pitch_ = pitch;
   }
-  void setConstrainPitch(bool cp = true) noexcept { constrainPitch = cp; }
-  bool getConstrainPitch() const noexcept { return constrainPitch; }
-  float getYaw() const noexcept { return this->yaw; }
-  void setYaw(const float value) noexcept { this->yaw = value; }
-  float getPitch() const noexcept { return this->pitch; }
-  void setPitch(const float value) noexcept { this->pitch = value; }
-  float getSensivity() const noexcept { return this->sensivity; }
-  void setSensivity(const float value) noexcept { this->sensivity = value; }
-  float getFOV() const noexcept { return this->fov; }
-  void setWorldUp(const glm::vec3 value) noexcept { this->worldUp = value; }
-  glm::vec3 getWorldUp() const noexcept { return this->worldUp; }
-  void setFOV(const float value) noexcept { this->fov = value; }
-  glm::vec3 getFront() const noexcept { return front; }
-  glm::vec3 getUp() const noexcept { return up; }
-  glm::vec3 getRight() const noexcept { return right; }
-  void setPosition(glm::vec3 pos) noexcept { this->position = pos; }
-  glm::vec3 getPosition() const noexcept { return this->position; }
 
- private:
-  float prevPosX = 0.0f;
-  float prevPosY = 0.0f;
+  bool GetConstrainPitch() const noexcept { return constrain_pitch_; }
+  void SetConstrainPitch(bool cp = true) noexcept { constrain_pitch_ = cp; }
+  float GetYaw() const noexcept { return this->yaw_; }
+  void SetYaw(const float value) noexcept { this->yaw_ = value; }
+  float GetPitch() const noexcept { return this->pitch_; }
+  void SetPitch(const float value) noexcept { this->pitch_ = value; }
+  float GetSensivity() const noexcept { return this->sensivity_; }
+  void SetSensivity(const float value) noexcept { this->sensivity_ = value; }
+  float GetFOV() const noexcept { return this->fov_; }
+  void SetFOV(const float value) noexcept { this->fov_ = value; }
+  glm::vec3 GetWorldUp() const noexcept { return this->world_up_; }
+  void SetWorldUp(const glm::vec3 value) noexcept { this->world_up_ = value; }
+  glm::vec3 GetPosition() const noexcept { return this->position_; }
+  void SetPosition(glm::vec3 pos) noexcept { this->position_ = pos; }
 
- public:
+  glm::vec3 GetFront() const noexcept { return front_; }
+  glm::vec3 GetUp() const noexcept { return up_; }
+  glm::vec3 GetRight() const noexcept { return right_; }
+  glm::mat4 GetViewMatrix() const noexcept {
+    return glm::lookAt(position_, position_ + front_, up_);
+  }
+
   virtual void Update(const unsigned int, const float) noexcept {
-    auto pos = this->input->getMousePosition();
+    auto pos = this->input_->getMousePosition();
 
-    yaw += (pos.first - prevPosX) * sensivity * fov / MAX_FOV;
-    pitch += (prevPosY - pos.second) * sensivity * fov / MAX_FOV;
-    prevPosX = pos.first;
-    prevPosY = pos.second;
+    yaw_ += (pos.first - prev_pos_x_) * sensivity_ * fov_ / kMaxFOV;
+    pitch_ += (prev_pos_y_ - pos.second) * sensivity_ * fov_ / kMaxFOV;
+    prev_pos_x_ = pos.first;
+    prev_pos_y_ = pos.second;
 
     // Make sure that when pitch is out of bounds, screen doesn't get flipped
-    if (constrainPitch) {
-      if (pitch > 89.9f) pitch = 89.9f;
-      if (pitch < -89.9f) pitch = -89.9f;
+    if (constrain_pitch_) {
+      if (pitch_ > 89.9f) pitch_ = 89.9f;
+      if (pitch_ < -89.9f) pitch_ = -89.9f;
     }
 
     // Update Front, Right and Up Vectors using the updated Euler angles
     glm::vec3 front;
-    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    front.y = sin(glm::radians(pitch));
-    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    this->front = glm::normalize(front);
+    front.x = cos(glm::radians(yaw_)) * cos(glm::radians(pitch_));
+    front.y = sin(glm::radians(pitch_));
+    front.z = sin(glm::radians(yaw_)) * cos(glm::radians(pitch_));
+    this->front_ = glm::normalize(front);
     // Also re-calculate the Right and Up vector
-    right = glm::normalize(glm::cross(
-        this->front, worldUp));  // Normalize the vectors, because their length
+    right_ = glm::normalize(
+        glm::cross(this->front_,
+                   world_up_));  // Normalize the vectors, because their length
                                  // gets closer to 0 the more you look up or
                                  // down which results in slower movement.
-    up = glm::normalize(glm::cross(right, this->front));
+    up_ = glm::normalize(glm::cross(right_, this->front_));
   }
 
-  glm::mat4 GetViewMatrix() const noexcept {
-    return glm::lookAt(position, position + front, up);
-  }
+ protected:
+  glm::vec3 front_ = glm::vec3(0.0f);
+  glm::vec3 up_ = glm::vec3(0.0f);
+  glm::vec3 right_ = glm::vec3(0.0f);
+  glm::vec3 world_up_ = glm::vec3(0.0f);
+  glm::vec3 position_ = glm::vec3(0.0f);
+  float yaw_ = kDefaultYaw;
+  float pitch_ = kDefaultPitch;
+  float sensivity_ = kDefaultSensivity;
+  float fov_ = kDefaultFOV;
+
+  const Input* const input_;
+  bool constrain_pitch_ = true;
+
+ private:
+  float prev_pos_x_ = 0.0f;
+  float prev_pos_y_ = 0.0f;
 };
 
-#undef ZOOM
-#undef SENSIVITY
-#undef PITCH
-#undef YAW
 #endif

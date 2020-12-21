@@ -9,12 +9,6 @@
 #include <thread>
 
 #include "../FrameTicker.h"
-double scrollOffsetx = 0, scrollOffsety = 0;
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
-  scrollOffsetx = xoffset;
-  scrollOffsety = yoffset;
-}
-bool scroll_callback_set = false;
 
 struct KeySequence {
   uint16_t* sequence = nullptr;
@@ -122,49 +116,41 @@ class Input : public FrameTicker {
     return flag;
   }
 
- private:
-  GLFWwindow* window = nullptr;
-  double xpos = 0, ypos = 0;
-  double xoffset = 0, yoffset = 0;
-  bool* keys = new bool[65536];
-  std::set<uint16_t> checking;
-
- public:
   Input(GLFWwindow* win) : FrameTicker(1) {
-    memset(keys, 0, sizeof(bool) * 65536);
-    window = win;
-    glfwGetCursorPos(window, &xpos, &ypos);
-    if (not scroll_callback_set) {
-      glfwSetScrollCallback(window, scroll_callback);
-      scroll_callback_set = true;
-    }
+    memset(keys_, 0, sizeof(bool) * 65536);
+    window_ = win;
+    glfwGetCursorPos(window_, &xpos_, &ypos_);
   }
-  ~Input() { delete[] keys; }
-  void addCheckingKey(uint16_t key) noexcept { checking.insert(key); }
+  ~Input() { delete[] keys_; }
+
+  std::pair<float, float> getMousePosition() const noexcept {
+    return std::pair<float, float>(xpos_, ypos_);
+  }
+
+  void addCheckingKey(uint16_t key) noexcept { checking_.insert(key); }
   bool checkSequence(KeySequence seq) const noexcept {
     for (size_t i = 0; i < seq.size; i++) {
-      if (not keys[seq.sequence[i]]) {
+      if (not keys_[seq.sequence[i]]) {
         return false;
       }
     }
     return true;
   }
-  bool checkKey(uint16_t key) const noexcept { return keys[key]; }
-  std::pair<float, float> getScrollOffset() const noexcept {
-    return std::pair<float, float>(xoffset, yoffset);
-  }
-  std::pair<float, float> getMousePosition() const noexcept {
-    return std::pair<float, float>(xpos, ypos);
-  }
+  bool checkKey(uint16_t key) const noexcept { return keys_[key]; }
+
   virtual void Update(const unsigned int, const float) noexcept {
-    for (std::set<uint16_t>::iterator i = checking.begin(); i != checking.end();
+    for (std::set<uint16_t>::iterator i = checking_.begin(); i != checking_.end();
          i++) {
-      keys[(*i)] = (glfwGetKey(window, (*i)) == GLFW_PRESS);
+      keys_[(*i)] = (glfwGetKey(window_, (*i)) == GLFW_PRESS);
     }
-    glfwGetCursorPos(window, &xpos, &ypos);
-    xoffset = scrollOffsetx;
-    xoffset = scrollOffsety;
+    glfwGetCursorPos(window_, &xpos_, &ypos_);
   }
+
+ private:
+  GLFWwindow* window_ = nullptr;
+  double xpos_ = 0, ypos_ = 0;
+  bool* keys_ = new bool[65536];
+  std::set<uint16_t> checking_;
 };
 
 #endif

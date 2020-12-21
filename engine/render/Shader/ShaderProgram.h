@@ -3,27 +3,14 @@
 #ifdef CERR_OUTPUT
 #include <iostream>
 #endif
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
 class ShaderProgram {
- private:
-  unsigned int ID = 0;
-  // Locking out move and copy constructors
-  ShaderProgram(const ShaderProgram&) {}
-
-  ShaderProgram(ShaderProgram&&) noexcept {}
-
-  ShaderProgram& operator=(const ShaderProgram&) {}
-
-  ShaderProgram& operator=(ShaderProgram&&) noexcept {}
-
-  GLint checkCompileErrors(GLuint shader, std::string type);
-
  public:
   enum class exceptions {
     FRAGMENT_COMPILATION_ERROR,
@@ -36,33 +23,50 @@ class ShaderProgram {
 
   ~ShaderProgram();
 
-  void use() const noexcept { glUseProgram(ID); }
-  void operator()() const noexcept { use(); }
-  void setBool(const std::string& name, bool value) const;
-  void setInt(const std::string& name, int value) const;
-  void setUInt(const std::string& name, unsigned int value) const;
-  void setFloat(const std::string& name, float value) const;
+  void operator()() const noexcept { Use(); }
 
-  void setVec1(const std::string& name, const glm::vec1& value) const;
-  void setVec2(const std::string& name, const glm::vec2& value) const;
-  void setVec3(const std::string& name, const glm::vec3& value) const;
-  void setVec4(const std::string& name, const glm::vec4& value) const;
+  void Use() const noexcept { glUseProgram(sp_id_); }
 
-  void setMat2(const std::string& name, const glm::mat2& value) const;
-  void setMat3(const std::string& name, const glm::mat3& value) const;
-  void setMat4(const std::string& name, const glm::mat4& value) const;
+  void SetBool(const std::string& name, bool value) const;
+  void SetInt(const std::string& name, int value) const;
+  void SetUInt(const std::string& name, unsigned int value) const;
+  void SetFloat(const std::string& name, float value) const;
 
-  void setMat2x2(const std::string& name, const glm::mat2x2& value) const;
-  void setMat2x3(const std::string& name, const glm::mat2x3& value) const;
-  void setMat2x4(const std::string& name, const glm::mat2x4& value) const;
+  void SetVec1(const std::string& name, const glm::vec1& value) const;
+  void SetVec2(const std::string& name, const glm::vec2& value) const;
+  void SetVec3(const std::string& name, const glm::vec3& value) const;
+  void SetVec4(const std::string& name, const glm::vec4& value) const;
 
-  void setMat3x2(const std::string& name, const glm::mat3x2& value) const;
-  void setMat3x3(const std::string& name, const glm::mat3x3& value) const;
-  void setMat3x4(const std::string& name, const glm::mat3x4& value) const;
+  void SetMat2(const std::string& name, const glm::mat2& value) const;
+  void SetMat3(const std::string& name, const glm::mat3& value) const;
+  void SetMat4(const std::string& name, const glm::mat4& value) const;
 
-  void setMat4x2(const std::string& name, const glm::mat4x2& value) const;
-  void setMat4x3(const std::string& name, const glm::mat4x3& value) const;
-  void setMat4x4(const std::string& name, const glm::mat4x4& value) const;
+  void SetMat2x2(const std::string& name, const glm::mat2x2& value) const;
+  void SetMat2x3(const std::string& name, const glm::mat2x3& value) const;
+  void SetMat2x4(const std::string& name, const glm::mat2x4& value) const;
+
+  void SetMat3x2(const std::string& name, const glm::mat3x2& value) const;
+  void SetMat3x3(const std::string& name, const glm::mat3x3& value) const;
+  void SetMat3x4(const std::string& name, const glm::mat3x4& value) const;
+
+  void SetMat4x2(const std::string& name, const glm::mat4x2& value) const;
+  void SetMat4x3(const std::string& name, const glm::mat4x3& value) const;
+  void SetMat4x4(const std::string& name, const glm::mat4x4& value) const;
+
+ private:
+  // Locking out move and copy constructors
+  ShaderProgram(const ShaderProgram&) {}
+
+  ShaderProgram(ShaderProgram&&) noexcept {}
+
+  ShaderProgram& operator=(const ShaderProgram&) {}
+
+  ShaderProgram& operator=(ShaderProgram&&) noexcept {}
+
+  GLint checkCompileErrors(GLuint shader, std::string type);
+
+  // shader program id
+  unsigned int sp_id_ = 0;
 };
 
 #endif

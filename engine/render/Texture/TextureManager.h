@@ -7,21 +7,19 @@
 #include "FrameTicker.h"
 #include "Texture.h"
 class TextureManager : public FrameTicker {
-  std::unordered_map<XXH32_hash_t, std::shared_ptr<Texture>> textures;
-
  public:
   TextureManager() : FrameTicker(4096) {}
   virtual void Update(const unsigned int tick, const float) noexcept {
     if (tick % getTickRate() == 0) {
       std::vector<XXH32_hash_t> valuesToErase;
-      for (auto kv : textures) {
+      for (auto kv : textures_) {
         if (kv.second.unique()) {
           valuesToErase.push_back(kv.first);
         }
       }
       for (auto itr = valuesToErase.begin(); itr != valuesToErase.end();
            itr++) {
-        textures.erase((*itr));
+        textures_.erase((*itr));
       }
     }
   }
@@ -44,6 +42,24 @@ class TextureManager : public FrameTicker {
     }
     stbi_image_free(data);
   }
+
+  std::shared_ptr<Texture> Load(
+      unsigned char* data, int width, int height, int channels,
+      std::vector<Texture::glTexParameterValues> values, Texture::Type type,
+      std::string path = "") {
+    XXH32_hash_t hash =
+        CalculateTextureHash(data, width, height, channels, values);
+    if (textures_.find(hash) != textures_.end()) {
+      return textures_.at(hash);
+    }
+    std::shared_ptr<Texture> returnValue(
+        new Texture(data, width, height, channels, values, type, path));
+    textures_[hash] = returnValue;
+    return returnValue;
+  }
+
+ protected:
+  std::unordered_map<XXH32_hash_t, std::shared_ptr<Texture>> textures_;
 
  private:
   static XXH32_hash_t CalculateTextureHash(
@@ -76,20 +92,20 @@ class TextureManager : public FrameTicker {
       }
       int size = 0;
       switch ((*itr).type) {
-        case Texture::glTexParameterType::FLOAT:
+        case Texture::glTexParameterType::kFloat:
           size = sizeof(GLfloat);
           break;
-        case Texture::glTexParameterType::INTEGER:
+        case Texture::glTexParameterType::kInteger:
           size = sizeof(GLint);
           break;
-        case Texture::glTexParameterType::FLOATVEC:
+        case Texture::glTexParameterType::kFloatVec:
           size = sizeof(glm::vec3);
           break;
-        case Texture::glTexParameterType::IINTVEC:
-        case Texture::glTexParameterType::INTVEC:
+        case Texture::glTexParameterType::kIIntVec:
+        case Texture::glTexParameterType::kIntVec:
           size = sizeof(glm::ivec3);
           break;
-        case Texture::glTexParameterType::IUINTVEC:
+        case Texture::glTexParameterType::kIUIntVec:
           size = sizeof(glm::uvec3);
           break;
       }
@@ -101,22 +117,6 @@ class TextureManager : public FrameTicker {
     XXH32_hash_t const hash = XXH32_digest(state);
     XXH32_freeState(state);
     return hash;
-  }
-
- public:
-  std::shared_ptr<Texture> Load(
-      unsigned char* data, int width, int height, int channels,
-      std::vector<Texture::glTexParameterValues> values, Texture::Type type,
-      std::string path = "") {
-    XXH32_hash_t hash =
-        CalculateTextureHash(data, width, height, channels, values);
-    if (textures.find(hash) != textures.end()) {
-      return textures.at(hash);
-    }
-    std::shared_ptr<Texture> returnValue(
-        new Texture(data, width, height, channels, values, type, path));
-    textures[hash] = returnValue;
-    return returnValue;
   }
 };
 
