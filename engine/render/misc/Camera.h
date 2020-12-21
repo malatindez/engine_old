@@ -8,7 +8,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "Input.h"
+#include "../core/input/Input.h"
 class Camera : FrameTicker {
     glm::vec3 front = glm::vec3(0.0f);
     glm::vec3 up = glm::vec3(0.0f);
