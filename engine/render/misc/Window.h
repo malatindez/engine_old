@@ -32,6 +32,7 @@ class Window {
   ~Window() { glfwDestroyWindow(windowPtr); }
 
   bool ShouldClose() const { return glfwWindowShouldClose(windowPtr); }
+
   // This function sets the value of an attribute of the specified window.
   void SetWindowAttrib(int attrib, int value) {
     glfwSetWindowAttrib(windowPtr, attrib, value);
@@ -91,6 +92,7 @@ class Window {
     glfwGetWindowFrameSize(windowPtr, &left, &top, &right, &bottom);
     return glm::ivec4(left, top, right, bottom);
   }
+
   // This function retrieves the content scale for the window. The
   // content scale is the ratio between the current DPI and the platform's
   // default DPI
@@ -281,7 +283,6 @@ class Window {
   // Once the user has given attention, usually by focusing the window or
   // application, the system will end the request automatically.
   void RequestAttention() { glfwRequestWindowAttention(windowPtr); }
-
 };
 
 #pragma warning(default : 26495)
