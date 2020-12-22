@@ -1,8 +1,7 @@
 #pragma once
-#include <string>
-
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
+#include <string>
 
 #include "../../core/input/Input.h"
 #pragma warning(disable : 26495)
@@ -20,52 +19,33 @@ class Window : public Input {
     void Apply() const noexcept { glfwWindowHint(this->x, this->y); }
   };
 
-
   Window(glm::ivec2 resolution, std::string title, GLFWmonitor* monitor = NULL,
          GLFWwindow* share = NULL)
-      : title_(title) {
-    window_ptr_ = glfwCreateWindow(resolution.x, resolution.y, title.c_str(),
-                                   monitor, share);
-    this->init();
-  }
+      : Window(resolution.x, resolution.y, title, monitor, share) {}
 
   Window(int x, int y, std::string title, GLFWmonitor* monitor = NULL,
-         GLFWwindow* share = NULL)
-      : title_(title) {
-    window_ptr_ = glfwCreateWindow(x, y, title.c_str(), monitor, share);
-    this->init();
-  }
+         GLFWwindow* share = NULL);
 
-  ~Window() { 
-    glfwDestroyWindow(window_ptr_);
-  }
+  ~Window();
 
-  bool Alive() {
-    return window_ptr_ != NULL;
-  }
+  bool Alive();
 
-  Input GetInputClass() {}
-
-  bool ShouldClose() const { return glfwWindowShouldClose(window_ptr_); }
+  bool ShouldClose() const;
 
   // This function sets the value of an attribute of the specified window.
-  void SetWindowAttrib(int attrib, int value) {
-    glfwSetWindowAttrib(window_ptr_, attrib, value);
-  }
+  void SetWindowAttrib(int attrib, int value);
   // This function sets the value of an attribute of the specified window.
-  void SetWindowAttrib(glm::ivec2 attrib) {
-    glfwSetWindowAttrib(window_ptr_, attrib.x, attrib.y);
-  }
+  void SetWindowAttrib(glm::ivec2 attrib);
 
-  void MakeContextCurrent() { glfwMakeContextCurrent(window_ptr_); }
+  void MakeContextCurrent();
 
   // This function swaps the front and back buffers of the window when rendering
   // with OpenGL or OpenGL ES. If the swap interval is greater than zero, the
   // GPU driver waits the specified number of screen updates before swapping the
   // buffers.
-  void SwapBuffers() { glfwSwapBuffers(window_ptr_); }
+  void SwapBuffers();
 
-  static void PollEvents() { glfwPollEvents(); }
+  static void PollEvents();
 
   // This function sets the swap interval for the window, i.e. the number of
   // screen updates to wait from the time SwapBuffers was called before
@@ -74,46 +54,31 @@ class Window : public Input {
   //
   // A context must be current on the calling thread. Calling this function
   // without a current context will cause a GLFW_NO_CURRENT_CONTEXT error.
-  void SwapInterval(int interval) { glfwSwapInterval(1); }
+  void SwapInterval(int interval);
 
   // Sets the size of a window in screen coordinates of the content
   // area or content area of the window The window system may impose
   // limits on window size.
-  void SetWindowSize(const int x, const int y) {
-    glfwSetWindowSize(window_ptr_, x, y);
-  }
+  void SetWindowSize(const int x, const int y);
 
   // Sets the size of a window in screen coordinates of the content
   // area or content area of the window. The window system may impose
   // limits on window size.
-  void SetWindowSize(const glm::ivec2 resolution) {
-    glfwSetWindowSize(window_ptr_, resolution.x, resolution.y);
-  }
+  void SetWindowSize(const glm::ivec2 resolution);
 
   // The returned value is the current size of a window.
-  glm::ivec2 GetWindowSize() const {
-    int width, height;
-    glfwGetWindowSize(window_ptr_, &width, &height);
-    return glm::ivec2(width, height);
-  }
+  glm::ivec2 GetWindowSize() const;
 
   // The returned values are the distances, in screen coordinates,
   // from the edges of the content area to the corresponding edges of
   // the full window. As they are distances and not coordinates, they are
   // always zero or positive.
-  glm::ivec4 GetWindowFrameSize() const {
-    int left, top, right, bottom;
-    glfwGetWindowFrameSize(window_ptr_, &left, &top, &right, &bottom);
-    return glm::ivec4(left, top, right, bottom);
-  }
+  glm::ivec4 GetWindowFrameSize() const;
 
   // This function retrieves the content scale for the window. The
   // content scale is the ratio between the current DPI and the platform's
   // default DPI
-  glm::vec2 GetWindowContentScale() const {
-    float xscale, yscale;
-    glfwGetWindowContentScale(window_ptr_, &xscale, &yscale);
-  }
+  glm::vec2 GetWindowContentScale() const;
 
   // The minimum and maximum size of the content area of a windowed mode window
   // can be enforced with glfwSetWindowSizeLimits. The user may resize the
@@ -123,10 +88,7 @@ class Window : public Input {
   // To specify only a minimum size or only a maximum one, set the value to -1
   // or GLFW_DONT_CARE
   void SetWindowSizeLimits(const int min_width, const int min_height,
-                           const int max_width, const int max_height) {
-    glfwSetWindowSizeLimits(window_ptr_, min_width, min_height, max_width,
-                            max_height);
-  }
+                           const int max_width, const int max_height);
   // The minimum and maximum size of the content area of a windowed mode window
   // can be enforced with glfwSetWindowSizeLimits. The user may resize the
   // window to any size and aspect ratio within the specified limits, unless the
@@ -137,10 +99,7 @@ class Window : public Input {
   //
   // Values in the vector defined respectively:
   // x = min_width, y = min_height, z = max_width, w = max_height
-  void SetWindowSizeLimits(const glm::ivec4 limits) {
-    glfwSetWindowSizeLimits(window_ptr_, limits.x, limits.y, limits.z,
-                            limits.w);
-  }
+  void SetWindowSizeLimits(const glm::ivec4 limits);
 
   // This function sets the required aspect ratio of the content area of the
   // specified window. If the window is full screen, the aspect ratio only takes
@@ -153,9 +112,7 @@ class Window : public Input {
   //
   // If the numerator and denominator is set to GLFW_DONT_CARE or -1 then the
   // aspect ratio limit is disabled.
-  void SetWindowAspectRatio(const int width, const int height) {
-    glfwSetWindowAspectRatio(window_ptr_, width, height);
-  }
+  void SetWindowAspectRatio(const int width, const int height);
   // This function sets the required aspect ratio of the content area of the
   // specified window. If the window is full screen, the aspect ratio only takes
   // effect once it is made windowed. If the window is not resizable, this
@@ -167,37 +124,24 @@ class Window : public Input {
   //
   // If the numerator and denominator is set to GLFW_DONT_CARE or -1 then the
   // aspect ratio limit is disabled.
-  void SetWindowAspectRatio(const glm::ivec2 ratio) {
-    glfwSetWindowAspectRatio(window_ptr_, ratio.x, ratio.y);
-  }
+  void SetWindowAspectRatio(const glm::ivec2 ratio);
 
   // This function sets the position, in screen coordinates, of the upper-left
   // corner of the content area of the window. If the window is a full screen
   // window, this function does nothing.
-  void SetWindowPosition(const int x, const int y) {
-    glfwSetWindowPos(window_ptr_, x, y);
-  }
+  void SetWindowPosition(const int x, const int y);
   // This function sets the position, in screen coordinates, of the upper-left
   // corner of the content area of the window. If the window is a full screen
   // window, this function does nothing.
-  void SetWindowPosition(const glm::ivec2 pos) {
-    glfwSetWindowPos(window_ptr_, pos.x, pos.y);
-  }
+  void SetWindowPosition(const glm::ivec2 pos);
 
   // This function retrieves the position, in screen coordinates, of the
   // upper-left corner of the content area of the window.
-  glm::ivec2 GetWindowPosition() const {
-    int xpos, ypos;
-    glfwGetWindowPos(window_ptr_, &xpos, &ypos);
-    return glm::ivec2(xpos, ypos);
-  }
+  glm::ivec2 GetWindowPosition() const;
 
   // This function sets the window title, encoded as UTF-8, of the specified
   // window.
-  void SetWindowTitle(const std::string title) {
-    glfwSetWindowTitle(window_ptr_, title.c_str());
-    this->title_ = title;
-  }
+  void SetWindowTitle(const std::string title);
 
   // This function sets the icon of the specified window. If passed an array of
   // candidate images, those of or closest to the sizes desired by the system
@@ -214,13 +158,11 @@ class Window : public Input {
   //
   // To revert to the default window icon, pass in an empty image array:
   // glfwSetWindowIcon(window, 0, NULL);
-  void SetWindowIcon(const GLFWimage* images, int count) {
-    glfwSetWindowIcon(window_ptr_, count, images);
-  }
+  void SetWindowIcon(const GLFWimage* images, int count);
 
   // This function returns the handle of the monitor that the specified window
   // is in full screen on.
-  GLFWmonitor* GetMonitor() { return glfwGetWindowMonitor(window_ptr_); }
+  GLFWmonitor* GetMonitor();
 
   // This function sets the monitor that the window uses for full screen mode
   // or, if the monitor is NULL, makes it windowed mode.
@@ -237,41 +179,30 @@ class Window : public Input {
   // restores any previous window settings such as whether it is decorated,
   // floating, resizable, has size or aspect ratio limits, etc.
   void SetMonitor(GLFWmonitor* monitor = NULL, int xpos = 0, int ypos = 0,
-                  int width = 0, int height = 0, int refresh_rate = 0) {
-    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-    if (width == height == 0) {
-      width = mode->width;
-      height = mode->height;
-    }
-    if (refresh_rate == 0) {
-      refresh_rate = mode->refreshRate;
-    }
-    glfwSetWindowMonitor(window_ptr_, monitor, 0, 0, width, height,
-                         refresh_rate);
-  }
+                  int width = 0, int height = 0, int refresh_rate = 0);
 
   // This function iconifies (minimizes) the specified window if it was
   // previously restored. If the window is already iconified, this function does
   // nothing.
-  void IconifyWindow() { glfwIconifyWindow(window_ptr_); }
+  void IconifyWindow();
   // This function iconifies (minimizes) the specified window if it was
   // previously restored. If the window is already iconified, this function does
   // nothing.
-  void MinimizeWindow() { glfwIconifyWindow(window_ptr_); }
+  void MinimizeWindow();
 
   // This function maximizes the specified window if it was previously not
   // maximized. If the window is already maximized, this function does nothing.
-  void MaximizeWindow() { glfwMaximizeWindow(window_ptr_); }
+  void MaximizeWindow();
 
   // This function restores the specified window if it was previously iconified
   // (minimized) or maximized. If the window is already restored, this function
   // does nothing.
-  void RestoreWindow() { glfwRestoreWindow(window_ptr_); }
+  void RestoreWindow();
 
   // This function hides the specified window if it was previously visible. If
   // the window is already hidden or is in full screen mode, this function does
   // nothing.
-  void HideWindow() { glfwHideWindow(window_ptr_); }
+  void HideWindow();
 
   // This function makes the specified window visible if it was previously
   // hidden. If the window is already visible or is in full screen mode, this
@@ -281,7 +212,7 @@ class Window : public Input {
   // GLFW_FOCUS_ON_SHOW window hint to change this behavior for all newly
   // created windows, or change the behavior for an existing window with
   // SetWindowAttrib.
-  void ShowWindow() { glfwShowWindow(window_ptr_); }
+  void ShowWindow();
 
   // This function brings the specified window to front and sets input focus.
   // The window should already be visible and not iconified.
@@ -291,7 +222,7 @@ class Window : public Input {
   //
   // Also by default, windowed mode windows are focused when shown with
   // glfwShowWindow. Set the GLFW_FOCUS_ON_SHOW to disable this behavior.
-  void FocusWindow() { glfwFocusWindow(window_ptr_); }
+  void FocusWindow();
 
   // This function requests user attention to the specified window. On platforms
   // where this is not supported, attention is requested to the application as a
@@ -299,12 +230,62 @@ class Window : public Input {
   //
   // Once the user has given attention, usually by focusing the window or
   // application, the system will end the request automatically.
-  void RequestAttention() { glfwRequestWindowAttention(window_ptr_); }
+  void RequestAttention();
 
  protected:
+  // This function is the position callback, which is called when the window is
+  // moved. The callback is provided with the position, in screen coordinates,
+  // of the upper-left corner of the content area of the window.
+  void PosCallback(int xpos, int ypos);
+
+  // This function is the size callback, which is called when the window is
+  // resized. The callback is provided with the size, in screen coordinates, of
+  // the content area of the window.
+  void SizeCallback(int width, int height);
+
+  // This function is the close callback, which is called when the user attempts
+  // to close the window, for example by clicking the close widget in the title
+  // bar.
+  void CloseCallback();
+
+  // This function is the refresh callback, which is called when the content
+  // area of the window needs to be redrawn, for example if the window has been
+  // exposed after having been covered by another window.
+  void RefreshCallback();
+
+  // This function is the focus callback, which is called when the window gains
+  // or loses input focus.
+  void FocusCallback(int focused);
+
+  // This function is the iconification callback, which is called when the
+  // window is iconified or restored.
+  void IconifyCallback(int iconified);
+
+  // This function is the maximization callback, which is called when the window
+  // is maximized or restored.
+  void MaximizeCallback(int maximized);
+
+  // This function is the framebuffer resize callback, which is called when the
+  // framebuffer of the specified window is resized.
+  void FramebufferSizeCallback(int width, int height);
+
+  // This function is the window content scale callback, which is called when
+  // the content scale of the specified window changes.
+  void ContentScaleCallback(float xscale, float yscale);
+
   std::string title_;
 
  private:
+  static void StaticPosCallback(GLFWwindow* window, int xpos, int ypos);
+  static void StaticSizeCallback(GLFWwindow* window, int width, int height);
+  static void StaticCloseCallback(GLFWwindow* window);
+  static void StaticRefreshCallback(GLFWwindow* window);
+  static void StaticFocusCallback(GLFWwindow* window, int focused);
+  static void StaticIconifyCallback(GLFWwindow* window, int iconified);
+  static void StaticMaximizeCallback(GLFWwindow* window, int maximized);
+  static void StaticFramebufferSizeCallback(GLFWwindow* window, int width, int height);
+  static void StaticContentScaleCallback(GLFWwindow* window, float xscale, float yscale);
+
   // copy constructor
   Window(const Window&) noexcept {}
 
