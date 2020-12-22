@@ -1,19 +1,18 @@
-#ifndef INPUT_H
-#define INPUT_H
-#include <GLFW/glfw3.h>
-
-#include <algorithm>
+#pragma once
 #include <functional>
+#include <algorithm>
+#include <thread>
 #include <mutex>
 #include <set>
-#include <thread>
+#include <map>
+#include <GLFW/glfw3.h>
 
 #include "../FrameTicker.h"
+#include "../../render/misc/Window.h"
 
 struct KeySequence {
   uint16_t* sequence = nullptr;
   size_t size = 0;
-  KeySequence() {}
   KeySequence(size_t size, uint16_t* seq) {
     if (size > 5 or size == 0) {
       return;
@@ -90,6 +89,7 @@ struct KeySequence {
     }
     sequence = nullptr;
   }
+
   bool operator==(const KeySequence& ks) {
     if (ks.size != size) {
       return false;
@@ -115,20 +115,20 @@ class Input : public FrameTicker {
     }
     return flag;
   }
+  
+  ~Input() { }
 
-  Input(GLFWwindow* win) : FrameTicker(1) {
-    memset(keys_, 0, sizeof(bool) * 65536);
-    window_ = win;
-    glfwGetCursorPos(window_, &xpos_, &ypos_);
-  }
-  ~Input() { delete[] keys_; }
-
-  std::pair<float, float> getMousePosition() const noexcept {
+  std::pair<float, float> GetMousePosition() const noexcept {
     return std::pair<float, float>(xpos_, ypos_);
   }
 
-  void addCheckingKey(uint16_t key) noexcept { checking_.insert(key); }
-  bool checkSequence(KeySequence seq) const noexcept {
+  void AddCheckingKey(uint16_t key) noexcept { checking_.insert(key); }
+  void AddCheckingSequence(KeySequence seq) noexcept {
+    for (size_t i = 0; i < seq.size; i++) {
+      checking_.insert(seq.sequence[i]);
+    }
+  }
+  bool CheckSequence(KeySequence seq) const noexcept {
     for (size_t i = 0; i < seq.size; i++) {
       if (not keys_[seq.sequence[i]]) {
         return false;
@@ -136,21 +136,35 @@ class Input : public FrameTicker {
     }
     return true;
   }
-  bool checkKey(uint16_t key) const noexcept { return keys_[key]; }
+  bool CheckKey(uint16_t key) const noexcept { return keys_[key]; }
 
   virtual void Update(const unsigned int, const float) noexcept {
     for (std::set<uint16_t>::iterator i = checking_.begin(); i != checking_.end();
          i++) {
-      keys_[(*i)] = (glfwGetKey(window_, (*i)) == GLFW_PRESS);
+      keys_[(*i)] = (glfwGetKey(window_ptr_, (*i)) == GLFW_PRESS);
     }
-    glfwGetCursorPos(window_, &xpos_, &ypos_);
+    glfwGetCursorPos(window_ptr_, &xpos_, &ypos_);
   }
 
+  bool AddCallback(KeySequence seq, std::function<void(int)> function, bool rewrite = false) {
+    AddCheckingSequence(seq);
+    if (callbacks_.find(seq) != callbacks_.end() and not rewrite) {
+      return false;
+    }
+    callbacks_.emplace(seq, function);
+    return true;
+  }
+
+ protected:
+  Input() : FrameTicker(1) { }
+
+  void init(GLFWwindow* win) { this->window_ptr_ = win; }
+
+  GLFWwindow* window_ptr_ = nullptr;
+
  private:
-  GLFWwindow* window_ = nullptr;
+  std::map<KeySequence, std::function<void(int)>> callbacks_;
   double xpos_ = 0, ypos_ = 0;
   bool* keys_ = new bool[65536];
   std::set<uint16_t> checking_;
 };
-
-#endif
