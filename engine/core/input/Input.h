@@ -80,52 +80,49 @@ class Input : public FrameTicker {
   // This function is the key callback, which is called when a key is pressed,
   // repeated or released.
   void KeyCallback(int key, int scancode, int action, int mods);
-  static void StaticKeyCallback(GLFWwindow* window, int key, int scancode,
-                                int action, int mods);
 
   // This function is the character callback, which is called when a Unicode
   // character is input.
   void CharCallback(unsigned int codepoint);
-  static void StaticCharCallback(GLFWwindow* window, unsigned int codepoint);
 
   // This function is the mouse button callback, which is called when a mouse
   // button is pressed or released.
   void MouseButtonCallback(int button, int action, int mods);
-  static void StaticMouseButtonCallback(GLFWwindow* window, int button,
-                                        int action, int mods);
 
   // This function is the cursor position callback, which is called when the
   // cursor is moved. The callback is provided with the position, in screen
   // coordinates, relative to the upper-left corner of the content area of the
   // window.
   void CursorPosCallback(double xpos, double ypos);
-  static void StaticCursorPosCallback(GLFWwindow* window, double xpos,
-                                      double ypos);
 
   // This function is the cursor boundary crossing callback, which is called
   // when the cursor enters or leaves the content area of the window.
   void CursorEnterCallback(int entered);
-  static void StaticCursorEnterCallback(GLFWwindow* window, int entered);
 
   // This function is the scroll callback, which is called when a scrolling
   // device is used, such as a mouse wheel or scrolling area of a touchpad.
   void ScrollCallback(double xoffset, double yoffset);
-  static void StaticScrollCallback(GLFWwindow* window, double xoffset,
-                                   double yoffset);
 
   // This function is the path drop callback, which is called when one or more
   // dragged paths are dropped on the window.
   void DropCallback(int path_count, const char* paths[]);
-  static void StaticDropCallback(GLFWwindow* window, int path_count,
-                                 const char* paths[]);
 
   // Here we should store all instances of Input class. Every. One.
-  // This static variable is used to correctly handle GLFW callbacks
+  // Also this static variable is used to correctly handle GLFW callbacks
   static std::map<GLFWwindow*, Input*> instances_;
 
   GLFWwindow* window_ptr_ = nullptr;
 
  private:
+
+  static void StaticKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+  static void StaticCharCallback(GLFWwindow* window, unsigned int codepoint);
+  static void StaticMouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+  static void StaticCursorPosCallback(GLFWwindow* window, double xpos, double ypos);
+  static void StaticCursorEnterCallback(GLFWwindow* window, int entered);
+  static void StaticScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+  static void StaticDropCallback(GLFWwindow* window, int path_count, const char* paths[]);
+
   std::map<KeySequence, std::function<void(int)>> callbacks_;
 
   double xpos_ = 0, ypos_ = 0;

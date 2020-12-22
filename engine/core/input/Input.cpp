@@ -172,7 +172,7 @@ void Input::StaticCursorPosCallback(GLFWwindow* window, double xpos, double ypos
   instances_.find(window)->second->CursorPosCallback(xpos, ypos);
 }
 void Input::CursorPosCallback(double xpos, double ypos) {
-  std::cout << "CursorPosEvent: " << xpos << " " << ypos << std::endl;
+  //std::cout << "CursorPosEvent: " << xpos << " " << ypos << std::endl;
 }
 
 void Input::StaticCursorEnterCallback(GLFWwindow* window, int entered) {
