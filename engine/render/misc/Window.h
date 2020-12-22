@@ -6,7 +6,7 @@
 
 #include "../../core/input/Input.h"
 #pragma warning(disable : 26495)
-// Functions from this class should be called only in main thread
+// Functions from this class should be called only in the main thread.
 class Window : public Input {
  public:
   // hint class, heir of glm::ivec2
@@ -26,14 +26,14 @@ class Window : public Input {
       : title_(title) {
     window_ptr_ = glfwCreateWindow(resolution.x, resolution.y, title.c_str(),
                                    monitor, share);
-    this->init(window_ptr_);
+    this->init();
   }
 
   Window(int x, int y, std::string title, GLFWmonitor* monitor = NULL,
          GLFWwindow* share = NULL)
       : title_(title) {
-    window_ptr_ = glfwCreateWindow(x, y, title.c_str(),
-                                   monitor, share);
+    window_ptr_ = glfwCreateWindow(x, y, title.c_str(), monitor, share);
+    this->init();
   }
 
   ~Window() { 
@@ -64,6 +64,8 @@ class Window : public Input {
   // GPU driver waits the specified number of screen updates before swapping the
   // buffers.
   void SwapBuffers() { glfwSwapBuffers(window_ptr_); }
+
+  static void PollEvents() { glfwPollEvents(); }
 
   // This function sets the swap interval for the window, i.e. the number of
   // screen updates to wait from the time SwapBuffers was called before
