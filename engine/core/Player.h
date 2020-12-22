@@ -7,12 +7,12 @@ class Player : public FrameTicker {
          glm::vec3 position = glm::vec3(0.0f))
       : input_(input), FrameTicker(1) {
     this->position_ = position;
-    input->addCheckingKey('W');
-    input->addCheckingKey('A');
-    input->addCheckingKey('S');
-    input->addCheckingKey('D');
-    input->addCheckingKey(GLFW_KEY_LEFT_SHIFT);
-    input->addCheckingKey(GLFW_KEY_SPACE);
+    input->AddCheckingKey('W');
+    input->AddCheckingKey('A');
+    input->AddCheckingKey('S');
+    input->AddCheckingKey('D');
+    input->AddCheckingKey(GLFW_KEY_LEFT_SHIFT);
+    input->AddCheckingKey(GLFW_KEY_SPACE);
     this->camera_ =
         std::shared_ptr<Camera>(new Camera(input, worldUp, 0, 45.0f));
   }
@@ -23,30 +23,30 @@ class Player : public FrameTicker {
   virtual void Update(const unsigned int tick, const float delta) noexcept {
     float v = speed_ * delta;
     v = v * log10(1 + position_.y);
-    if (input_->checkSequence('W')) {
+    if (input_->CheckSequence('W')) {
       position_ +=
           glm::vec3(
               camera_->GetFront().x / cos(glm::radians(camera_->GetPitch())), 0,
               camera_->GetFront().z / cos(glm::radians(camera_->GetPitch()))) *
           v;
     }
-    if (input_->checkSequence('A')) {
+    if (input_->CheckSequence('A')) {
       position_ -= camera_->GetRight() * v;
     }
-    if (input_->checkSequence('S')) {
+    if (input_->CheckSequence('S')) {
       position_ -=
           glm::vec3(
               camera_->GetFront().x / cos(glm::radians(camera_->GetPitch())), 0,
               camera_->GetFront().z / cos(glm::radians(camera_->GetPitch()))) *
           v;
     }
-    if (input_->checkSequence('D')) {
+    if (input_->CheckSequence('D')) {
       position_ += camera_->GetRight() * v;
     }
-    if (input_->checkSequence(GLFW_KEY_LEFT_SHIFT)) {
+    if (input_->CheckSequence(GLFW_KEY_LEFT_SHIFT)) {
       position_ -= camera_->GetWorldUp() * v;
     }
-    if (input_->checkSequence(GLFW_KEY_SPACE)) {
+    if (input_->CheckSequence(GLFW_KEY_SPACE)) {
       position_ += camera_->GetWorldUp() * v;
     }
     if (position_.y < 0) {
