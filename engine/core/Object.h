@@ -15,9 +15,9 @@ class Object : public Model {
          glm::vec3 angle = glm::vec3(2 * 3.1415927f),
          glm::vec3 scale = glm::vec3(1.0f))
       : Model(path, mngr) {
-    this->move(coords);
-    this->rotate(angle);
-    this->scale(scale);
+    this->Move(coords);
+    this->Rotate(angle);
+    this->Scale(scale);
   }
 
   // angle should be defined in radians
@@ -25,9 +25,9 @@ class Object : public Model {
          glm::vec3 coords = glm::vec3(0.0f), glm::vec3 angle = glm::vec3(0.0f),
          glm::vec3 scale = glm::vec3(1.0f))
       : Model(meshes, mngr) {
-    this->move(coords);
-    this->rotate(angle);
-    this->scale(scale);
+    this->Move(coords);
+    this->Rotate(angle);
+    this->Scale(scale);
   }
   // This function returns rotation & coordinate matrix, which we can process &
   // use in shader
