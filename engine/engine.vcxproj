@@ -195,6 +195,7 @@
     <ClCompile Include="core\Object.cc" />
     <ClCompile Include="G:\glad\src\glad.c" />
     <ClCompile Include="header_libs\hash\xxhash.c" />
+    <ClCompile Include="render\misc\Window.cpp" />
     <ClCompile Include="render\Shader\ShaderProgram.cc" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
