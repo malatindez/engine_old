@@ -1,170 +1,136 @@
 #pragma once
-#include <functional>
-#include <algorithm>
-#include <thread>
-#include <mutex>
-#include <set>
-#include <map>
 #include <GLFW/glfw3.h>
 
-#include "../FrameTicker.h"
-#include "../../render/misc/Window.h"
+#include <algorithm>
+#include <functional>
+#include <iostream>
+#include <map>
+#include <mutex>
+#include <set>
+#include <thread>
 
-struct KeySequence {
-  uint16_t* sequence = nullptr;
-  size_t size = 0;
-  KeySequence(size_t size, uint16_t* seq) {
-    if (size > 5 or size == 0) {
-      return;
-    }
-    sequence = new uint16_t[size];
-    memcpy(sequence, seq, sizeof(uint16_t) * size);
-    this->size = size;
-  }
-  KeySequence(uint16_t first) {
-    size = 1;
-    sequence = new uint16_t[1];
-    sequence[0] = first;
-  }
-  KeySequence(uint16_t first, uint16_t second) {
-    size = 2;
-    sequence = new uint16_t[2];
-    sequence[0] = first;
-    sequence[1] = second;
-  }
-  KeySequence(uint16_t first, uint16_t second, uint16_t third) {
-    size = 3;
-    sequence = new uint16_t[3];
-    sequence[0] = first;
-    sequence[1] = second;
-    sequence[2] = third;
-  }
-  KeySequence(uint16_t first, uint16_t second, uint16_t third,
-              uint16_t fourth) {
-    size = 4;
-    sequence = new uint16_t[4];
-    sequence[0] = first;
-    sequence[1] = second;
-    sequence[2] = third;
-    sequence[3] = fourth;
-  }
-  KeySequence(uint16_t first, uint16_t second, uint16_t third, uint16_t fourth,
-              uint16_t fifth) {
-    size = 5;
-    sequence = new uint16_t[5];
-    sequence[0] = first;
-    sequence[1] = second;
-    sequence[2] = third;
-    sequence[3] = fourth;
-    sequence[4] = fifth;
-  }
+#include "../FrameTicker.h"
+
+class KeySequence {
+ public:
+  KeySequence(size_t size, uint16_t* seq);
+  KeySequence(uint16_t first);
+  KeySequence(uint16_t first, uint16_t second);
   // copy constructor
   KeySequence(const KeySequence& other) noexcept
-      : KeySequence(other.size, other.sequence) {}
+      : KeySequence(other.size_, other.sequence_) {}
 
   // move constructor
-  KeySequence(KeySequence&& other) noexcept {
-    this->size = other.size;
-    this->sequence = other.sequence;
-    other.sequence = nullptr;
-  }
+  KeySequence(KeySequence&& other) noexcept;
 
   // copy assignment
-  KeySequence& operator=(const KeySequence& other) noexcept {
-    sequence = new uint16_t[other.size];
-    memcpy(sequence, other.sequence, sizeof(uint16_t) * other.size);
-    this->size = other.size;
-  }
+  KeySequence& operator=(const KeySequence& other) noexcept;
 
   // move assignment
-  KeySequence& operator=(KeySequence&& other) noexcept {
-    this->size = other.size;
-    this->sequence = other.sequence;
-    other.sequence = nullptr;
+  KeySequence& operator=(KeySequence&& other) noexcept;
+
+  ~KeySequence();
+
+  bool operator==(const KeySequence& ks);
+
+  friend bool operator<(const KeySequence& lhs, const KeySequence& rhs) {
+    if (rhs.size_ == lhs.size_ == 2) {
+      return (*(uint32_t*)(rhs.sequence_)) < (*(uint32_t*)(lhs.sequence_));
+    }
+    if (rhs.size_ > lhs.size_) {
+      return true;
+    }
+    return lhs.sequence_[0] < rhs.sequence_[1];
   }
 
-  ~KeySequence() {
-    if (sequence != nullptr) {
-      delete[] sequence;
-    }
-    sequence = nullptr;
-  }
+  const uint16_t const* GetSequence() const noexcept { return sequence_; }
+  size_t GetSize() const noexcept { return size_; }
 
-  bool operator==(const KeySequence& ks) {
-    if (ks.size != size) {
-      return false;
-    }
-    for (size_t i = 0; i < size; i++) {
-      if (ks.sequence[i] != sequence[i]) {
-        return false;
-      }
-    }
-    return true;
-  }
+ protected:
+  uint16_t* sequence_ = nullptr;
+  size_t size_ = 0;
 };
 
+// Functions from this class should be called only in the main thread.
 class Input : public FrameTicker {
  public:
-  static bool processKeySeq(GLFWwindow* win, KeySequence seq) {
-    bool flag = true;
-    for (size_t i = 0; i < seq.size; i++) {
-      if (glfwGetKey(win, seq.sequence[i]) != GLFW_PRESS) {
-        flag = false;
-        break;
-      }
-    }
-    return flag;
-  }
-  
-  ~Input() { }
+  static bool ProcessKeySeq(GLFWwindow* win, KeySequence seq);
+
+  ~Input();
 
   std::pair<float, float> GetMousePosition() const noexcept {
     return std::pair<float, float>(xpos_, ypos_);
   }
 
   void AddCheckingKey(uint16_t key) noexcept { checking_.insert(key); }
-  void AddCheckingSequence(KeySequence seq) noexcept {
-    for (size_t i = 0; i < seq.size; i++) {
-      checking_.insert(seq.sequence[i]);
-    }
-  }
-  bool CheckSequence(KeySequence seq) const noexcept {
-    for (size_t i = 0; i < seq.size; i++) {
-      if (not keys_[seq.sequence[i]]) {
-        return false;
-      }
-    }
-    return true;
-  }
   bool CheckKey(uint16_t key) const noexcept { return keys_[key]; }
+  void AddCheckingSequence(KeySequence seq);
+  bool CheckSequence(KeySequence seq) const;
 
-  virtual void Update(const unsigned int, const float) noexcept {
-    for (std::set<uint16_t>::iterator i = checking_.begin(); i != checking_.end();
-         i++) {
-      keys_[(*i)] = (glfwGetKey(window_ptr_, (*i)) == GLFW_PRESS);
-    }
-    glfwGetCursorPos(window_ptr_, &xpos_, &ypos_);
-  }
+  virtual void Update(const unsigned int, const float);
 
-  bool AddCallback(KeySequence seq, std::function<void(int)> function, bool rewrite = false) {
-    AddCheckingSequence(seq);
-    if (callbacks_.find(seq) != callbacks_.end() and not rewrite) {
-      return false;
-    }
-    callbacks_.emplace(seq, function);
-    return true;
-  }
+  bool AddCallback(KeySequence seq, std::function<void(int)> function,
+                   bool rewrite = false);
 
  protected:
-  Input() : FrameTicker(1) { }
+  Input() : FrameTicker(1) {}
 
-  void init(GLFWwindow* win) { this->window_ptr_ = win; }
+  void init();
+
+  // This function is the key callback, which is called when a key is pressed,
+  // repeated or released.
+  void KeyCallback(int key, int scancode, int action, int mods);
+  static void StaticKeyCallback(GLFWwindow* window, int key, int scancode,
+                                int action, int mods);
+
+  // This function is the character callback, which is called when a Unicode
+  // character is input.
+  void CharCallback(unsigned int codepoint);
+  static void StaticCharCallback(GLFWwindow* window, unsigned int codepoint);
+
+  // This function is the mouse button callback, which is called when a mouse
+  // button is pressed or released.
+  void MouseButtonCallback(int button, int action, int mods);
+  static void StaticMouseButtonCallback(GLFWwindow* window, int button,
+                                        int action, int mods);
+
+  // This function is the cursor position callback, which is called when the
+  // cursor is moved. The callback is provided with the position, in screen
+  // coordinates, relative to the upper-left corner of the content area of the
+  // window.
+  void CursorPosCallback(double xpos, double ypos);
+  static void StaticCursorPosCallback(GLFWwindow* window, double xpos,
+                                      double ypos);
+
+  // This function is the cursor boundary crossing callback, which is called
+  // when the cursor enters or leaves the content area of the window.
+  void CursorEnterCallback(int entered);
+  static void StaticCursorEnterCallback(GLFWwindow* window, int entered);
+
+  // This function is the scroll callback, which is called when a scrolling
+  // device is used, such as a mouse wheel or scrolling area of a touchpad.
+  void ScrollCallback(double xoffset, double yoffset);
+  static void StaticScrollCallback(GLFWwindow* window, double xoffset,
+                                   double yoffset);
+
+  // This function is the path drop callback, which is called when one or more
+  // dragged paths are dropped on the window.
+  void DropCallback(int path_count, const char* paths[]);
+  static void StaticDropCallback(GLFWwindow* window, int path_count,
+                                 const char* paths[]);
+
+  // Here we should store all instances of Input class. Every. One.
+  // This static variable is used to correctly handle GLFW callbacks
+  static std::map<GLFWwindow*, Input*> instances_;
 
   GLFWwindow* window_ptr_ = nullptr;
 
  private:
   std::map<KeySequence, std::function<void(int)>> callbacks_;
+
   double xpos_ = 0, ypos_ = 0;
+
   bool* keys_ = new bool[65536];
+
   std::set<uint16_t> checking_;
 };
