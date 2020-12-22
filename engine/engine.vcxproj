@@ -191,6 +191,7 @@
     <ClInclude Include="render\Texture\TextureManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="core\input\Input.cpp" />
     <ClCompile Include="core\Object.cc" />
     <ClCompile Include="G:\glad\src\glad.c" />
     <ClCompile Include="header_libs\hash\xxhash.c" />

@@ -116,5 +116,8 @@
     <ClCompile Include="header_libs\hash\xxhash.c">
       <Filter>Source Files\header_libs\hash</Filter>
     </ClCompile>
+    <ClCompile Include="core\input\Input.cpp">
+      <Filter>Source Files\core\input</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
