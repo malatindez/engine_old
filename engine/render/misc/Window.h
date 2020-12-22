@@ -1,10 +1,13 @@
 #pragma once
+#include <string>
+
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
-#include <string>
+
+#include "../../core/input/Input.h"
 #pragma warning(disable : 26495)
 // Functions from this class should be called only in main thread
-class Window {
+class Window : public Input {
  public:
   // hint class, heir of glm::ivec2
   // this class is used to store glfwWindowHint values
@@ -17,16 +20,31 @@ class Window {
     void Apply() const noexcept { glfwWindowHint(this->x, this->y); }
   };
 
-  GLFWwindow* GetPointer() const noexcept { return window_ptr_; }
 
   Window(glm::ivec2 resolution, std::string title, GLFWmonitor* monitor = NULL,
          GLFWwindow* share = NULL)
       : title_(title) {
     window_ptr_ = glfwCreateWindow(resolution.x, resolution.y, title.c_str(),
                                    monitor, share);
+    this->init(window_ptr_);
   }
 
-  ~Window() { glfwDestroyWindow(window_ptr_); }
+  Window(int x, int y, std::string title, GLFWmonitor* monitor = NULL,
+         GLFWwindow* share = NULL)
+      : title_(title) {
+    window_ptr_ = glfwCreateWindow(x, y, title.c_str(),
+                                   monitor, share);
+  }
+
+  ~Window() { 
+    glfwDestroyWindow(window_ptr_);
+  }
+
+  bool Alive() {
+    return window_ptr_ != NULL;
+  }
+
+  Input GetInputClass() {}
 
   bool ShouldClose() const { return glfwWindowShouldClose(window_ptr_); }
 
@@ -59,7 +77,6 @@ class Window {
   // Sets the size of a window in screen coordinates of the content
   // area or content area of the window The window system may impose
   // limits on window size.
-
   void SetWindowSize(const int x, const int y) {
     glfwSetWindowSize(window_ptr_, x, y);
   }
@@ -71,9 +88,7 @@ class Window {
     glfwSetWindowSize(window_ptr_, resolution.x, resolution.y);
   }
 
-  /*
-          The returned value is the current size of a window.
-  */
+  // The returned value is the current size of a window.
   glm::ivec2 GetWindowSize() const {
     int width, height;
     glfwGetWindowSize(window_ptr_, &width, &height);
@@ -232,6 +247,7 @@ class Window {
     glfwSetWindowMonitor(window_ptr_, monitor, 0, 0, width, height,
                          refresh_rate);
   }
+
   // This function iconifies (minimizes) the specified window if it was
   // previously restored. If the window is already iconified, this function does
   // nothing.
@@ -284,8 +300,20 @@ class Window {
   void RequestAttention() { glfwRequestWindowAttention(window_ptr_); }
 
  protected:
-  GLFWwindow* window_ptr_ = nullptr;
   std::string title_;
+
+ private:
+  // copy constructor
+  Window(const Window&) noexcept {}
+
+  // move constructor
+  Window(Window&&) noexcept {}
+
+  // copy assignment
+  Window& operator=(const Window&) noexcept { return *this; }
+
+  // move assignment
+  Window& operator=(Window&&) noexcept { return *this; }
 };
 
 #pragma warning(default : 26495)
