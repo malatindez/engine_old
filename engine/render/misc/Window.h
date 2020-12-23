@@ -32,9 +32,9 @@ class Window : public Input {
 
   bool ShouldClose() const;
 
-  // This function sets the value of an attribute of the specified window.
+  // This function sets the value of an attribute of the window.
   void SetWindowAttrib(int attrib, int value);
-  // This function sets the value of an attribute of the specified window.
+  // This function sets the value of an attribute of the window.
   void SetWindowAttrib(glm::ivec2 attrib);
 
   void MakeContextCurrent();
