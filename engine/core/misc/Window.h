@@ -3,7 +3,7 @@
 #include <glm/vec4.hpp>
 #include <string>
 
-#include "../../core/input/Input.h"
+#include "Input.h"
 #pragma warning(disable : 26495)
 // Functions from this class should be called only in the main thread.
 class Window : public Input {
