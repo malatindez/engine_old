@@ -22,9 +22,6 @@
     <Filter Include="Source Files\core">
       <UniqueIdentifier>{633f260b-2e39-4131-84f2-919746550f3e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\core\input">
-      <UniqueIdentifier>{90c419a4-479a-45ac-a095-61bca86844fa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\header_libs">
       <UniqueIdentifier>{f139dae1-354b-47fb-9d97-e1aee8340217}</UniqueIdentifier>
     </Filter>
@@ -43,6 +40,9 @@
     <Filter Include="Source Files\render\texture">
       <UniqueIdentifier>{59a7e91b-43db-4434-bbf2-d0db8e9c889f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\core\misc">
+      <UniqueIdentifier>{f6326a38-8660-4fa9-aa41-7602dd891659}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\Object.h">
@@ -56,9 +56,6 @@
     </ClInclude>
     <ClInclude Include="core\Actor.h">
       <Filter>Source Files\core</Filter>
-    </ClInclude>
-    <ClInclude Include="core\input\Input.h">
-      <Filter>Source Files\core\input</Filter>
     </ClInclude>
     <ClInclude Include="render\render.h">
       <Filter>Source Files\render</Filter>
@@ -96,8 +93,11 @@
     <ClInclude Include="render\misc\Camera.h">
       <Filter>Source Files\render\misc</Filter>
     </ClInclude>
-    <ClInclude Include="render\misc\Window.h">
-      <Filter>Source Files\render\misc</Filter>
+    <ClInclude Include="core\misc\Window.h">
+      <Filter>Source Files\core\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="core\misc\Input.h">
+      <Filter>Source Files\core\misc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -116,11 +116,11 @@
     <ClCompile Include="header_libs\hash\xxhash.c">
       <Filter>Source Files\header_libs\hash</Filter>
     </ClCompile>
-    <ClCompile Include="core\input\Input.cpp">
-      <Filter>Source Files\core\input</Filter>
+    <ClCompile Include="core\misc\Window.cpp">
+      <Filter>Source Files\core\misc</Filter>
     </ClCompile>
-    <ClCompile Include="render\misc\Window.cpp">
-      <Filter>Source Files\render\misc</Filter>
+    <ClCompile Include="core\misc\Input.cpp">
+      <Filter>Source Files\core\misc</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -168,7 +168,8 @@
   <ItemGroup>
     <ClInclude Include="core\Actor.h" />
     <ClInclude Include="core\Core.h" />
-    <ClInclude Include="core\input\Input.h" />
+    <ClInclude Include="core\misc\Input.h" />
+    <ClInclude Include="core\misc\Window.h" />
     <ClInclude Include="core\Object.h" />
     <ClInclude Include="core\Player.h" />
     <ClInclude Include="core\Ticker.h" />
@@ -181,7 +182,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="render\misc\Camera.h" />
-    <ClInclude Include="render\misc\Window.h" />
     <ClInclude Include="render\Model\Mesh.h" />
     <ClInclude Include="render\Model\Model.h" />
     <ClInclude Include="render\render.h" />
@@ -191,11 +191,11 @@
     <ClInclude Include="render\Texture\TextureManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="core\input\Input.cpp" />
+    <ClCompile Include="core\misc\Input.cpp" />
+    <ClCompile Include="core\misc\Window.cpp" />
     <ClCompile Include="core\Object.cc" />
     <ClCompile Include="G:\glad\src\glad.c" />
     <ClCompile Include="header_libs\hash\xxhash.c" />
-    <ClCompile Include="render\misc\Window.cpp" />
     <ClCompile Include="render\Shader\ShaderProgram.cc" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
