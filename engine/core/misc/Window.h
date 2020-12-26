@@ -8,16 +8,15 @@
 // Functions from this class should be called only in the main thread.
 class Window : public Input {
  public:
-  // hint class, heir of glm::ivec2
-  // this class is used to store glfwWindowHint values
-  class Hint : glm::ivec2 {
-   public:
-    Hint(const int hint, const int value) : glm::ivec2(hint, value) {}
-    Hint(const glm::ivec2 vec) : glm::ivec2(vec) {}
-    int GetHint() const noexcept { return this->x; }
-    int GetValue() const noexcept { return this->y; }
-    void Apply() const noexcept { glfwWindowHint(this->x, this->y); }
-  };
+  typedef std::shared_ptr<std::function<bool(int32_t, int32_t)>> PosFun;
+  typedef std::shared_ptr<std::function<bool(int32_t, int32_t)>> SizeFun;
+  typedef std::shared_ptr<std::function<bool()>> CloseFun;
+  typedef std::shared_ptr<std::function<bool()>> RefreshFun;
+  typedef std::shared_ptr<std::function<bool(int32_t)>> FocusFun;
+  typedef std::shared_ptr<std::function<bool(int32_t)>> IconifyFun;
+  typedef std::shared_ptr<std::function<bool(int32_t)>> MaximizeFun;
+  typedef std::shared_ptr<std::function<bool(int32_t, int32_t)>> FramebufferSizeFun;
+  typedef std::shared_ptr<std::function<bool(float, float)>> ContentScaleFun;
 
   Window(glm::ivec2 resolution, std::string title, GLFWmonitor* monitor = NULL,
          GLFWwindow* share = NULL)
@@ -45,7 +44,10 @@ class Window : public Input {
   // buffers.
   void SwapBuffers();
 
-  static void PollEvents();
+  // This function processes only those events that are already in the event
+  // queue and then returns immediately. Processing events will cause the window
+  // and input callbacks associated with those events to be called.
+  void PollEvents();
 
   // This function sets the swap interval for the window, i.e. the number of
   // screen updates to wait from the time SwapBuffers was called before
@@ -232,10 +234,20 @@ class Window : public Input {
   // application, the system will end the request automatically.
   void RequestAttention();
 
+  // The function you provide is the key position callback, which is called when
+  // the window is moved. The callback is provided with the position, in screen
+  // coordinates, of the upper-left corner of the content area of the window.
+  void PushPosCallback(const PosFun ptr) noexcept;
+  void PushSizeCallback(const SizeFun ptr) noexcept;
+  void PushCloseCallback(const CloseFun ptr) noexcept;
+  void PushRefreshCallback(const RefreshFun ptr) noexcept;
+  void PushFocusCallback(const FocusFun ptr) noexcept;
+  void PushIconifyCallback(const IconifyFun ptr) noexcept;
+  void PushMaximizeCallback(const MaximizeFun ptr) noexcept;
+  void PushFramebufferSizeCallback(const FramebufferSizeFun ptr) noexcept;
+  void PushContentScaleCallback(const ContentScaleFun ptr) noexcept;
+
  protected:
-  // This function is the position callback, which is called when the window is
-  // moved. The callback is provided with the position, in screen coordinates,
-  // of the upper-left corner of the content area of the window.
   void PosCallback(int xpos, int ypos);
 
   // This function is the size callback, which is called when the window is
@@ -297,6 +309,16 @@ class Window : public Input {
 
   // move assignment
   Window& operator=(Window&&) noexcept { return *this; }
+
+  std::stack<PosFun> pos_callbacks_;
+  std::stack<SizeFun> size_callbacks_;
+  std::stack<CloseFun> close_callbacks_;
+  std::stack<RefreshFun> refresh_callbacks_;
+  std::stack<FocusFun> focus_callbacks_;
+  std::stack<IconifyFun> iconify_callbacks_;
+  std::stack<MaximizeFun> maximize_callbacks_;
+  std::stack<FramebufferSizeFun> framebuffer_size_callbacks_;
+  std::stack<ContentScaleFun> content_scale_callbacks_;
 };
 
 #pragma warning(default : 26495)

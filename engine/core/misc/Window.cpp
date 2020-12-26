@@ -141,41 +141,159 @@ void Window::FocusWindow() { glfwFocusWindow(window_ptr_); }
 
 void Window::RequestAttention() { glfwRequestWindowAttention(window_ptr_); }
 
+void Window::PushPosCallback(const PosFun ptr) noexcept {
+  pos_callbacks_.push(ptr);
+}
+void Window::PushSizeCallback(const SizeFun ptr) noexcept {
+  pos_callbacks_.push(ptr);
+}
+void Window::PushCloseCallback(const CloseFun ptr) noexcept {
+  close_callbacks_.push(ptr);
+}
+void Window::PushRefreshCallback(const RefreshFun ptr) noexcept {
+  refresh_callbacks_.push(ptr);
+}
+void Window::PushFocusCallback(const FocusFun ptr) noexcept {
+  focus_callbacks_.push(ptr);
+}
+void Window::PushIconifyCallback(const IconifyFun ptr) noexcept {
+  iconify_callbacks_.push(ptr);
+}
+void Window::PushMaximizeCallback(const MaximizeFun ptr) noexcept {
+  maximize_callbacks_.push(ptr);
+}
+void Window::PushFramebufferSizeCallback(const FramebufferSizeFun ptr) noexcept {
+  framebuffer_size_callbacks_.push(ptr);
+}
+void Window::PushContentScaleCallback(const ContentScaleFun ptr) noexcept {
+  content_scale_callbacks_.push(ptr);
+}
+
 void Window::PosCallback(int xpos, int ypos) {
   std::cout << "PosCallback: " << xpos << " " << ypos << std::endl;
+  while (!pos_callbacks_.empty()) {
+    if (pos_callbacks_.top().unique()) {
+      pos_callbacks_.pop();
+    } else {
+      if ((*pos_callbacks_.top())(xpos, ypos)) {
+        pos_callbacks_.pop();
+      }
+      break;
+    }
+  }
 }
 
 void Window::SizeCallback(int width, int height) {
   std::cout << "SizeCallback: " << width << " " << height << std::endl;
+  while (!size_callbacks_.empty()) {
+    if (size_callbacks_.top().unique()) {
+      size_callbacks_.pop();
+    } else {
+      if ((*size_callbacks_.top())(width, height)) {
+        size_callbacks_.pop();
+      }
+      break;
+    }
+  }
 }
 
 void Window::CloseCallback() {
   std::cout << "CloseCallback: " << std::endl;
+  while (!close_callbacks_.empty()) {
+    if (close_callbacks_.top().unique()) {
+      close_callbacks_.pop();
+    } else {
+      if ((*close_callbacks_.top())()) {
+        close_callbacks_.pop();
+      }
+      break;
+    }
+  }
 }
 
 void Window::RefreshCallback() {
   std::cout << "RefreshCallback: " << std::endl;
+  while (!refresh_callbacks_.empty()) {
+    if (refresh_callbacks_.top().unique()) {
+      refresh_callbacks_.pop();
+    } else {
+      if ((*refresh_callbacks_.top())()) {
+        refresh_callbacks_.pop();
+      }
+      break;
+    }
+  }
 }
 
 void Window::FocusCallback(int focused) {
   std::cout << "FocusCallback: " << focused << std::endl;
+  while (!focus_callbacks_.empty()) {
+    if (focus_callbacks_.top().unique()) {
+      focus_callbacks_.pop();
+    } else {
+      if ((*focus_callbacks_.top())(focused)) {
+        focus_callbacks_.pop();
+      }
+      break;
+    }
+  }
 }
 
 void Window::IconifyCallback(int iconified) {
   std::cout << "IconifyCallback: " << iconified << std::endl;
+  while (!iconify_callbacks_.empty()) {
+    if (iconify_callbacks_.top().unique()) {
+      iconify_callbacks_.pop();
+    } else {
+      if ((*iconify_callbacks_.top())(iconified)) {
+        iconify_callbacks_.pop();
+      }
+      break;
+    }
+  }
 }
 
 void Window::MaximizeCallback(int maximized) {
   std::cout << "FocusCallback: " << maximized << std::endl;
+  while (!maximize_callbacks_.empty()) {
+    if (maximize_callbacks_.top().unique()) {
+      maximize_callbacks_.pop();
+    } else {
+      if ((*maximize_callbacks_.top())(maximized)) {
+        maximize_callbacks_.pop();
+      }
+      break;
+    }
+  }
 }
 
 void Window::FramebufferSizeCallback(int width, int height) {
   std::cout << "FramebufferSizeCallback: " << width << " " << height << std::endl;
+  while (!framebuffer_size_callbacks_.empty()) {
+    if (framebuffer_size_callbacks_.top().unique()) {
+      framebuffer_size_callbacks_.pop();
+    } else {
+      if ((*framebuffer_size_callbacks_.top())(width, height)) {
+        framebuffer_size_callbacks_.pop();
+      }
+      break;
+    }
+  }
 }
 
 void Window::ContentScaleCallback(float xscale, float yscale) {
   std::cout << "ContentScaleCallback: " << xscale << " " << yscale
             << std::endl;
+  while (!content_scale_callbacks_.empty()) {
+    if (content_scale_callbacks_.top().unique()) {
+      content_scale_callbacks_.pop();
+    } else {
+      if ((*content_scale_callbacks_.top())(xscale, yscale)) {
+        content_scale_callbacks_.pop();
+      }
+      break;
+    }
+  }
 }
 
 
