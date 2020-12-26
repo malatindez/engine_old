@@ -99,6 +99,9 @@
     <ClInclude Include="core\misc\Input.h">
       <Filter>Source Files\core\misc</Filter>
     </ClInclude>
+    <ClInclude Include="core\FrameTicker.h">
+      <Filter>Source Files\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="G:\glad\src\glad.c">

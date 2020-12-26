@@ -1,7 +1,7 @@
 #include "Object.h"
 
 #include <iostream>
-int i = 0;
+namespace engine::core {
 void Object::UpdateFullMatrix() noexcept {
   bool flag = false;
   if (buf_translation_matrix_ != translation_matrix_) {
@@ -19,7 +19,6 @@ void Object::UpdateFullMatrix() noexcept {
   if (flag) {
     full_matrix_ = translation_matrix_ * rotation_matrix * scale_matrix_;
   }
-  i++;
 }
 glm::mat4 Object::GetObjectMatrix() noexcept {
   UpdateFullMatrix();
@@ -108,3 +107,4 @@ void Object::SetScaleMatrix(const glm::mat4 mat) noexcept {
 void Object::SetScale(const glm::vec3 scale) noexcept {
   this->scale_matrix_ = glm::scale(glm::mat4(1.0f), scale);
 }
+}  // namespace engine::core

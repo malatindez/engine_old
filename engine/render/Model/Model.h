@@ -1,7 +1,7 @@
-#ifndef MODEL_H
-#define MODEL_H
+#pragma once
 #include "Mesh.h"
 
+namespace engine::render {
 class Model {
  public:
   Model(std::string path, TextureManager* const mngr) : texture_manager_(mngr) {
@@ -138,15 +138,20 @@ class Model {
       ENGINE_MODEL_H_LTFM(aiTextureType_NORMALS, Texture::Type::kNormals);
       ENGINE_MODEL_H_LTFM(aiTextureType_SHININESS, Texture::Type::kShininess);
       ENGINE_MODEL_H_LTFM(aiTextureType_OPACITY, Texture::Type::kOpacity);
-      ENGINE_MODEL_H_LTFM(aiTextureType_DISPLACEMENT, Texture::Type::kDisplacement);
+      ENGINE_MODEL_H_LTFM(aiTextureType_DISPLACEMENT,
+                          Texture::Type::kDisplacement);
       ENGINE_MODEL_H_LTFM(aiTextureType_LIGHTMAP, Texture::Type::kLightmap);
       ENGINE_MODEL_H_LTFM(aiTextureType_REFLECTION, Texture::Type::kReflection);
       ENGINE_MODEL_H_LTFM(aiTextureType_BASE_COLOR, Texture::Type::kBaseColor);
-      ENGINE_MODEL_H_LTFM(aiTextureType_NORMAL_CAMERA, Texture::Type::kNormalCamera);
-      ENGINE_MODEL_H_LTFM(aiTextureType_EMISSION_COLOR, Texture::Type::kEmissionColor);
+      ENGINE_MODEL_H_LTFM(aiTextureType_NORMAL_CAMERA,
+                          Texture::Type::kNormalCamera);
+      ENGINE_MODEL_H_LTFM(aiTextureType_EMISSION_COLOR,
+                          Texture::Type::kEmissionColor);
       ENGINE_MODEL_H_LTFM(aiTextureType_METALNESS, Texture::Type::kMetalness);
-      ENGINE_MODEL_H_LTFM(aiTextureType_DIFFUSE_ROUGHNESS, Texture::Type::kDiffuseRoughness);
-      ENGINE_MODEL_H_LTFM(aiTextureType_AMBIENT_OCCLUSION, Texture::Type::kAmbientOcclusion);
+      ENGINE_MODEL_H_LTFM(aiTextureType_DIFFUSE_ROUGHNESS,
+                          Texture::Type::kDiffuseRoughness);
+      ENGINE_MODEL_H_LTFM(aiTextureType_AMBIENT_OCCLUSION,
+                          Texture::Type::kAmbientOcclusion);
     }
 #undef ENGINE_MODEL_H_LTFM
     return std::shared_ptr<Mesh>(new Mesh(vertices, indices, textures));
@@ -176,4 +181,4 @@ class Model {
   std::vector<std::shared_ptr<Mesh>> meshes_;
   std::string directory_;
 };
-#endif
+}  // namespace engine::render

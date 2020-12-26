@@ -1,6 +1,7 @@
 #pragma once
 #include "Window.h"
 
+namespace engine::core {
 Window::Window(int x, int y, std::string title, GLFWmonitor* monitor,
                GLFWwindow* share)
     : title_(title) {
@@ -13,8 +14,7 @@ Window::Window(int x, int y, std::string title, GLFWmonitor* monitor,
   glfwSetWindowRefreshCallback(this->window_ptr_, StaticRefreshCallback);
   glfwSetWindowFocusCallback(this->window_ptr_, StaticFocusCallback);
   glfwSetWindowIconifyCallback(this->window_ptr_, StaticIconifyCallback);
-  glfwSetWindowMaximizeCallback(this->window_ptr_,
-                                StaticMaximizeCallback);
+  glfwSetWindowMaximizeCallback(this->window_ptr_, StaticMaximizeCallback);
   glfwSetFramebufferSizeCallback(this->window_ptr_,
                                  StaticFramebufferSizeCallback);
   glfwSetWindowContentScaleCallback(this->window_ptr_,
@@ -112,8 +112,8 @@ void Window::SetWindowIcon(const GLFWimage* images, int count) {
 
 GLFWmonitor* Window::GetMonitor() { return glfwGetWindowMonitor(window_ptr_); }
 
-void Window::SetMonitor(GLFWmonitor* monitor, int xpos, int ypos,
-                        int width, int height, int refresh_rate) {
+void Window::SetMonitor(GLFWmonitor* monitor, int xpos, int ypos, int width,
+                        int height, int refresh_rate) {
   const GLFWvidmode* mode = glfwGetVideoMode(monitor);
   if (width == height == 0) {
     width = mode->width;
@@ -162,7 +162,8 @@ void Window::PushIconifyCallback(const IconifyFun ptr) noexcept {
 void Window::PushMaximizeCallback(const MaximizeFun ptr) noexcept {
   maximize_callbacks_.push(ptr);
 }
-void Window::PushFramebufferSizeCallback(const FramebufferSizeFun ptr) noexcept {
+void Window::PushFramebufferSizeCallback(
+    const FramebufferSizeFun ptr) noexcept {
   framebuffer_size_callbacks_.push(ptr);
 }
 void Window::PushContentScaleCallback(const ContentScaleFun ptr) noexcept {
@@ -172,7 +173,7 @@ void Window::PushContentScaleCallback(const ContentScaleFun ptr) noexcept {
 void Window::PosCallback(int xpos, int ypos) {
   std::cout << "PosCallback: " << xpos << " " << ypos << std::endl;
   while (!pos_callbacks_.empty()) {
-    if (pos_callbacks_.top().unique()) {
+    if (pos_callbacks_.top().use_count() == 1) {
       pos_callbacks_.pop();
     } else {
       if ((*pos_callbacks_.top())(xpos, ypos)) {
@@ -186,7 +187,7 @@ void Window::PosCallback(int xpos, int ypos) {
 void Window::SizeCallback(int width, int height) {
   std::cout << "SizeCallback: " << width << " " << height << std::endl;
   while (!size_callbacks_.empty()) {
-    if (size_callbacks_.top().unique()) {
+    if (size_callbacks_.top().use_count() == 1) {
       size_callbacks_.pop();
     } else {
       if ((*size_callbacks_.top())(width, height)) {
@@ -200,7 +201,7 @@ void Window::SizeCallback(int width, int height) {
 void Window::CloseCallback() {
   std::cout << "CloseCallback: " << std::endl;
   while (!close_callbacks_.empty()) {
-    if (close_callbacks_.top().unique()) {
+    if (close_callbacks_.top().use_count() == 1) {
       close_callbacks_.pop();
     } else {
       if ((*close_callbacks_.top())()) {
@@ -214,7 +215,7 @@ void Window::CloseCallback() {
 void Window::RefreshCallback() {
   std::cout << "RefreshCallback: " << std::endl;
   while (!refresh_callbacks_.empty()) {
-    if (refresh_callbacks_.top().unique()) {
+    if (refresh_callbacks_.top().use_count() == 1) {
       refresh_callbacks_.pop();
     } else {
       if ((*refresh_callbacks_.top())()) {
@@ -228,7 +229,7 @@ void Window::RefreshCallback() {
 void Window::FocusCallback(int focused) {
   std::cout << "FocusCallback: " << focused << std::endl;
   while (!focus_callbacks_.empty()) {
-    if (focus_callbacks_.top().unique()) {
+    if (focus_callbacks_.top().use_count() == 1) {
       focus_callbacks_.pop();
     } else {
       if ((*focus_callbacks_.top())(focused)) {
@@ -242,7 +243,7 @@ void Window::FocusCallback(int focused) {
 void Window::IconifyCallback(int iconified) {
   std::cout << "IconifyCallback: " << iconified << std::endl;
   while (!iconify_callbacks_.empty()) {
-    if (iconify_callbacks_.top().unique()) {
+    if (iconify_callbacks_.top().use_count() == 1) {
       iconify_callbacks_.pop();
     } else {
       if ((*iconify_callbacks_.top())(iconified)) {
@@ -256,7 +257,7 @@ void Window::IconifyCallback(int iconified) {
 void Window::MaximizeCallback(int maximized) {
   std::cout << "FocusCallback: " << maximized << std::endl;
   while (!maximize_callbacks_.empty()) {
-    if (maximize_callbacks_.top().unique()) {
+    if (maximize_callbacks_.top().use_count() == 1) {
       maximize_callbacks_.pop();
     } else {
       if ((*maximize_callbacks_.top())(maximized)) {
@@ -268,9 +269,10 @@ void Window::MaximizeCallback(int maximized) {
 }
 
 void Window::FramebufferSizeCallback(int width, int height) {
-  std::cout << "FramebufferSizeCallback: " << width << " " << height << std::endl;
+  std::cout << "FramebufferSizeCallback: " << width << " " << height
+            << std::endl;
   while (!framebuffer_size_callbacks_.empty()) {
-    if (framebuffer_size_callbacks_.top().unique()) {
+    if (framebuffer_size_callbacks_.top().use_count() == 1) {
       framebuffer_size_callbacks_.pop();
     } else {
       if ((*framebuffer_size_callbacks_.top())(width, height)) {
@@ -282,10 +284,9 @@ void Window::FramebufferSizeCallback(int width, int height) {
 }
 
 void Window::ContentScaleCallback(float xscale, float yscale) {
-  std::cout << "ContentScaleCallback: " << xscale << " " << yscale
-            << std::endl;
+  std::cout << "ContentScaleCallback: " << xscale << " " << yscale << std::endl;
   while (!content_scale_callbacks_.empty()) {
-    if (content_scale_callbacks_.top().unique()) {
+    if (content_scale_callbacks_.top().use_count() == 1) {
       content_scale_callbacks_.pop();
     } else {
       if ((*content_scale_callbacks_.top())(xscale, yscale)) {
@@ -295,7 +296,6 @@ void Window::ContentScaleCallback(float xscale, float yscale) {
     }
   }
 }
-
 
 void Window::StaticPosCallback(GLFWwindow* window, int xpos, int ypos) {
   ((Window*)(instances_.find(window))->second)->PosCallback(xpos, ypos);
@@ -318,9 +318,14 @@ void Window::StaticIconifyCallback(GLFWwindow* window, int iconified) {
 void Window::StaticMaximizeCallback(GLFWwindow* window, int maximized) {
   ((Window*)(instances_.find(window))->second)->MaximizeCallback(maximized);
 }
-void Window::StaticFramebufferSizeCallback(GLFWwindow* window, int width, int height) {
-  ((Window*)(instances_.find(window))->second)->FramebufferSizeCallback(width, height);
+void Window::StaticFramebufferSizeCallback(GLFWwindow* window, int width,
+                                           int height) {
+  ((Window*)(instances_.find(window))->second)
+      ->FramebufferSizeCallback(width, height);
 }
-void Window::StaticContentScaleCallback(GLFWwindow* window, float xscale, float yscale) {
-  ((Window*)(instances_.find(window))->second)->ContentScaleCallback(xscale, yscale);
+void Window::StaticContentScaleCallback(GLFWwindow* window, float xscale,
+                                        float yscale) {
+  ((Window*)(instances_.find(window))->second)
+      ->ContentScaleCallback(xscale, yscale);
 }
+}  // namespace engine::core

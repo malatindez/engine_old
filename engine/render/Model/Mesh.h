@@ -1,8 +1,9 @@
-#ifndef MESH_H
-#define MESH_H
+#pragma once
 #include "../Shader/ShaderProgram.h"
 #include "../Texture/TextureManager.h"
 #pragma warning(disable : 26495)
+
+namespace engine::render {
 class Mesh {
  public:
   struct Vertex {
@@ -102,5 +103,5 @@ class Mesh {
   unsigned int VAO_ = 0xffffffff, VBO_ = 0xffffffff, EBO_ = 0xffffffff;
   unsigned int indices_size_;
 };
-#endif
+}  // namespace engine::render
 #pragma warning(default : 26495)

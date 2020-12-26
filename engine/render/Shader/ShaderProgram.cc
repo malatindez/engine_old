@@ -1,5 +1,6 @@
 #include "ShaderProgram.h"
 
+namespace engine::render {
 GLint ShaderProgram::checkCompileErrors(GLuint shader, std::string type) {
   GLint success;
 #ifdef CERR_OUTPUT
@@ -195,3 +196,4 @@ void ShaderProgram::SetMat4x4(const std::string& name,
   glUniformMatrix4fv(glGetUniformLocation(sp_id_, name.c_str()), 1, GL_FALSE,
                      &value[0][0]);
 }
+}  // namespace engine::render

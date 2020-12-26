@@ -18,10 +18,10 @@ int main() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  Window window(1920, 1080, "engine", NULL, NULL);
+  engine::core::Window window(1920, 1080, "engine", NULL, NULL);
   using namespace std::placeholders;
-  std::shared_ptr<Input::KeyBindCallback> wKeybindPtr =
-      std::make_shared<Input::KeyBindCallback>(std::bind(&function, _1, _2));
+  std::shared_ptr<engine::core::Input::KeyBindCallback> wKeybindPtr =
+      std::make_shared<engine::core::Input::KeyBindCallback>(std::bind(&function, _1, _2));
   window.AddKeyCallback(glfwGetKeyScancode(GLFW_KEY_W), wKeybindPtr);
   window.MakeContextCurrent();
 

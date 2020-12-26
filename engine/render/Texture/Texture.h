@@ -1,5 +1,4 @@
-﻿#ifndef TEXTURE_H
-#define TEXTURE_H
+﻿#pragma once
 #include <stdint.h>
 
 #include <string>
@@ -14,6 +13,7 @@
 
 #include "../../header_libs/stb_image.h"
 
+namespace engine::render {
 // after creating this object you should bind it
 // using glBindTexture(GL_TEXTURE_2D, obj.getID());
 //
@@ -331,4 +331,4 @@ class Texture {
   const std::vector<glTexParameterValues> values_;
 };
 
-#endif
+}  // namespace engine::render

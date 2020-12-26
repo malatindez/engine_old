@@ -1,11 +1,12 @@
-#ifndef CAMERA_H
-#define CAMERA_H
+#pragma once
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "../core/input/Input.h"
+#include "../core/misc/Input.h"
+namespace engine::render {
+
 class Camera : FrameTicker {
  public:
   const float kDefaultYaw = -90.0f;
@@ -90,5 +91,4 @@ class Camera : FrameTicker {
   float prev_pos_x_ = 0.0f;
   float prev_pos_y_ = 0.0f;
 };
-
-#endif
+}  // namespace engine::render

@@ -1,6 +1,7 @@
 #pragma once
 #include "Input.h"
 
+namespace engine::core {
 std::map<GLFWwindow*, Input*> Input::instances_;
 
 Input::~Input() { instances_.erase(window_ptr_); }
@@ -69,7 +70,7 @@ void Input::StaticDropCallback(GLFWwindow* window, int path_count,
 void Input::KeyCallback(int32_t key, int32_t scancode, int32_t action,
                         int32_t mods) {
   while (!key_callbacks_.empty()) {
-    if (key_callbacks_.top().unique()) {
+    if (key_callbacks_.top().use_count() == 1) {
       key_callbacks_.pop();
     } else {
       if ((*key_callbacks_.top())(key, scancode, action, mods)) {
@@ -82,7 +83,7 @@ void Input::KeyCallback(int32_t key, int32_t scancode, int32_t action,
 }
 void Input::CharCallback(uint32_t codepoint) {
   while (!char_callbacks_.empty()) {
-    if (char_callbacks_.top().unique()) {
+    if (char_callbacks_.top().use_count() == 1) {
       char_callbacks_.pop();
     } else {
       if ((*char_callbacks_.top())(codepoint)) {
@@ -94,7 +95,7 @@ void Input::CharCallback(uint32_t codepoint) {
 }
 void Input::MouseButtonCallback(int32_t button, int32_t action, int32_t mods) {
   while (!mouse_button_callbacks_.empty()) {
-    if (mouse_button_callbacks_.top().unique()) {
+    if (mouse_button_callbacks_.top().use_count() == 1) {
       mouse_button_callbacks_.pop();
     } else {
       if ((*mouse_button_callbacks_.top())(button, action, mods)) {
@@ -107,9 +108,9 @@ void Input::MouseButtonCallback(int32_t button, int32_t action, int32_t mods) {
 void Input::CursorPosCallback(double xpos, double ypos) {
   this->xpos_ = xpos;
   this->ypos_ = ypos;
-  
+
   while (!cursor_pos_callbacks_.empty()) {
-    if (cursor_pos_callbacks_.top().unique()) {
+    if (cursor_pos_callbacks_.top().use_count() == 1) {
       cursor_pos_callbacks_.pop();
     } else {
       if ((*cursor_pos_callbacks_.top())(xpos, ypos)) {
@@ -121,7 +122,7 @@ void Input::CursorPosCallback(double xpos, double ypos) {
 }
 void Input::CursorEnterCallback(int32_t entered) {
   while (!cursor_enter_callbacks_.empty()) {
-    if (cursor_enter_callbacks_.top().unique()) {
+    if (cursor_enter_callbacks_.top().use_count() == 1) {
       cursor_enter_callbacks_.pop();
     } else {
       if ((*cursor_enter_callbacks_.top())(entered)) {
@@ -135,7 +136,7 @@ void Input::ScrollCallback(double xoffset, double yoffset) {
   this->xoffset_ = xoffset;
   this->yoffset_ = yoffset;
   while (!scroll_callbacks_.empty()) {
-    if (scroll_callbacks_.top().unique()) {
+    if (scroll_callbacks_.top().use_count() == 1) {
       scroll_callbacks_.pop();
     } else {
       if ((*scroll_callbacks_.top())(xoffset, yoffset)) {
@@ -152,7 +153,7 @@ void Input::DropCallback(int32_t path_count, const char* paths[]) {
   }
 
   while (!drop_callbacks_.empty()) {
-    if (drop_callbacks_.top().unique()) {
+    if (drop_callbacks_.top().use_count() == 1) {
       drop_callbacks_.pop();
     } else {
       if ((*drop_callbacks_.top())(path_count, paths)) {
@@ -162,3 +163,5 @@ void Input::DropCallback(int32_t path_count, const char* paths[]) {
     }
   }
 }
+
+}  // namespace engine::core

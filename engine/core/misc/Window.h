@@ -6,6 +6,7 @@
 #include "Input.h"
 #pragma warning(disable : 26495)
 // Functions from this class should be called only in the main thread.
+namespace engine::core {
 class Window : public Input {
  public:
   typedef std::shared_ptr<std::function<bool(int32_t, int32_t)>> PosFun;
@@ -15,7 +16,8 @@ class Window : public Input {
   typedef std::shared_ptr<std::function<bool(int32_t)>> FocusFun;
   typedef std::shared_ptr<std::function<bool(int32_t)>> IconifyFun;
   typedef std::shared_ptr<std::function<bool(int32_t)>> MaximizeFun;
-  typedef std::shared_ptr<std::function<bool(int32_t, int32_t)>> FramebufferSizeFun;
+  typedef std::shared_ptr<std::function<bool(int32_t, int32_t)>>
+      FramebufferSizeFun;
   typedef std::shared_ptr<std::function<bool(float, float)>> ContentScaleFun;
 
   Window(glm::ivec2 resolution, std::string title, GLFWmonitor* monitor = NULL,
@@ -295,8 +297,10 @@ class Window : public Input {
   static void StaticFocusCallback(GLFWwindow* window, int focused);
   static void StaticIconifyCallback(GLFWwindow* window, int iconified);
   static void StaticMaximizeCallback(GLFWwindow* window, int maximized);
-  static void StaticFramebufferSizeCallback(GLFWwindow* window, int width, int height);
-  static void StaticContentScaleCallback(GLFWwindow* window, float xscale, float yscale);
+  static void StaticFramebufferSizeCallback(GLFWwindow* window, int width,
+                                            int height);
+  static void StaticContentScaleCallback(GLFWwindow* window, float xscale,
+                                         float yscale);
 
   // copy constructor
   Window(const Window&) noexcept {}
@@ -320,5 +324,5 @@ class Window : public Input {
   std::stack<FramebufferSizeFun> framebuffer_size_callbacks_;
   std::stack<ContentScaleFun> content_scale_callbacks_;
 };
-
+}  // namespace engine::core
 #pragma warning(default : 26495)

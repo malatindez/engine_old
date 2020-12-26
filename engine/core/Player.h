@@ -1,18 +1,16 @@
+#pragma once
+
 #include "../render/misc/Camera.h"
 #include "FrameTicker.h"
-#include "input/Input.h"
+#include "misc/Input.h"
+
+namespace engine::core {
 class Player : public FrameTicker {
  public:
   Player(Input* const input, glm::vec3 worldUp,
          glm::vec3 position = glm::vec3(0.0f))
       : input_(input), FrameTicker(1) {
     this->position_ = position;
-    input->AddCheckingKey('W');
-    input->AddCheckingKey('A');
-    input->AddCheckingKey('S');
-    input->AddCheckingKey('D');
-    input->AddCheckingKey(GLFW_KEY_LEFT_SHIFT);
-    input->AddCheckingKey(GLFW_KEY_SPACE);
     this->camera_ =
         std::shared_ptr<Camera>(new Camera(input, worldUp, 0, 45.0f));
   }
@@ -63,3 +61,4 @@ class Player : public FrameTicker {
   glm::vec3 position_;
   float speed_ = 1.0f;
 };
+}  // namespace engine::core

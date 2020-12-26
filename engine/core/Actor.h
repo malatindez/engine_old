@@ -1,8 +1,8 @@
-#ifndef ACTOR_H
-#define ACTOR_H
+#pragma once 
+
 #include "Object.h"
 #include "Ticker.h"
-
+namespace engine::core {
 class Actor : public Object, public Ticker {
  public:
   Actor(unsigned int tickrate, std::string path, TextureManager* const mngr,
@@ -16,11 +16,11 @@ class Actor : public Object, public Ticker {
         glm::vec3 scale = glm::vec3(1.0f))
       : Object(meshes, mngr, coords, angle, scale), Ticker(tickrate) {}
 
-  
-  virtual void Update(const unsigned int tick, const float delta_time) noexcept {
+  virtual void Update(const unsigned int tick,
+                      const float delta_time) noexcept {
     if (tick % getTickRate() == 0) {
       // this->move(glm::vec3(0, 1, 0));
     }
   }
 };
-#endif
+}  // namespace engine::core

@@ -13,10 +13,12 @@
 
 #include "../FrameTicker.h"
 
+namespace engine::core {
 // Functions from this class should be called only in the main thread.
 class Input : public FrameTicker {
  public:
-  typedef std::function<bool(int32_t, int32_t, int32_t, int32_t)> KeyCallbackFun;
+  typedef std::function<bool(int32_t, int32_t, int32_t, int32_t)>
+      KeyCallbackFun;
   typedef std::function<bool(uint32_t)> CharCallbackFun;
   typedef std::function<bool(int32_t, int32_t, int32_t)> MouseButtonCallbackFun;
   typedef std::function<bool(double, double)> CursorPosCallbackFun;
@@ -24,7 +26,7 @@ class Input : public FrameTicker {
   typedef std::function<bool(double, double)> ScrollCallbackFun;
   typedef std::function<bool(int32_t, const char*[])> DropCallbackFun;
 
-  typedef std::function<bool(int32_t, int32_t)> KeyBindCallback; 
+  typedef std::function<bool(int32_t, int32_t)> KeyBindCallback;
 
   ~Input();
 
@@ -42,8 +44,8 @@ class Input : public FrameTicker {
   // return true in the callback itself.
   //
   // Other callbacks in stack won't be called.
-  void PushKeyCallback(const std::shared_ptr<KeyCallbackFun> ptr) { 
-    key_callbacks_.push(ptr); 
+  void PushKeyCallback(const std::shared_ptr<KeyCallbackFun> ptr) {
+    key_callbacks_.push(ptr);
   }
 
   // The function you provide is the  character callback, which is called when
@@ -70,7 +72,8 @@ class Input : public FrameTicker {
   // return true in the callback itself.
   //
   // Other callbacks in stack won't be called.
-  void PushMouseButtonCallback(const std::shared_ptr<MouseButtonCallbackFun> ptr) {
+  void PushMouseButtonCallback(
+      const std::shared_ptr<MouseButtonCallbackFun> ptr) {
     mouse_button_callbacks_.push(ptr);
   }
 
@@ -90,8 +93,6 @@ class Input : public FrameTicker {
     cursor_pos_callbacks_.push(ptr);
   }
 
-  
-  
   /// <summary>
   /// The function you provide is the cursor boundary crossing callback, which
   /// is called when the cursor enters or leaves the content area of the window.
@@ -105,7 +106,8 @@ class Input : public FrameTicker {
   /// Other callbacks in stack won't be called.
   /// </summary>
   /// <param name="ptr">cursor enter function pointer</param>
-  void PushCursorEnterCallback(const std::shared_ptr<CursorEnterCallbackFun> ptr) {
+  void PushCursorEnterCallback(
+      const std::shared_ptr<CursorEnterCallbackFun> ptr) {
     cursor_enter_callbacks_.push(ptr);
   }
 
@@ -127,8 +129,6 @@ class Input : public FrameTicker {
     scroll_callbacks_.push(ptr);
   }
 
- 
-  
   /// <summary>
   /// The function you provide is the path drop callback, which is called when
   /// one or more dragged paths are dropped on the window.
@@ -158,10 +158,6 @@ class Input : public FrameTicker {
         // if callback returns true value - we shall delete this callback from
         // map
         del = (*i->second)(cpk_itr->first, cpk_itr->second);
-        // if the action is KEY_PRESS we shall call the function only once
-        if (cpk_itr->second == 1) {
-          cpk_itr->second = -1;
-        }
         // if the action is KEY_RELEASE -> we shall delete this scancode from
         // currently_pressed_keys_
         if (cpk_itr->second == 0) {
@@ -178,7 +174,6 @@ class Input : public FrameTicker {
     }
   }
 
-  
   bool AddKeyCallback(int32_t scancode, std::shared_ptr<KeyBindCallback> kbc,
                       bool rewrite = false) {
     if (key_bind_callbacks_.find(scancode) != key_bind_callbacks_.end() &&
@@ -190,9 +185,7 @@ class Input : public FrameTicker {
   }
 
  protected:
-   Input() : FrameTicker(1) { 
-
-  }
+  Input() : FrameTicker(1) {}
 
   void init();
 
@@ -248,3 +241,4 @@ class Input : public FrameTicker {
   std::stack<std::shared_ptr<ScrollCallbackFun>> scroll_callbacks_;
   std::stack<std::shared_ptr<DropCallbackFun>> drop_callbacks_;
 };
+}  // namespace engine::core

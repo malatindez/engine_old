@@ -1,19 +1,19 @@
-#ifndef TEXTURE_MANAGER_H
-#define TEXTURE_MANAGER_H
+#pragma once
 #include <memory>
 #include <unordered_map>
 
 #include "../../header_libs/hash/xxh3.h"
 #include "FrameTicker.h"
 #include "Texture.h"
-class TextureManager : public FrameTicker {
+namespace engine::render {
+class TextureManager : public core::FrameTicker {
  public:
   TextureManager() : FrameTicker(4096) {}
   virtual void Update(const unsigned int tick, const float) noexcept {
     if (tick % getTickRate() == 0) {
       std::vector<XXH32_hash_t> valuesToErase;
       for (auto kv : textures_) {
-        if (kv.second.unique()) {
+        if (kv.second.use_count() == 1) {
           valuesToErase.push_back(kv.first);
         }
       }
@@ -119,5 +119,4 @@ class TextureManager : public FrameTicker {
     return hash;
   }
 };
-
-#endif
+}  // namespace engine::render

@@ -1,5 +1,4 @@
-#ifndef OBJECT_H
-#define OBJECT_H
+#pragma once
 
 #include <assimp/postprocess.h>  // Post processing flags
 #include <assimp/scene.h>        // Output data structure
@@ -7,10 +6,12 @@
 #include <assimp/Importer.hpp>  // C++ importer interface
 
 #include "../render/Model/Model.h"
-class Object : public Model {
+
+namespace engine::core {
+class Object : public render::Model {
  public:
   // angle should be defined in radians
-  Object(std::string path, TextureManager* const mngr,
+  Object(std::string path, render::TextureManager* const mngr,
          glm::vec3 coords = glm::vec3(0.0f),
          glm::vec3 angle = glm::vec3(2 * 3.1415927f),
          glm::vec3 scale = glm::vec3(1.0f))
@@ -21,7 +22,8 @@ class Object : public Model {
   }
 
   // angle should be defined in radians
-  Object(std::vector<std::shared_ptr<Mesh>> meshes, TextureManager* const mngr,
+  Object(std::vector<std::shared_ptr<render::Mesh>> meshes,
+         render::TextureManager* const mngr,
          glm::vec3 coords = glm::vec3(0.0f), glm::vec3 angle = glm::vec3(0.0f),
          glm::vec3 scale = glm::vec3(1.0f))
       : Model(meshes, mngr) {
@@ -83,7 +85,7 @@ class Object : public Model {
   void SetScale(const glm::vec3 scale) noexcept;
 
 #pragma warning(disable : 4100)
-  virtual void Draw(std::shared_ptr<ShaderProgram> program,
+  virtual void Draw(std::shared_ptr<render::ShaderProgram> program,
                     glm::mat4 matrix = glm::mat4(1.0f)) noexcept {
     program->SetMat4("model", GetObjectMatrix());
     Model::Draw(program);
@@ -102,5 +104,4 @@ class Object : public Model {
   glm::mat4 buf_rotation_matrix_ = glm::mat4(1.0f);
   glm::mat4 buf_scale_matrix_ = glm::mat4(1.0f);
 };
-
-#endif
+}  // namespace engine::core

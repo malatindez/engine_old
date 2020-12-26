@@ -1,5 +1,5 @@
-#ifndef SHADER_PROGRAM_H
-#define SHADER_PROGRAM_H
+#pragma once
+
 #ifdef CERR_OUTPUT
 #include <iostream>
 #endif
@@ -10,6 +10,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
+
+
+namespace engine::render {
 class ShaderProgram {
  public:
   enum class exceptions {
@@ -68,5 +71,4 @@ class ShaderProgram {
   // shader program id
   unsigned int sp_id_ = 0;
 };
-
-#endif
+}  // namespace engine::render

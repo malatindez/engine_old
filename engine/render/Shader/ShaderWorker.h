@@ -1,5 +1,4 @@
-#ifndef SHADER_WORKER_H
-#define SHADER_WORKER_H
+#pragma once
 
 #ifdef CERR_OUTPUT
 #include <iostream>
@@ -9,6 +8,8 @@
 #include <vector>
 
 #include "ShaderProgram.h"
+
+namespace engine::render {
 // Class for modyfing and compiling an existing shader
 class ShaderWorker {
  public:
@@ -168,5 +169,4 @@ class ShaderWorker {
   SourceCode vertex_, fragment_, geometry_;
   std::string version_;
 };
-
-#endif
+}  // namespace engine::render
