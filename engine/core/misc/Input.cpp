@@ -1,111 +1,6 @@
 #pragma once
 #include "Input.h"
 
-KeySequence::KeySequence(size_t size, uint16_t* seq) {
-  if (size > 2 or size == 0) {
-    return;
-  }
-  sequence_ = new uint16_t[size];
-  memcpy(sequence_, seq, sizeof(uint16_t) * size);
-  this->size_ = size;
-}
-
-KeySequence::KeySequence(uint16_t first) {
-  size_ = 1;
-  sequence_ = new uint16_t[1];
-  sequence_[0] = first;
-}
-
-KeySequence::KeySequence(uint16_t first, uint16_t second) {
-  size_ = 2;
-  sequence_ = new uint16_t[2];
-  sequence_[0] = first;
-  sequence_[1] = second;
-}
-
-KeySequence::KeySequence(KeySequence&& other) noexcept {
-  this->size_ = other.size_;
-  this->sequence_ = other.sequence_;
-  other.sequence_ = nullptr;
-}
-
-KeySequence& KeySequence::operator=(const KeySequence& other) noexcept {
-  sequence_ = new uint16_t[other.size_];
-  memcpy(sequence_, other.sequence_, sizeof(uint16_t) * other.size_);
-  this->size_ = other.size_;
-  return (*this);
-}
-
-KeySequence& KeySequence::operator=(KeySequence&& other) noexcept {
-  this->size_ = other.size_;
-  this->sequence_ = other.sequence_;
-  other.sequence_ = nullptr;
-  return (*this);
-}
-
-KeySequence::~KeySequence() {
-  if (sequence_ != nullptr) {
-    delete[] sequence_;
-  }
-  sequence_ = nullptr;
-}
-
-bool KeySequence::operator==(const KeySequence& ks) {
-  if (ks.size_ != size_) {
-    return false;
-  }
-  for (size_t i = 0; i < size_; i++) {
-    if (ks.sequence_[i] != sequence_[i]) {
-      return false;
-    }
-  }
-  return true;
-}
-
-bool Input::ProcessKeySeq(GLFWwindow* win, KeySequence seq) {
-  bool flag = true;
-  for (size_t i = 0; i < seq.GetSize(); i++) {
-    if (glfwGetKey(win, seq.GetSequence()[i]) != GLFW_PRESS) {
-      flag = false;
-      break;
-    }
-  }
-  return flag;
-}
-
-void Input::AddCheckingSequence(KeySequence seq) {
-  for (size_t i = 0; i < seq.GetSize(); i++) {
-    checking_.insert(seq.GetSequence()[i]);
-  }
-}
-
-bool Input::CheckSequence(KeySequence seq) const {
-  for (size_t i = 0; i < seq.GetSize(); i++) {
-    if (not keys_[seq.GetSequence()[i]]) {
-      return false;
-    }
-  }
-  return true;
-}
-
-void Input::Update(const unsigned int, const float) {
-  for (std::set<uint16_t>::iterator i = checking_.begin(); i != checking_.end();
-       i++) {
-    keys_[(*i)] = (glfwGetKey(window_ptr_, (*i)) == GLFW_PRESS);
-  }
-  glfwGetCursorPos(window_ptr_, &xpos_, &ypos_);
-}
-
-bool Input::AddCallback(KeySequence seq, std::function<void(int)> function,
-                        bool rewrite) {
-  AddCheckingSequence(seq);
-  if (callbacks_.find(seq) != callbacks_.end() and not rewrite) {
-    return false;
-  }
-  callbacks_.emplace(seq, function);
-  return true;
-}
-
 std::map<GLFWwindow*, Input*> Input::instances_;
 
 Input::~Input() { instances_.erase(window_ptr_); }
@@ -147,58 +42,123 @@ void Input::StaticKeyCallback(GLFWwindow* window, int key, int scancode,
                               int action, int mods) {
   instances_.find(window)->second->KeyCallback(key, scancode, action, mods);
 }
-void Input::KeyCallback(int key, int scancode, int action, int mods) {
-  std::cout << "KeyCallback: " << key << " " << scancode << " " << action << " " << mods
-            << std::endl;
-}
 
 void Input::StaticCharCallback(GLFWwindow* window, unsigned int codepoint) {
   instances_.find(window)->second->CharCallback(codepoint);
 }
-void Input::CharCallback(unsigned int codepoint) {
-  std::cout << "CharEvent: " << UnicodeToUTF8(codepoint) << std::endl;
-}
-
 void Input::StaticMouseButtonCallback(GLFWwindow* window, int button,
                                       int action, int mods) {
   instances_.find(window)->second->MouseButtonCallback(button, action, mods);
 }
-void Input::MouseButtonCallback(int button, int action, int mods) {
-  std::cout << "MouseButtonEvent: " << button << " " << action << " " << mods
-            << std::endl;
-}
-
-void Input::StaticCursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
+void Input::StaticCursorPosCallback(GLFWwindow* window, double xpos,
+                                    double ypos) {
   instances_.find(window)->second->CursorPosCallback(xpos, ypos);
 }
-void Input::CursorPosCallback(double xpos, double ypos) {
-  //std::cout << "CursorPosEvent: " << xpos << " " << ypos << std::endl;
-}
-
 void Input::StaticCursorEnterCallback(GLFWwindow* window, int entered) {
   instances_.find(window)->second->CursorEnterCallback(entered);
 }
-void Input::CursorEnterCallback(int entered) {
-  std::cout << "CursorEnterEvent: " << entered << std::endl;
-}
-
-
 void Input::StaticScrollCallback(GLFWwindow* window, double xoffset,
                                  double yoffset) {
   instances_.find(window)->second->ScrollCallback(xoffset, yoffset);
 }
-void Input::ScrollCallback(double xpos, double ypos) {
-  std::cout << "ScrollEvent: " << xpos << " " << ypos << std::endl;
-}
-
-
 void Input::StaticDropCallback(GLFWwindow* window, int path_count,
                                const char* paths[]) {
   instances_.find(window)->second->DropCallback(path_count, paths);
 }
-void Input::DropCallback(int path_count, const char* paths[]) {
+
+void Input::KeyCallback(int32_t key, int32_t scancode, int32_t action,
+                        int32_t mods) {
+  while (!key_callbacks_.empty()) {
+    if (key_callbacks_.top().unique()) {
+      key_callbacks_.pop();
+    } else {
+      if ((*key_callbacks_.top())(key, scancode, action, mods)) {
+        key_callbacks_.pop();
+      }
+      break;
+    }
+  }
+  currently_pressed_keys_[scancode] = action;
+}
+void Input::CharCallback(uint32_t codepoint) {
+  while (!char_callbacks_.empty()) {
+    if (char_callbacks_.top().unique()) {
+      char_callbacks_.pop();
+    } else {
+      if ((*char_callbacks_.top())(codepoint)) {
+        char_callbacks_.pop();
+      }
+      break;
+    }
+  }
+}
+void Input::MouseButtonCallback(int32_t button, int32_t action, int32_t mods) {
+  while (!mouse_button_callbacks_.empty()) {
+    if (mouse_button_callbacks_.top().unique()) {
+      mouse_button_callbacks_.pop();
+    } else {
+      if ((*mouse_button_callbacks_.top())(button, action, mods)) {
+        mouse_button_callbacks_.pop();
+      }
+      break;
+    }
+  }
+}
+void Input::CursorPosCallback(double xpos, double ypos) {
+  this->xpos_ = xpos;
+  this->ypos_ = ypos;
+  
+  while (!cursor_pos_callbacks_.empty()) {
+    if (cursor_pos_callbacks_.top().unique()) {
+      cursor_pos_callbacks_.pop();
+    } else {
+      if ((*cursor_pos_callbacks_.top())(xpos, ypos)) {
+        cursor_pos_callbacks_.pop();
+      }
+      break;
+    }
+  }
+}
+void Input::CursorEnterCallback(int32_t entered) {
+  while (!cursor_enter_callbacks_.empty()) {
+    if (cursor_enter_callbacks_.top().unique()) {
+      cursor_enter_callbacks_.pop();
+    } else {
+      if ((*cursor_enter_callbacks_.top())(entered)) {
+        cursor_enter_callbacks_.pop();
+      }
+      break;
+    }
+  }
+}
+void Input::ScrollCallback(double xoffset, double yoffset) {
+  this->xoffset_ = xoffset;
+  this->yoffset_ = yoffset;
+  while (!scroll_callbacks_.empty()) {
+    if (scroll_callbacks_.top().unique()) {
+      scroll_callbacks_.pop();
+    } else {
+      if ((*scroll_callbacks_.top())(xoffset, yoffset)) {
+        scroll_callbacks_.pop();
+      }
+      break;
+    }
+  }
+}
+void Input::DropCallback(int32_t path_count, const char* paths[]) {
   std::cout << "DropEvent: " << std::endl;
   for (int i = 0; i < path_count; i++) {
     std::cout << paths[i] << std::endl;
+  }
+
+  while (!drop_callbacks_.empty()) {
+    if (drop_callbacks_.top().unique()) {
+      drop_callbacks_.pop();
+    } else {
+      if ((*drop_callbacks_.top())(path_count, paths)) {
+        drop_callbacks_.pop();
+      }
+      break;
+    }
   }
 }
