@@ -15,6 +15,7 @@ set(SOURCES "${SRC_DIR}/Source.cpp")
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE "${SRC_DIR}")
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
@@ -29,3 +30,18 @@ target_link_libraries(${PROJECT_NAME} "glfw" "${GLFW_LIBRARIES}")
 target_include_directories(${PROJECT_NAME} PRIVATE "${GLFW_DIR}/include")
 target_compile_definitions(${PROJECT_NAME} PRIVATE "GLFW_INCLUDE_NONE")
 
+
+# glad
+set(GLAD_DIR "${LIB_DIR}/glad")
+add_library("glad" "${GLAD_DIR}/src/glad.c")
+target_include_directories("glad" PRIVATE "${GLAD_DIR}/include")
+target_include_directories(${PROJECT_NAME} PRIVATE "${GLAD_DIR}/include")
+target_link_libraries(${PROJECT_NAME} "glad" "${CMAKE_DL_LIBS}")
+
+# glm
+set(GLM_DIR "${LIB_DIR}/glm")
+add_subdirectory("${GLM_DIR}")
+target_include_directories(${PROJECT_NAME} PRIVATE "${GLM_DIR}")
+
+# include stb_image
+target_include_directories(${PROJECT_NAME} PRIVATE "${LIB_DIR}")
