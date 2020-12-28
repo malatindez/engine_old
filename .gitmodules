@@ -1,0 +1,7 @@
+[submodule "libraries/glfw"]
+	path = libraries/glfw
+	url = https://github.com/glfw/glfw.git
+    branch = 3.3-stable
+[submodule "libraries/glfw"]
+	path = libraries/glfw
+	url = https://github.com/malatindez/glad.git
