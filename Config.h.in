@@ -1,0 +1,3 @@
+// the configured options and settings for Engine
+#define Engine_VERSION_MAJOR @Engine_VERSION_MAJOR@
+#define Engine_VERSION_MINOR @Engine_VERSION_MINOR@
