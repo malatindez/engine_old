@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include "core/core.h"
-#include "header_libs/stb_image.h"
+#include "stb_image.h"
 #undef STB_IMAGE_IMPLEMENTATION
 #define SCR_RES SCR_WIDTH, SCR_HEIGHT
 #include <iostream>
