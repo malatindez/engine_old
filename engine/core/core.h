@@ -1,22 +1,22 @@
 #ifndef CORE_H
 #define CORE_H
+#include <memory>
+#include <vector>
+
+#include "../render/render.h"
 #include "Ticker.h"
-class GameCore {
-public:
-	unsigned int current_tick = 0;
-	std::vector<std::shared_ptr<Ticker>> tickingObjects;
-	GameCore() {
-		
-	}
+namespace engine::core {
+class Core {
+ public:
+  unsigned int current_tick = 0;
+  std::vector<std::shared_ptr<Ticker>> tickingObjects;
+  Core() {}
 
-	unsigned int getCurrentGlobalTick() const noexcept {
-		return current_tick;
-	}
-	
-	bool appendTickingObject(std::shared_ptr<Ticker> object) {
-		//this->models.push_back(model);
-	}
+  unsigned int getCurrentGlobalTick() const noexcept { return current_tick; }
 
+  bool appendTickingObject(std::shared_ptr<Ticker> object) {
+    // this->models.push_back(model);
+  }
 };
-
+}  // namespace engine::core
 #endif
