@@ -8,9 +8,8 @@
 
 name: Codacy Security Scan
 
-ignore:
-  - "libraries"
-
+exclude_paths:
+  - 'libraries/*'
 on:
   push:
     branches: [ master ]
