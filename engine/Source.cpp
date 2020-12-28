@@ -13,19 +13,21 @@ bool function(int32_t scancode, int32_t action) {
             << "W PRESSED" << std::endl;
   return false;
 }
+#include "render/misc/Camera.h"
 int main() {
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  engine::core::Window window(1920, 1080, "engine", NULL, NULL);
+  std::shared_ptr<engine::core::Window> window(new engine::core::Window(1920, 1080, "engine", NULL, NULL));
+  window->SetInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   using namespace std::placeholders;
   std::shared_ptr<engine::core::Input::KeyBindCallback> wKeybindPtr =
       std::make_shared<engine::core::Input::KeyBindCallback>(std::bind(&function, _1, _2));
-  window.AddKeyCallback(glfwGetKeyScancode(GLFW_KEY_W), wKeybindPtr);
-  window.MakeContextCurrent();
+  window->AddKeyCallback(glfwGetKeyScancode(GLFW_KEY_W), wKeybindPtr);
+  window->MakeContextCurrent();
 
-  if (!window.Alive()) {
+  if (!window->Alive()) {
 #ifdef CERR_OUTPUT
     std::cerr << "Failed to create GLFW window" << std::endl;
 #endif
@@ -41,12 +43,12 @@ int main() {
     return -1;
   }
   glEnable(GL_DEPTH_TEST);
-
-  while (!window.ShouldClose()) {
+  engine::render::Camera cam(window, glm::vec3(0,1,0));
+  while (!window->ShouldClose()) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
-    window.SwapBuffers();
-    window.PollEvents();
-    window.Update(0,0);
+    window->SwapBuffers();
+    window->PollEvents();
+    window->Update(0,0);
   }
 }
