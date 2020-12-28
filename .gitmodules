@@ -5,3 +5,7 @@
 [submodule "glad"]
 	path = libraries/glad
 	url = https://github.com/malatindez/glad.git
+[submodule "glm"]
+	path = libraries/glm
+	url = https://github.com/malatindez/glm.git
+	branch = 0.9.9.8
