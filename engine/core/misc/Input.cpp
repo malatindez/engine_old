@@ -67,6 +67,43 @@ void Input::StaticDropCallback(GLFWwindow* window, int path_count,
   instances_.find(window)->second->DropCallback(path_count, paths);
 }
 
+void Input::Update(const unsigned int, const float) {
+  // after each event update we shall call each callback
+  for (auto i = key_bind_callbacks_.begin(); i != key_bind_callbacks_.end();) {
+    auto cpk_itr = currently_pressed_keys_.find(i->first);
+    bool del = false;
+    // if the key is in the map, then it is currently pressed or was released
+    // just now
+    if (cpk_itr != currently_pressed_keys_.end() && cpk_itr->second != -1) {
+      // if callback returns true value - we shall delete this callback from
+      // map
+      del = (*i->second)(cpk_itr->first, cpk_itr->second);
+      // if the action is KEY_RELEASE -> we shall delete this scancode from
+      // currently_pressed_keys_
+      if (cpk_itr->second == 0) {
+        currently_pressed_keys_.erase(cpk_itr);
+      }
+    }
+
+    // iterate
+    if (del) {
+      i = key_bind_callbacks_.erase(i);
+    } else {
+      i++;
+    }
+  }
+}
+
+bool Input::AddKeyCallback(int32_t scancode, std::shared_ptr<KeyBindCallback> kbc,
+                    bool rewrite = false) {
+  if (key_bind_callbacks_.find(scancode) != key_bind_callbacks_.end() &&
+      !rewrite) {
+    return false;
+  }
+  key_bind_callbacks_[scancode] = kbc;
+  return true;
+}
+
 void Input::KeyCallback(int32_t key, int32_t scancode, int32_t action,
                         int32_t mods) {
   while (!key_callbacks_.empty()) {

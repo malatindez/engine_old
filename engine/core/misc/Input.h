@@ -1,6 +1,4 @@
 #pragma once
-#include <GLFW/glfw3.h>
-
 #include <algorithm>
 #include <functional>
 #include <iostream>
@@ -10,6 +8,9 @@
 #include <stack>
 #include <thread>
 #include <vector>
+
+#include <GLFW/glfw3.h>
+#include <glm/vec2.hpp>
 
 #include "../FrameTicker.h"
 
@@ -30,9 +31,40 @@ class Input : public FrameTicker {
 
   ~Input();
 
-  std::pair<float, float> GetMousePosition() const noexcept {
-    return std::pair<float, float>(xpos_, ypos_);
+  // This function returns the value of an input option for the
+  // window. The mode must be one of GLFW_CURSOR, GLFW_STICKY_KEYS,
+  // GLFW_STICKY_MOUSE_BUTTONS, GLFW_LOCK_KEY_MODS or GLFW_RAW_MOUSE_MOTION.
+  int32_t input_mode(int32_t mode) {
+    return glfwGetInputMode(window_ptr_, mode);
   }
+  // This function sets an input mode option for the window. The mode
+  // must be one of GLFW_CURSOR, GLFW_STICKY_KEYS, GLFW_STICKY_MOUSE_BUTTONS,
+  // GLFW_LOCK_KEY_MODS or GLFW_RAW_MOUSE_MOTION.
+  void SetInputMode(int32_t mode, int32_t value) {
+    glfwSetInputMode(window_ptr_, mode, value);
+  }
+
+  int32_t GetKey(int32_t key) { return glfwGetKey(window_ptr_, key); }
+
+  int32_t GetScancode(int32_t scancode) { 
+    auto it = currently_pressed_keys_.find(scancode);
+    if (it == currently_pressed_keys_.end()) {
+      return 0;
+    }
+    return it->second;
+  }
+
+  int GetMouseButton(int button) {
+    return glfwGetMouseButton(window_ptr_, button);
+  }
+
+  glm::vec2 cursor_pos() { return glm::vec2(xpos_, ypos_); }
+
+  void SetCursorPos(glm::vec2 pos) {
+    glfwSetCursorPos(window_ptr_, pos.x, pos.y);
+  }
+
+  void SetCursor(GLFWcursor* cursor) { glfwSetCursor(window_ptr_, cursor); }
 
   // The function you provide is the key callback, which is called when a key is
   // pressed, repeated or released.
@@ -146,43 +178,10 @@ class Input : public FrameTicker {
     drop_callbacks_.push(ptr);
   }
 
-  void Update(const unsigned int, const float) {
-    // after each event update we shall call each callback
-    for (auto i = key_bind_callbacks_.begin();
-         i != key_bind_callbacks_.end();) {
-      auto cpk_itr = currently_pressed_keys_.find(i->first);
-      bool del = false;
-      // if the key is in the map, then it is currently pressed or was released
-      // just now
-      if (cpk_itr != currently_pressed_keys_.end() && cpk_itr->second != -1) {
-        // if callback returns true value - we shall delete this callback from
-        // map
-        del = (*i->second)(cpk_itr->first, cpk_itr->second);
-        // if the action is KEY_RELEASE -> we shall delete this scancode from
-        // currently_pressed_keys_
-        if (cpk_itr->second == 0) {
-          currently_pressed_keys_.erase(cpk_itr);
-        }
-      }
-
-      // iterate
-      if (del) {
-        i = key_bind_callbacks_.erase(i);
-      } else {
-        i++;
-      }
-    }
-  }
+  void Update(const unsigned int, const float);
 
   bool AddKeyCallback(int32_t scancode, std::shared_ptr<KeyBindCallback> kbc,
-                      bool rewrite = false) {
-    if (key_bind_callbacks_.find(scancode) != key_bind_callbacks_.end() &&
-        !rewrite) {
-      return false;
-    }
-    key_bind_callbacks_[scancode] = kbc;
-    return true;
-  }
+                      bool rewrite = false);
 
  protected:
   Input() : FrameTicker(1) {}
