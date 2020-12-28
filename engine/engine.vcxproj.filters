@@ -125,5 +125,8 @@
     <ClCompile Include="core\misc\Input.cpp">
       <Filter>Source Files\core\misc</Filter>
     </ClCompile>
+    <ClCompile Include="render\misc\Camera.cpp">
+      <Filter>Source Files\render\misc</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
