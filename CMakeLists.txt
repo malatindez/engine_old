@@ -3,10 +3,6 @@ cmake_minimum_required(VERSION 3.10)
 # set the project name
 project(Engine VERSION 0.1)
 
-execute_process(COMMAND git submodule update --init --recursive
-	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-)
-
 configure_file (
   "${PROJECT_SOURCE_DIR}/Config.h.in"
   "${PROJECT_BINARY_DIR}/engine/Config.h"
