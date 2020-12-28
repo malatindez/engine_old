@@ -10,10 +10,27 @@ configure_file (
 
 set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/engine")
 set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libraries")
-set(SOURCES "${SRC_DIR}/Source.cpp")
 
+file(GLOB_RECURSE SOURCES ${SRC_DIR} *.*)
+list(FILTER SOURCES INCLUDE REGEX "${SRC_DIR}/*" )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
+
+function(assign_source_group)
+    foreach(_source IN ITEMS ${ARGN})
+        if (IS_ABSOLUTE "${_source}")
+            file(RELATIVE_PATH _source_rel "${CMAKE_CURRENT_SOURCE_DIR}" "${_source}")
+        else()
+            set(_source_rel "${_source}")
+        endif()
+        get_filename_component(_source_path "${_source_rel}" PATH)
+        string(REPLACE "/" "\\" _source_path_msvc "${_source_path}")
+        source_group("${_source_path_msvc}" FILES "${_source}")
+    endforeach()
+endfunction(assign_source_group)
+
+assign_source_group(${SOURCES})
+
 target_include_directories(${PROJECT_NAME} PRIVATE "${SRC_DIR}")
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD 17)
