@@ -53,7 +53,7 @@ void Input::Update(const unsigned int, const float) {
     bool del = false;
     // if the key is in the map, then it is currently pressed or was released
     // just now
-    if (cpk_itr != currently_pressed_keys_.end() && cpk_itr->second != -1) {
+    if (cpk_itr == currently_pressed_keys_.end() || cpk_itr->second == -1) {
       // if callback returns true value - we shall delete this callback from
       // map
       del = (*i->second)(cpk_itr->first, cpk_itr->second);
