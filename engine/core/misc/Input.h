@@ -12,11 +12,11 @@
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>
 
-#include "../FrameTicker.h"
+#include <core/Ticker.h>
 
 namespace engine::core {
 // Functions from this class should be called only in the main thread.
-class Input : public FrameTicker {
+class Input : Ticker {
  public:
   using KeyCallbackFun = std::function<bool(int32_t, int32_t, int32_t, int32_t)>;
   using CharCallbackFun = std::function<bool(uint32_t)>;
@@ -177,13 +177,13 @@ class Input : public FrameTicker {
     drop_callbacks_.push(ptr);
   }
 
-  void Update(const unsigned int, const float);
+  void Update(const unsigned int, const float) override;
 
   bool AddKeyCallback(int32_t scancode, std::shared_ptr<KeyBindCallback> kbc,
                       bool rewrite = false);
 
  protected:
-  Input() : FrameTicker(1) {}
+  Input() : Ticker(1) {}
 
   void init();
 
