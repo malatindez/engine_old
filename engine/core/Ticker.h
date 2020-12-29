@@ -1,11 +1,29 @@
 #pragma once
-#pragma warning(disable : 4100)
+#include <thread>
 namespace engine::core {
 class Ticker {
  public:
-  unsigned int tickrate_;
-  explicit Ticker(unsigned int tickrate) : tickrate_(tickrate) { }
-  unsigned int getTickRate() const { return tickrate_; }
+  Ticker(uint32_t tickrate, std::thread::id thread_id)
+      : tickrate_(tickrate),
+        thread_id_(std::make_shared<std::thread::id>(thread_id)) {}
+
+  explicit Ticker(uint32_t tickrate) : tickrate_(tickrate) {}
+
+  virtual void Update(const unsigned int tick, const float timeDelta) {
+    // Intentionally unimplemented
+  }
+
+  uint32_t tickrate() const noexcept { return tickrate_; }
+
+  std::weak_ptr<std::thread::id> thread_id() const {
+    return std::weak_ptr<std::thread::id>(thread_id_);
+  }
+
+ protected:
+  void SetTickrate(uint32_t tickrate) { tickrate_ = tickrate; }
+
+ private:
+  uint32_t tickrate_;
+  std::shared_ptr<std::thread::id> thread_id_ = std::shared_ptr<std::thread::id>(nullptr);
 };
-}
-#pragma warning(default : 4100)
+}  // namespace engine::core
