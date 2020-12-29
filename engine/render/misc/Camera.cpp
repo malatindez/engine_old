@@ -1,16 +1,13 @@
 #include "Camera.h"
 
 namespace engine::render {
-const float Camera::kDefaultYaw = -90.0f;
+const float Camera::kDefaultYaw = -90.0F;
 const float Camera::kDefaultPitch = 0;
-const float Camera::kDefaultSensivity = 0.1f;
-const float Camera::kDefaultFOV = 90.0f;
-const float Camera::kMaxFOV = 120.0f;
+const float Camera::kDefaultSensivity = 0.1F;
+const float Camera::kDefaultFOV = 90.0F;
+const float Camera::kMaxFOV = 120.0F;
 Camera::Camera(std::shared_ptr<core::Window> window, glm::vec3 world_up,
-               float yaw, float pitch) {
-  this->world_up_ = world_up;
-  this->yaw_ = yaw;
-  this->pitch_ = pitch;
+               float yaw, float pitch) : world_up_(world_up), yaw_(yaw), pitch_(pitch) {
   using namespace std::placeholders;
   this->cp_callback_pointer_ =
       std::make_shared<core::Window::CursorPosCallbackFun>(
@@ -19,7 +16,6 @@ Camera::Camera(std::shared_ptr<core::Window> window, glm::vec3 world_up,
 }
 
 bool Camera::CursorCallback(const float posx, const float posy) {
-  std::cout << posx << " " << posy << std::endl;
   yaw_ += (posx - prev_pos_x_) * sensivity_ * fov_ / kMaxFOV;
   pitch_ += (prev_pos_y_ - posy) * sensivity_ * fov_ / kMaxFOV;
   prev_pos_x_ = posx;
@@ -27,11 +23,11 @@ bool Camera::CursorCallback(const float posx, const float posy) {
 
   // Make sure that when pitch is out of bounds, screen doesn't get flipped
   if (constrain_pitch_) {
-    if (pitch_ > 89.9f) {
-      pitch_ = 89.9f;
+    if (pitch_ > 89.9F) {
+      pitch_ = 89.9F;
     }
-    if (pitch_ < -89.9f) {
-      pitch_ = -89.9f;
+    if (pitch_ < -89.9F) {
+      pitch_ = -89.9F;
     }
   }
 

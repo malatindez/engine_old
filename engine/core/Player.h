@@ -1,7 +1,6 @@
 #pragma once
 
 #include <render/misc/Camera.h>
-#include "FrameTicker.h"
 #include "misc/Input.h"
 
 namespace engine::core {
@@ -21,6 +20,6 @@ class Player {
   std::shared_ptr<engine::render::Camera> camera_;
 
   glm::vec3 position_;
-  float speed_ = 1.0f;
+  float speed_ = 1.0F;
 };
 }  // namespace engine::core

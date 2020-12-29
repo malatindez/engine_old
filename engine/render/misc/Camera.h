@@ -46,11 +46,11 @@ class Camera {
   bool CursorCallback(const float posx, const float posy);
 
  private:
-  glm::vec3 front_ = glm::vec3(0.0f);
-  glm::vec3 up_ = glm::vec3(0.0f);
-  glm::vec3 right_ = glm::vec3(0.0f);
-  glm::vec3 world_up_ = glm::vec3(0.0f);
-  glm::vec3 position_ = glm::vec3(0.0f);
+  glm::vec3 front_ = glm::vec3(0.0F);
+  glm::vec3 up_ = glm::vec3(0.0F);
+  glm::vec3 right_ = glm::vec3(0.0F);
+  glm::vec3 world_up_ = glm::vec3(0.0F);
+  glm::vec3 position_ = glm::vec3(0.0F);
   float yaw_ = kDefaultYaw;
   float pitch_ = kDefaultPitch;
   float sensivity_ = kDefaultSensivity;
@@ -58,8 +58,8 @@ class Camera {
 
   bool constrain_pitch_ = true;
 
-  float prev_pos_x_ = 0.0f;
-  float prev_pos_y_ = 0.0f;
+  float prev_pos_x_ = 0.0F;
+  float prev_pos_y_ = 0.0F;
 
   std::shared_ptr<core::Window::CursorPosCallbackFun> cp_callback_pointer_;
 };
