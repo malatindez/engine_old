@@ -99,7 +99,8 @@ void Window::SetWindowPosition(const glm::ivec2 pos) {
 }
 
 glm::ivec2 Window::GetWindowPosition() const {
-  int xpos, ypos;
+  int xpos;
+  int ypos;
   glfwGetWindowPos(window_ptr_, &xpos, &ypos);
   return glm::ivec2(xpos, ypos);
 }

@@ -1,28 +1,30 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#define STB_IMAGE_IMPLEMENTATION
-#include "core/core.h"
-#include "stb_image.h"
-#undef STB_IMAGE_IMPLEMENTATION
-#define SCR_RES SCR_WIDTH, SCR_HEIGHT
+
 #include <iostream>
 #include <functional>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+#undef STB_IMAGE_IMPLEMENTATION
+
+
+#include "core/core.h"
+#include "render/misc/Camera.h"
+
 bool function(int32_t scancode, int32_t action) {
-  std::cout << scancode << " " << action << " "
-            << "W PRESSED" << std::endl;
   return false;
 }
-#include "render/misc/Camera.h"
 int main() {
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  std::shared_ptr<engine::core::Window> window(new engine::core::Window(1920, 1080, "engine", NULL, NULL));
+  auto window = std::make_shared<engine::core::Window>(engine::core::Window(1920, 1080, "engine", nullptr, nullptr));
   window->SetInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   using namespace std::placeholders;
-  std::shared_ptr<engine::core::Input::KeyBindCallback> wKeybindPtr =
+  auto wKeybindPtr =
       std::make_shared<engine::core::Input::KeyBindCallback>(std::bind(&function, _1, _2));
   window->AddKeyCallback(glfwGetKeyScancode(GLFW_KEY_W), wKeybindPtr);
   window->MakeContextCurrent();
