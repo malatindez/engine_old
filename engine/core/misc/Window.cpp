@@ -302,34 +302,59 @@ void Window::ContentScaleCallback(float xscale, float yscale) {
 }
 
 void Window::StaticPosCallback(GLFWwindow* window, int xpos, int ypos) {
-  ((Window*)(instances_.find(window))->second)->PosCallback(xpos, ypos);
+  Window* casted_window = static_cast<Window*>(instances_.find(window)->second);
+  if (casted_window != nullptr) {
+    casted_window->PosCallback(xpos, ypos);
+  }
 }
 void Window::StaticSizeCallback(GLFWwindow* window, int width, int height) {
-  ((Window*)(instances_.find(window))->second)->SizeCallback(width, height);
+  Window* casted_window = static_cast<Window*>(instances_.find(window)->second);
+  if (casted_window != nullptr) {
+    casted_window->SizeCallback(width, height);
+  }
 }
 void Window::StaticCloseCallback(GLFWwindow* window) {
-  ((Window*)(instances_.find(window))->second)->CloseCallback();
+  Window* casted_window = static_cast<Window*>(instances_.find(window)->second);
+  if (casted_window != nullptr) {
+    casted_window->CloseCallback();
+  }
 }
 void Window::StaticRefreshCallback(GLFWwindow* window) {
-  ((Window*)(instances_.find(window))->second)->RefreshCallback();
+  Window* casted_window = static_cast<Window*>(instances_.find(window)->second);
+  if (casted_window != nullptr) {
+    casted_window->RefreshCallback();
+  }
 }
 void Window::StaticFocusCallback(GLFWwindow* window, int focused) {
-  ((Window*)(instances_.find(window))->second)->FocusCallback(focused);
+  Window* casted_window = static_cast<Window*>(instances_.find(window)->second);
+  if (casted_window != nullptr) {
+    casted_window->FocusCallback(focused);
+  }
 }
 void Window::StaticIconifyCallback(GLFWwindow* window, int iconified) {
-  ((Window*)(instances_.find(window))->second)->IconifyCallback(iconified);
+  Window* casted_window = static_cast<Window*>(instances_.find(window)->second);
+  if (casted_window != nullptr) {
+    casted_window->IconifyCallback(iconified);
+  }
 }
 void Window::StaticMaximizeCallback(GLFWwindow* window, int maximized) {
-  ((Window*)(instances_.find(window))->second)->MaximizeCallback(maximized);
+  Window* casted_window = static_cast<Window*>(instances_.find(window)->second);
+  if (casted_window != nullptr) {
+    casted_window->MaximizeCallback(maximized);
+  }
 }
 void Window::StaticFramebufferSizeCallback(GLFWwindow* window, int width,
                                            int height) {
-  ((Window*)(instances_.find(window))->second)
-      ->FramebufferSizeCallback(width, height);
+  Window* casted_window = static_cast<Window*>(instances_.find(window)->second);
+  if (casted_window != nullptr) {
+    casted_window->FramebufferSizeCallback(width, height);
+  }
 }
 void Window::StaticContentScaleCallback(GLFWwindow* window, float xscale,
                                         float yscale) {
-  ((Window*)(instances_.find(window))->second)
-      ->ContentScaleCallback(xscale, yscale);
+  Window* casted_window = static_cast<Window*>(instances_.find(window)->second);
+  if (casted_window != nullptr) {
+    casted_window->ContentScaleCallback(xscale, yscale);
+  }
 }
 }  // namespace engine::core
