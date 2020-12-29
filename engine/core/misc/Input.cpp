@@ -97,12 +97,12 @@ void Input::Update(const unsigned int, const float) {
 
 bool Input::AddKeyCallback(int32_t scancode, std::shared_ptr<KeyBindCallback> kbc,
                     bool rewrite) {
-  if (key_bind_callbacks_.find(scancode) != key_bind_callbacks_.end() &&
-      !rewrite) {
-    return false;
+  if (key_bind_callbacks_.find(scancode) == key_bind_callbacks_.end() ||
+      rewrite) {
+    key_bind_callbacks_[scancode] = kbc;
+    rewrite = true;
   }
-  key_bind_callbacks_[scancode] = kbc;
-  return true;
+  return rewrite;
 }
 
 void Input::KeyCallback(int32_t key, int32_t scancode, int32_t action,
