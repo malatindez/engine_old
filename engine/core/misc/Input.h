@@ -14,20 +14,21 @@
 
 #include "../FrameTicker.h"
 
+
+
 namespace engine::core {
 // Functions from this class should be called only in the main thread.
 class Input : public FrameTicker {
  public:
-  typedef std::function<bool(int32_t, int32_t, int32_t, int32_t)>
-      KeyCallbackFun;
-  typedef std::function<bool(uint32_t)> CharCallbackFun;
-  typedef std::function<bool(int32_t, int32_t, int32_t)> MouseButtonCallbackFun;
-  typedef std::function<bool(double, double)> CursorPosCallbackFun;
-  typedef std::function<bool(int32_t)> CursorEnterCallbackFun;
-  typedef std::function<bool(double, double)> ScrollCallbackFun;
-  typedef std::function<bool(int32_t, const char*[])> DropCallbackFun;
+  using KeyCallbackFun = std::function<bool(int32_t, int32_t, int32_t, int32_t)>;
+  using CharCallbackFun = std::function<bool(uint32_t)>;
+  using MouseButtonCallbackFun = std::function<bool(int32_t, int32_t, int32_t)>;
+  using CursorPosCallbackFun = std::function<bool(double, double)>;
+  using CursorEnterCallbackFun = std::function<bool(int32_t)>;
+  using ScrollCallbackFun = std::function<bool(double, double)>;
+  using DropCallbackFun = std::function<bool(int32_t, const char*[])>;
 
-  typedef std::function<bool(int32_t, int32_t)> KeyBindCallback;
+  using KeyBindCallback = std::function<bool(int32_t, int32_t)>;
 
   ~Input();
 

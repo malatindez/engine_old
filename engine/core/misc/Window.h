@@ -9,15 +9,15 @@
 namespace engine::core {
 class Window : public Input {
  public:
-  typedef std::function<bool(int32_t, int32_t)> PosFun;
-  typedef std::function<bool(int32_t, int32_t)> SizeFun;
-  typedef std::function<bool()> CloseFun;
-  typedef std::function<bool()> RefreshFun;
-  typedef std::function<bool(int32_t)> FocusFun;
-  typedef std::function<bool(int32_t)> IconifyFun;
-  typedef std::function<bool(int32_t)> MaximizeFun;
-  typedef std::function<bool(int32_t, int32_t)> FramebufferSizeFun;
-  typedef std::function<bool(float, float)> ContentScaleFun;
+  using PosFun = std::function<bool(int32_t, int32_t)>;
+  using SizeFun = std::function<bool(int32_t, int32_t)>;
+  using CloseFun = std::function<bool()>;
+  using RefreshFun = std::function<bool()>;
+  using FocusFun = std::function<bool(int32_t)>;
+  using IconifyFun = std::function<bool(int32_t)>;
+  using MaximizeFun = std::function<bool(int32_t)>;
+  using FramebufferSizeFun = std::function<bool(int32_t, int32_t)>;
+  using ContentScaleFun = std::function<bool(float, float)>;
 
   Window(glm::ivec2 resolution, std::string const& title,
          GLFWmonitor* monitor = nullptr,
