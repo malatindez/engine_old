@@ -45,7 +45,7 @@ class Camera {
 
   bool CursorCallback(const float posx, const float posy);
 
- protected:
+ private:
   glm::vec3 front_ = glm::vec3(0.0f);
   glm::vec3 up_ = glm::vec3(0.0f);
   glm::vec3 right_ = glm::vec3(0.0f);
@@ -58,7 +58,6 @@ class Camera {
 
   bool constrain_pitch_ = true;
 
- private:
   float prev_pos_x_ = 0.0f;
   float prev_pos_y_ = 0.0f;
 

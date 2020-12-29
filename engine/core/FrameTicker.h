@@ -5,7 +5,7 @@
 namespace engine::core {
 class FrameTicker : public Ticker {
  public:
-  FrameTicker(const unsigned int tickrate) : Ticker(tickrate) {}
+  explicit FrameTicker(const unsigned int tickrate) : Ticker(tickrate) {}
 };
 }  // namespace engine::core
 #endif

@@ -15,7 +15,7 @@ class Core {
   unsigned int getCurrentGlobalTick() const noexcept { return current_tick; }
 
   bool appendTickingObject(std::shared_ptr<Ticker> object) {
-    // this->models.push_back(model);
+
   }
 };
 }  // namespace engine::core

@@ -2,7 +2,7 @@
 #include "Window.h"
 
 namespace engine::core {
-Window::Window(int x, int y, std::string title, GLFWmonitor* monitor,
+Window::Window(int x, int y, std::string const& title, GLFWmonitor* monitor,
                GLFWwindow* share)
     : title_(title) {
   window_ptr_ = glfwCreateWindow(x, y, title.c_str(), monitor, share);
@@ -21,9 +21,7 @@ Window::Window(int x, int y, std::string title, GLFWmonitor* monitor,
                                     StaticContentScaleCallback);
 }
 
-Window::~Window() { glfwDestroyWindow(window_ptr_); }
-
-bool Window::Alive() { return window_ptr_ != NULL; }
+bool Window::Alive() const noexcept { return window_ptr_ != nullptr; }
 
 bool Window::ShouldClose() const { return glfwWindowShouldClose(window_ptr_); }
 
@@ -37,11 +35,11 @@ void Window::SetWindowAttrib(glm::ivec2 attrib) {
 
 void Window::MakeContextCurrent() { glfwMakeContextCurrent(window_ptr_); }
 
-void Window::SwapBuffers() { glfwSwapBuffers(window_ptr_); }
+void Window::SwapBuffers() const { glfwSwapBuffers(window_ptr_); }
 
-void Window::PollEvents() { glfwPollEvents(); }
+void Window::PollEvents() const{ glfwPollEvents(); }
 
-void Window::SwapInterval(int interval) { glfwSwapInterval(1); }
+void Window::SwapInterval(int interval) const { glfwSwapInterval(interval); }
 
 void Window::SetWindowSize(const int x, const int y) {
   glfwSetWindowSize(window_ptr_, x, y);
@@ -101,7 +99,7 @@ glm::ivec2 Window::GetWindowPosition() const {
   return glm::ivec2(xpos, ypos);
 }
 
-void Window::SetWindowTitle(const std::string title) {
+void Window::SetWindowTitle(std::string const& title) {
   glfwSetWindowTitle(window_ptr_, title.c_str());
   this->title_ = std::string(title);
 }
@@ -122,7 +120,7 @@ void Window::SetMonitor(GLFWmonitor* monitor, int xpos, int ypos, int width,
   if (refresh_rate == 0) {
     refresh_rate = mode->refreshRate;
   }
-  glfwSetWindowMonitor(window_ptr_, monitor, 0, 0, width, height, refresh_rate);
+  glfwSetWindowMonitor(window_ptr_, monitor, xpos, ypos, width, height, refresh_rate);
 }
 
 void Window::IconifyWindow() { glfwIconifyWindow(window_ptr_); }

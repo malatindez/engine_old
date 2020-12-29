@@ -19,16 +19,17 @@ class Window : public Input {
   typedef std::function<bool(int32_t, int32_t)> FramebufferSizeFun;
   typedef std::function<bool(float, float)> ContentScaleFun;
 
-  Window(glm::ivec2 resolution, std::string title, GLFWmonitor* monitor = NULL,
-         GLFWwindow* share = NULL)
+  Window(glm::ivec2 resolution, std::string const& title,
+         GLFWmonitor* monitor = nullptr,
+         GLFWwindow* share = nullptr)
       : Window(resolution.x, resolution.y, title, monitor, share) {}
 
-  Window(int x, int y, std::string title, GLFWmonitor* monitor = NULL,
-         GLFWwindow* share = NULL);
+  Window(int x, int y, std::string const& title, GLFWmonitor* monitor = nullptr,
+         GLFWwindow* share = nullptr);
 
-  ~Window();
+  ~Window() { glfwDestroyWindow(window_ptr_); }
 
-  bool Alive();
+  bool Alive() const noexcept;
 
   bool ShouldClose() const;
 
@@ -43,12 +44,12 @@ class Window : public Input {
   // with OpenGL or OpenGL ES. If the swap interval is greater than zero, the
   // GPU driver waits the specified number of screen updates before swapping the
   // buffers.
-  void SwapBuffers();
+  void SwapBuffers() const;
 
   // This function processes only those events that are already in the event
   // queue and then returns immediately. Processing events will cause the window
   // and input callbacks associated with those events to be called.
-  void PollEvents();
+  void PollEvents() const;
 
   // This function sets the swap interval for the window, i.e. the number of
   // screen updates to wait from the time SwapBuffers was called before
@@ -57,7 +58,7 @@ class Window : public Input {
   //
   // A context must be current on the calling thread. Calling this function
   // without a current context will cause a GLFW_NO_CURRENT_CONTEXT error.
-  void SwapInterval(int interval);
+  void SwapInterval(int interval) const;
 
   // Sets the size of a window in screen coordinates of the content
   // area or content area of the window The window system may impose
@@ -144,7 +145,7 @@ class Window : public Input {
 
   // This function sets the window title, encoded as UTF-8, of the specified
   // window.
-  void SetWindowTitle(const std::string title);
+  void SetWindowTitle(std::string const& title);
 
   // This function sets the icon of the specified window. If passed an array of
   // candidate images, those of or closest to the sizes desired by the system
@@ -160,7 +161,7 @@ class Window : public Input {
   // 32x32 and 48x48.
   //
   // To revert to the default window icon, pass in an empty image array:
-  // glfwSetWindowIcon(window, 0, NULL);
+  // glfwSetWindowIcon(window, 0, nullptr)
   void SetWindowIcon(const GLFWimage* images, int count);
 
   // This function returns the handle of the monitor that the specified window
@@ -168,20 +169,20 @@ class Window : public Input {
   GLFWmonitor* GetMonitor();
 
   // This function sets the monitor that the window uses for full screen mode
-  // or, if the monitor is NULL, makes it windowed mode.
+  // or, if the monitor is nullptr, makes it windowed mode.
   //
   // When setting a monitor, this function updates the width, height and refresh
   // rate of the desired video mode and switches to the video mode closest to
   // it. The window position is ignored when setting a monitor.
   //
-  // When the monitor is NULL, the position, width and height are used to place
+  // When the monitor is nullptr, the position, width and height are used to place
   // the window content area. The refresh rate is ignored when no monitor is
   // specified.
   //
   // When a window transitions from full screen to windowed mode, this function
   // restores any previous window settings such as whether it is decorated,
   // floating, resizable, has size or aspect ratio limits, etc.
-  void SetMonitor(GLFWmonitor* monitor = NULL, int xpos = 0, int ypos = 0,
+  void SetMonitor(GLFWmonitor* monitor = nullptr, int xpos = 0, int ypos = 0,
                   int width = 0, int height = 0, int refresh_rate = 0);
 
   // This function iconifies (minimizes) the specified window if it was
@@ -288,8 +289,6 @@ class Window : public Input {
   // the content scale of the specified window changes.
   void ContentScaleCallback(float xscale, float yscale);
 
-  std::string title_;
-
  private:
   static void StaticPosCallback(GLFWwindow* window, int xpos, int ypos);
   static void StaticSizeCallback(GLFWwindow* window, int width, int height);
@@ -324,6 +323,8 @@ class Window : public Input {
   std::stack<std::shared_ptr<MaximizeFun>> maximize_callbacks_;
   std::stack<std::shared_ptr<FramebufferSizeFun>> framebuffer_size_callbacks_;
   std::stack<std::shared_ptr<ContentScaleFun>> content_scale_callbacks_;
+
+  std::string title_;
 };
 }  // namespace engine::core
 #pragma warning(default : 26495)
