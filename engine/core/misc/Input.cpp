@@ -21,8 +21,9 @@ void Input::init() {
 std::string UnicodeToUTF8(unsigned int codepoint) {
   std::string out;
 
-  if (codepoint <= 0x7f)
+  if (codepoint <= 0x7f) {
     out.append(1, static_cast<char>(codepoint));
+  }
   else if (codepoint <= 0x7ff) {
     out.append(1, static_cast<char>(0xc0 | ((codepoint >> 6) & 0x1f)));
     out.append(1, static_cast<char>(0x80 | (codepoint & 0x3f)));

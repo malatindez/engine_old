@@ -27,8 +27,12 @@ bool Camera::CursorCallback(const float posx, const float posy) {
 
   // Make sure that when pitch is out of bounds, screen doesn't get flipped
   if (constrain_pitch_) {
-    if (pitch_ > 89.9f) pitch_ = 89.9f;
-    if (pitch_ < -89.9f) pitch_ = -89.9f;
+    if (pitch_ > 89.9f) {
+      pitch_ = 89.9f;
+    }
+    if (pitch_ < -89.9f) {
+      pitch_ = -89.9f;
+    }
   }
 
   // Update Front, Right and Up Vectors using the updated Euler angles
