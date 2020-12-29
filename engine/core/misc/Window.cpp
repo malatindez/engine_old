@@ -50,19 +50,24 @@ void Window::SetWindowSize(const glm::ivec2 resolution) {
 }
 
 glm::ivec2 Window::GetWindowSize() const {
-  int width, height;
+  int width;
+  int height;
   glfwGetWindowSize(window_ptr_, &width, &height);
   return glm::ivec2(width, height);
 }
 
 glm::ivec4 Window::GetWindowFrameSize() const {
-  int left, top, right, bottom;
+  int left;
+  int top;
+  int right;
+  int bottom;
   glfwGetWindowFrameSize(window_ptr_, &left, &top, &right, &bottom);
   return glm::ivec4(left, top, right, bottom);
 }
 
 glm::vec2 Window::GetWindowContentScale() const {
-  float xscale, yscale;
+  float xscale;
+  float yscale;
   glfwGetWindowContentScale(window_ptr_, &xscale, &yscale);
   return glm::vec2(xscale, yscale);
 }
@@ -173,7 +178,6 @@ void Window::PushContentScaleCallback(
 }
 
 void Window::PosCallback(int xpos, int ypos) {
-  std::cout << "PosCallback: " << xpos << " " << ypos << std::endl;
   while (!pos_callbacks_.empty()) {
     if (pos_callbacks_.top().use_count() == 1) {
       pos_callbacks_.pop();
@@ -187,7 +191,6 @@ void Window::PosCallback(int xpos, int ypos) {
 }
 
 void Window::SizeCallback(int width, int height) {
-  std::cout << "SizeCallback: " << width << " " << height << std::endl;
   while (!size_callbacks_.empty()) {
     if (size_callbacks_.top().use_count() == 1) {
       size_callbacks_.pop();
@@ -201,7 +204,6 @@ void Window::SizeCallback(int width, int height) {
 }
 
 void Window::CloseCallback() {
-  std::cout << "CloseCallback: " << std::endl;
   while (!close_callbacks_.empty()) {
     if (close_callbacks_.top().use_count() == 1) {
       close_callbacks_.pop();
@@ -215,7 +217,6 @@ void Window::CloseCallback() {
 }
 
 void Window::RefreshCallback() {
-  std::cout << "RefreshCallback: " << std::endl;
   while (!refresh_callbacks_.empty()) {
     if (refresh_callbacks_.top().use_count() == 1) {
       refresh_callbacks_.pop();
@@ -229,7 +230,6 @@ void Window::RefreshCallback() {
 }
 
 void Window::FocusCallback(int focused) {
-  std::cout << "FocusCallback: " << focused << std::endl;
   while (!focus_callbacks_.empty()) {
     if (focus_callbacks_.top().use_count() == 1) {
       focus_callbacks_.pop();
@@ -243,7 +243,6 @@ void Window::FocusCallback(int focused) {
 }
 
 void Window::IconifyCallback(int iconified) {
-  std::cout << "IconifyCallback: " << iconified << std::endl;
   while (!iconify_callbacks_.empty()) {
     if (iconify_callbacks_.top().use_count() == 1) {
       iconify_callbacks_.pop();
@@ -257,7 +256,6 @@ void Window::IconifyCallback(int iconified) {
 }
 
 void Window::MaximizeCallback(int maximized) {
-  std::cout << "FocusCallback: " << maximized << std::endl;
   while (!maximize_callbacks_.empty()) {
     if (maximize_callbacks_.top().use_count() == 1) {
       maximize_callbacks_.pop();
@@ -271,8 +269,6 @@ void Window::MaximizeCallback(int maximized) {
 }
 
 void Window::FramebufferSizeCallback(int width, int height) {
-  std::cout << "FramebufferSizeCallback: " << width << " " << height
-            << std::endl;
   while (!framebuffer_size_callbacks_.empty()) {
     if (framebuffer_size_callbacks_.top().use_count() == 1) {
       framebuffer_size_callbacks_.pop();
@@ -286,7 +282,6 @@ void Window::FramebufferSizeCallback(int width, int height) {
 }
 
 void Window::ContentScaleCallback(float xscale, float yscale) {
-  std::cout << "ContentScaleCallback: " << xscale << " " << yscale << std::endl;
   while (!content_scale_callbacks_.empty()) {
     if (content_scale_callbacks_.top().use_count() == 1) {
       content_scale_callbacks_.pop();

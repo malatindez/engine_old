@@ -14,8 +14,6 @@
 
 #include "../FrameTicker.h"
 
-
-
 namespace engine::core {
 // Functions from this class should be called only in the main thread.
 class Input : public FrameTicker {
@@ -59,7 +57,7 @@ class Input : public FrameTicker {
     return glfwGetMouseButton(window_ptr_, button);
   }
 
-  glm::vec2 cursor_pos() { return glm::vec2(xpos_, ypos_); }
+  glm::vec2 cursor_pos() const { return glm::vec2(xpos_, ypos_); }
 
   void SetCursorPos(glm::vec2 pos) {
     glfwSetCursorPos(window_ptr_, pos.x, pos.y);
@@ -223,9 +221,11 @@ class Input : public FrameTicker {
   static void StaticDropCallback(GLFWwindow* window, int path_count,
                                  const char* paths[]);
 
-  double xpos_ = 0, ypos_ = 0;
+  double xpos_ = 0;
+  double ypos_ = 0;
 
-  double xoffset_ = 0, yoffset_ = 0;
+  double xoffset_ = 0;
+  double yoffset_ = 0;
 
   // scancode, action(currently pressed or were released)
   std::map<int32_t, int32_t> currently_pressed_keys_;
