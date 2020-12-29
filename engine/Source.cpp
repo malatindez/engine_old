@@ -21,7 +21,8 @@ int main() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  auto window = std::make_shared<engine::core::Window>(engine::core::Window(1920, 1080, "engine", nullptr, nullptr));
+  std::shared_ptr<engine::core::Window> window(
+      new engine::core::Window(1920, 1080, "engine", nullptr, nullptr));
   window->SetInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   using namespace std::placeholders;
   auto wKeybindPtr =
