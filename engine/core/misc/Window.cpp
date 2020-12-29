@@ -141,32 +141,36 @@ void Window::FocusWindow() { glfwFocusWindow(window_ptr_); }
 
 void Window::RequestAttention() { glfwRequestWindowAttention(window_ptr_); }
 
-void Window::PushPosCallback(const PosFun ptr) noexcept {
+void Window::PushPosCallback(const std::shared_ptr<PosFun> ptr) noexcept {
   pos_callbacks_.push(ptr);
 }
-void Window::PushSizeCallback(const SizeFun ptr) noexcept {
+void Window::PushSizeCallback(const std::shared_ptr<SizeFun> ptr) noexcept {
   pos_callbacks_.push(ptr);
 }
-void Window::PushCloseCallback(const CloseFun ptr) noexcept {
+void Window::PushCloseCallback(const std::shared_ptr<CloseFun> ptr) noexcept {
   close_callbacks_.push(ptr);
 }
-void Window::PushRefreshCallback(const RefreshFun ptr) noexcept {
+void Window::PushRefreshCallback(
+    const std::shared_ptr<RefreshFun> ptr) noexcept {
   refresh_callbacks_.push(ptr);
 }
-void Window::PushFocusCallback(const FocusFun ptr) noexcept {
+void Window::PushFocusCallback(const std::shared_ptr<FocusFun> ptr) noexcept {
   focus_callbacks_.push(ptr);
 }
-void Window::PushIconifyCallback(const IconifyFun ptr) noexcept {
+void Window::PushIconifyCallback(
+    const std::shared_ptr<IconifyFun> ptr) noexcept {
   iconify_callbacks_.push(ptr);
 }
-void Window::PushMaximizeCallback(const MaximizeFun ptr) noexcept {
+void Window::PushMaximizeCallback(
+    const std::shared_ptr<MaximizeFun> ptr) noexcept {
   maximize_callbacks_.push(ptr);
 }
 void Window::PushFramebufferSizeCallback(
-    const FramebufferSizeFun ptr) noexcept {
+    const std::shared_ptr<FramebufferSizeFun> ptr) noexcept {
   framebuffer_size_callbacks_.push(ptr);
 }
-void Window::PushContentScaleCallback(const ContentScaleFun ptr) noexcept {
+void Window::PushContentScaleCallback(
+    const std::shared_ptr<ContentScaleFun> ptr) noexcept {
   content_scale_callbacks_.push(ptr);
 }
 

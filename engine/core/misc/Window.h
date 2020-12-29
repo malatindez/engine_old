@@ -9,16 +9,15 @@
 namespace engine::core {
 class Window : public Input {
  public:
-  typedef std::shared_ptr<std::function<bool(int32_t, int32_t)>> PosFun;
-  typedef std::shared_ptr<std::function<bool(int32_t, int32_t)>> SizeFun;
-  typedef std::shared_ptr<std::function<bool()>> CloseFun;
-  typedef std::shared_ptr<std::function<bool()>> RefreshFun;
-  typedef std::shared_ptr<std::function<bool(int32_t)>> FocusFun;
-  typedef std::shared_ptr<std::function<bool(int32_t)>> IconifyFun;
-  typedef std::shared_ptr<std::function<bool(int32_t)>> MaximizeFun;
-  typedef std::shared_ptr<std::function<bool(int32_t, int32_t)>>
-      FramebufferSizeFun;
-  typedef std::shared_ptr<std::function<bool(float, float)>> ContentScaleFun;
+  typedef std::function<bool(int32_t, int32_t)> PosFun;
+  typedef std::function<bool(int32_t, int32_t)> SizeFun;
+  typedef std::function<bool()> CloseFun;
+  typedef std::function<bool()> RefreshFun;
+  typedef std::function<bool(int32_t)> FocusFun;
+  typedef std::function<bool(int32_t)> IconifyFun;
+  typedef std::function<bool(int32_t)> MaximizeFun;
+  typedef std::function<bool(int32_t, int32_t)> FramebufferSizeFun;
+  typedef std::function<bool(float, float)> ContentScaleFun;
 
   Window(glm::ivec2 resolution, std::string title, GLFWmonitor* monitor = NULL,
          GLFWwindow* share = NULL)
@@ -239,15 +238,17 @@ class Window : public Input {
   // The function you provide is the key position callback, which is called when
   // the window is moved. The callback is provided with the position, in screen
   // coordinates, of the upper-left corner of the content area of the window.
-  void PushPosCallback(const PosFun ptr) noexcept;
-  void PushSizeCallback(const SizeFun ptr) noexcept;
-  void PushCloseCallback(const CloseFun ptr) noexcept;
-  void PushRefreshCallback(const RefreshFun ptr) noexcept;
-  void PushFocusCallback(const FocusFun ptr) noexcept;
-  void PushIconifyCallback(const IconifyFun ptr) noexcept;
-  void PushMaximizeCallback(const MaximizeFun ptr) noexcept;
-  void PushFramebufferSizeCallback(const FramebufferSizeFun ptr) noexcept;
-  void PushContentScaleCallback(const ContentScaleFun ptr) noexcept;
+  void PushPosCallback(const std::shared_ptr<PosFun> ptr) noexcept;
+  void PushSizeCallback(const std::shared_ptr<SizeFun> ptr) noexcept;
+  void PushCloseCallback(const std::shared_ptr<CloseFun> ptr) noexcept;
+  void PushRefreshCallback(const std::shared_ptr<RefreshFun> ptr) noexcept;
+  void PushFocusCallback(const std::shared_ptr<FocusFun> ptr) noexcept;
+  void PushIconifyCallback(const std::shared_ptr<IconifyFun> ptr) noexcept;
+  void PushMaximizeCallback(const std::shared_ptr<MaximizeFun> ptr) noexcept;
+  void PushFramebufferSizeCallback(
+      const std::shared_ptr<FramebufferSizeFun> ptr) noexcept;
+  void PushContentScaleCallback(
+      const std::shared_ptr<ContentScaleFun> ptr) noexcept;
 
  protected:
   void PosCallback(int xpos, int ypos);
@@ -314,15 +315,15 @@ class Window : public Input {
   // move assignment
   Window& operator=(Window&&) noexcept { return *this; }
 
-  std::stack<PosFun> pos_callbacks_;
-  std::stack<SizeFun> size_callbacks_;
-  std::stack<CloseFun> close_callbacks_;
-  std::stack<RefreshFun> refresh_callbacks_;
-  std::stack<FocusFun> focus_callbacks_;
-  std::stack<IconifyFun> iconify_callbacks_;
-  std::stack<MaximizeFun> maximize_callbacks_;
-  std::stack<FramebufferSizeFun> framebuffer_size_callbacks_;
-  std::stack<ContentScaleFun> content_scale_callbacks_;
+  std::stack<std::shared_ptr<PosFun>> pos_callbacks_;
+  std::stack<std::shared_ptr<SizeFun>> size_callbacks_;
+  std::stack<std::shared_ptr<CloseFun>> close_callbacks_;
+  std::stack<std::shared_ptr<RefreshFun>> refresh_callbacks_;
+  std::stack<std::shared_ptr<FocusFun>> focus_callbacks_;
+  std::stack<std::shared_ptr<IconifyFun>> iconify_callbacks_;
+  std::stack<std::shared_ptr<MaximizeFun>> maximize_callbacks_;
+  std::stack<std::shared_ptr<FramebufferSizeFun>> framebuffer_size_callbacks_;
+  std::stack<std::shared_ptr<ContentScaleFun>> content_scale_callbacks_;
 };
 }  // namespace engine::core
 #pragma warning(default : 26495)
