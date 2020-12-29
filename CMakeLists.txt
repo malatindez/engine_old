@@ -53,7 +53,7 @@ set(GLAD_DIR "${LIB_DIR}/glad")
 add_library("glad" "${GLAD_DIR}/src/glad.c")
 target_include_directories("glad" PRIVATE "${GLAD_DIR}/include")
 target_include_directories(${PROJECT_NAME} PRIVATE "${GLAD_DIR}/include")
-target_link_libraries(${PROJECT_NAME} "glad" "${CMAKE_DL_LIBS}")
+target_link_libraries(${PROJECT_NAME} glad)
 
 # glm
 set(GLM_DIR "${LIB_DIR}/glm")
@@ -62,3 +62,26 @@ target_include_directories(${PROJECT_NAME} PRIVATE "${GLM_DIR}")
 
 # include stb_image
 target_include_directories(${PROJECT_NAME} PRIVATE "${LIB_DIR}")
+
+set(GTEST_DIR "${LIB_DIR}/gtest")
+
+option(test "build all tests." ON)
+
+if(test)
+  set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+  
+  add_subdirectory(${GTEST_DIR})
+
+  enable_testing()
+  include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+  include_directories(${SRC_DIR})
+
+  # Unit Tests
+  # Add test cpp file
+  file(GLOB_RECURSE TEST_SOURCES ${PROJECT_SOURCE_DIR}/tests *.*)
+  list(FILTER TEST_SOURCES INCLUDE REGEX "${PROJECT_SOURCE_DIR}/tests/*" )
+  add_executable(runUnitTests ${TEST_SOURCES})
+  target_link_libraries(runUnitTests gtest gtest_main)
+  add_test(NAME TEST COMMAND runUnitTests)
+
+endif()
