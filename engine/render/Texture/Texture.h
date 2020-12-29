@@ -11,7 +11,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "../../header_libs/stb_image.h"
+#include "stb_image.h"
+
 
 namespace engine::render {
 // after creating this object you should bind it
