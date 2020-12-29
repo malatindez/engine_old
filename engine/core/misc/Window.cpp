@@ -103,7 +103,7 @@ glm::ivec2 Window::GetWindowPosition() const {
 
 void Window::SetWindowTitle(const std::string title) {
   glfwSetWindowTitle(window_ptr_, title.c_str());
-  this->title_ = title;
+  this->title_ = std::string(title);
 }
 
 void Window::SetWindowIcon(const GLFWimage* images, int count) {
