@@ -28,6 +28,13 @@ class Input : public Ticker {
 
   using KeyBindCallback = std::function<bool(int32_t, int32_t)>;
 
+  /* Disable copy and move semantics. */
+  Input(const Input&) = delete;
+  Input(Input&&) = delete;
+  Input& operator=(const Input&) = delete;
+  Input& operator=(Input&&) = delete;
+
+
   ~Input();
 
   // This function returns the value of an input option for the

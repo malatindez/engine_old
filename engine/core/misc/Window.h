@@ -19,6 +19,12 @@ class Window : public Input {
   using FramebufferSizeFun = std::function<bool(int32_t, int32_t)>;
   using ContentScaleFun = std::function<bool(float, float)>;
 
+  /* Disable copy and move semantics. */
+  Window(const Window&) = delete;
+  Window(Window&&) = delete;
+  Window& operator=(const Window&) = delete;
+  Window& operator=(Window&&) = delete;
+
   Window(glm::ivec2 resolution, std::string const& title,
          GLFWmonitor* monitor = nullptr,
          GLFWwindow* share = nullptr)
@@ -301,18 +307,6 @@ class Window : public Input {
                                             int height);
   static void StaticContentScaleCallback(GLFWwindow* window, float xscale,
                                          float yscale);
-
-  // copy constructor
-  Window(const Window&) noexcept {}
-
-  // move constructor
-  Window(Window&&) noexcept {}
-
-  // copy assignment
-  Window& operator=(const Window&) noexcept { return *this; }
-
-  // move assignment
-  Window& operator=(Window&&) noexcept { return *this; }
 
   std::stack<std::shared_ptr<PosFun>> pos_callbacks_;
   std::stack<std::shared_ptr<SizeFun>> size_callbacks_;
