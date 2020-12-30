@@ -16,7 +16,7 @@
 
 namespace engine::core {
 // Functions from this class should be called only in the main thread.
-class Input : Ticker {
+class Input : public Ticker {
  public:
   using KeyCallbackFun = std::function<bool(int32_t, int32_t, int32_t, int32_t)>;
   using CharCallbackFun = std::function<bool(uint32_t)>;
@@ -183,7 +183,7 @@ class Input : Ticker {
                       bool rewrite = false);
 
  protected:
-  Input() : Ticker(1) {}
+  Input() : Ticker(1, std::this_thread::get_id()) {}
 
   void init();
 

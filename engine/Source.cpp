@@ -21,8 +21,8 @@ int main() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  std::shared_ptr<engine::core::Window> window(
-      new engine::core::Window(1920, 1080, "engine", nullptr, nullptr));
+  auto window = std::make_shared<engine::core::Window>(1920, 1080, "engine",
+                                                       nullptr, nullptr);
   window->SetInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   using namespace std::placeholders;
   auto wKeybindPtr =
@@ -49,7 +49,7 @@ int main() {
   engine::render::Camera cam(window, glm::vec3(0,1,0));
   while (!window->ShouldClose()) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-    glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
+    glClearColor(0.1F, 0.1F, 0.15F, 1.0F);
     window->SwapBuffers();
     window->PollEvents();
     window->Update(0,0);
