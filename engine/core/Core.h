@@ -18,16 +18,18 @@ class Core {
   Core& operator=(const Core&) = delete;
   Core& operator=(Core&&) = delete;
 
-  unsigned int GetCurrentGlobalTick() const noexcept { return current_tick; }
+  [[nodiscard]] uint64_t GetCurrentGlobalTick() const noexcept {
+    return current_tick_;
+  }
 
   // returns reference to the Core.
-  static std::shared_ptr<Core> GetInstance() noexcept;
+  [[nodiscard]] static std::shared_ptr<Core> GetInstance() noexcept;
 
  private:
   Core() = default;
   static std::shared_ptr<Core> core_ptr_;
   
-  unsigned int current_tick = 0;
+  uint64_t current_tick_ = 0;
 
   std::vector<std::shared_ptr<Ticker>> tickingObjects;
 };

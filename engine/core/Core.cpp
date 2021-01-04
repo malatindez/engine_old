@@ -9,5 +9,4 @@ std::shared_ptr<Core> Core::GetInstance() noexcept {
   }
   return core_ptr_;
 }
-
 }

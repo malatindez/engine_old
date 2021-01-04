@@ -13,7 +13,7 @@
 #include "core/core.h"
 #include "render/misc/Camera.h"
 
-bool function(int32_t scancode, int32_t action) {
+bool function(int32_t, int32_t) {
   return false;
 }
 int main() {

@@ -40,7 +40,7 @@ class Input : public Ticker {
   // This function returns the value of an input option for the
   // window. The mode must be one of GLFW_CURSOR, GLFW_STICKY_KEYS,
   // GLFW_STICKY_MOUSE_BUTTONS, GLFW_LOCK_KEY_MODS or GLFW_RAW_MOUSE_MOTION.
-  int32_t input_mode(int32_t mode) {
+  [[nodiscard]] int32_t input_mode(int32_t mode) {
     return glfwGetInputMode(window_ptr_, mode);
   }
   // This function sets an input mode option for the window. The mode
@@ -50,9 +50,11 @@ class Input : public Ticker {
     glfwSetInputMode(window_ptr_, mode, value);
   }
 
-  int32_t GetKey(int32_t key) { return glfwGetKey(window_ptr_, key); }
+  [[nodiscard]] int32_t GetKey(int32_t key) {
+    return glfwGetKey(window_ptr_, key);
+  }
 
-  int32_t GetScancode(int32_t scancode) { 
+  [[nodiscard]] int32_t GetScancode(int32_t scancode) { 
     auto it = currently_pressed_keys_.find(scancode);
     if (it == currently_pressed_keys_.end()) {
       return 0;
@@ -60,11 +62,11 @@ class Input : public Ticker {
     return it->second;
   }
 
-  int GetMouseButton(int button) {
+  [[nodiscard]] int GetMouseButton(int button) {
     return glfwGetMouseButton(window_ptr_, button);
   }
 
-  glm::vec2 cursor_pos() const { return glm::vec2(xpos_, ypos_); }
+  [[nodiscard]] glm::vec2 cursor_pos() const { return glm::vec2(xpos_, ypos_); }
 
   void SetCursorPos(glm::vec2 pos) {
     glfwSetCursorPos(window_ptr_, pos.x, pos.y);

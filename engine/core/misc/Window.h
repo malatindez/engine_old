@@ -35,9 +35,9 @@ class Window : public Input {
 
   ~Window() { glfwDestroyWindow(window_ptr_); }
 
-  bool Alive() const noexcept;
+  [[nodiscard]] bool Alive() const noexcept;
 
-  bool ShouldClose() const;
+  [[nodiscard]] bool ShouldClose() const;
 
   // This function sets the value of an attribute of the window.
   void SetWindowAttrib(int attrib, int value);
@@ -77,18 +77,18 @@ class Window : public Input {
   void SetWindowSize(const glm::ivec2 resolution);
 
   // The returned value is the current size of a window.
-  glm::ivec2 GetWindowSize() const;
+  [[nodiscard]] glm::ivec2 GetWindowSize() const;
 
   // The returned values are the distances, in screen coordinates,
   // from the edges of the content area to the corresponding edges of
   // the full window. As they are distances and not coordinates, they are
   // always zero or positive.
-  glm::ivec4 GetWindowFrameSize() const;
+  [[nodiscard]] glm::ivec4 GetWindowFrameSize() const;
 
   // This function retrieves the content scale for the window. The
   // content scale is the ratio between the current DPI and the platform's
   // default DPI
-  glm::vec2 GetWindowContentScale() const;
+  [[nodiscard]] glm::vec2 GetWindowContentScale() const;
 
   // The minimum and maximum size of the content area of a windowed mode window
   // can be enforced with glfwSetWindowSizeLimits. The user may resize the
@@ -172,7 +172,7 @@ class Window : public Input {
 
   // This function returns the handle of the monitor that the specified window
   // is in full screen on.
-  GLFWmonitor* GetMonitor();
+  [[nodiscard]] GLFWmonitor* GetMonitor();
 
   // This function sets the monitor that the window uses for full screen mode
   // or, if the monitor is nullptr, makes it windowed mode.

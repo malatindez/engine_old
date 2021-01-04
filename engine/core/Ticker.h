@@ -15,9 +15,10 @@ class Ticker {
     // Intentionally unimplemented
   }
 
-  uint32_t tickrate() const noexcept { return tickrate_; }
+  [[nodiscard]] uint32_t tickrate() const noexcept { return tickrate_; }
 
-  std::weak_ptr<std::thread::id> thread_id() const {
+  // can return nullptr
+  [[nodiscard]] std::weak_ptr<std::thread::id> thread_id() const {
     return std::weak_ptr<std::thread::id>(thread_id_);
   }
 
