@@ -6,7 +6,8 @@ std::map<GLFWwindow*, Input*> Input::instances_;
 
 Input::~Input() { instances_.erase(window_ptr_); }
 
-void Input::init() {
+void Input::Init(GLFWwindow* window_ptr) {
+  this->window_ptr_ = window_ptr;
   glfwSetKeyCallback(this->window_ptr_, StaticKeyCallback);
   glfwSetCharCallback(this->window_ptr_, StaticCharCallback);
   glfwSetMouseButtonCallback(this->window_ptr_, StaticMouseButtonCallback);

@@ -218,7 +218,7 @@ class Input : public Ticker {
  protected:
   Input() : Ticker(1, std::this_thread::get_id()) {}
 
-  void init();
+  void Init(GLFWwindow* window_ptr);
 
   void KeyCallback(int32_t key, int32_t scancode, int32_t action, int32_t mods);
   void CharCallback(uint32_t codepoint);
@@ -231,8 +231,6 @@ class Input : public Ticker {
   // This static variable is used to correctly handle GLFW callbacks.
   // Here we should store all instances of Input class. Every. One.
   static std::map<GLFWwindow*, Input*> instances_;
-
-  GLFWwindow* window_ptr_ = nullptr;
 
  private:
   static void StaticCharCallback(GLFWwindow* window, unsigned int codepoint);
@@ -273,5 +271,7 @@ class Input : public Ticker {
   std::stack<std::shared_ptr<CursorEnterCallbackFun>> cursor_enter_callbacks_;
   std::stack<std::shared_ptr<ScrollCallbackFun>> scroll_callbacks_;
   std::stack<std::shared_ptr<DropCallbackFun>> drop_callbacks_;
+
+  GLFWwindow* window_ptr_;
 };
 }  // namespace engine::core

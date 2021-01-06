@@ -319,6 +319,7 @@ class Window : public Input {
   std::stack<std::shared_ptr<ContentScaleFun>> content_scale_callbacks_;
 
   std::string title_;
+  GLFWwindow* window_ptr_;
 };
 }  // namespace engine::core
 #pragma warning(default : 26495)

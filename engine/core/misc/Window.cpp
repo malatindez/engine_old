@@ -6,7 +6,7 @@ Window::Window(int x, int y, std::string const& title, GLFWmonitor* monitor,
                GLFWwindow* share)
     : title_(title) {
   window_ptr_ = glfwCreateWindow(x, y, title.c_str(), monitor, share);
-  this->init();
+  this->Init(window_ptr_);
 
   glfwSetWindowPosCallback(this->window_ptr_, StaticPosCallback);
   glfwSetWindowSizeCallback(this->window_ptr_, StaticSizeCallback);
