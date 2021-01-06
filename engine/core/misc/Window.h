@@ -33,7 +33,7 @@ class Window : public Input {
   Window(int x, int y, std::string const& title, GLFWmonitor* monitor = nullptr,
          GLFWwindow* share = nullptr);
 
-  ~Window() { glfwDestroyWindow(window_ptr_); }
+  ~Window() override { glfwDestroyWindow(window_ptr_); }
 
   [[nodiscard]] bool Alive() const noexcept;
 

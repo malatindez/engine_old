@@ -10,7 +10,7 @@
 #undef STB_IMAGE_IMPLEMENTATION
 
 
-#include "core/core.h"
+#include "core/Core.h"
 #include "render/misc/Camera.h"
 
 bool function(int32_t, int32_t) {

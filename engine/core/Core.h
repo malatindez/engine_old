@@ -9,7 +9,7 @@ namespace engine::core {
 
 // Singleton class instance of which you can get by calling the GetInstance
 // function.
-class Core {
+class Core final {
  public:
 
   /* Disable copy and move semantics. */
@@ -31,6 +31,6 @@ class Core {
   
   uint64_t current_tick_ = 0;
 
-  std::vector<std::shared_ptr<Ticker>> tickingObjects;
+  std::vector<std::shared_ptr<Ticker>> ticking_objects_;
 };
 }  // namespace engine::core
