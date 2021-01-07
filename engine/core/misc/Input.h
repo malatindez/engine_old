@@ -218,7 +218,7 @@ class Input : public Ticker {
                       bool rewrite = false);
 
  protected:
-  Input() : Ticker(1, std::this_thread::get_id()) {}
+  Input() : Ticker(1u, std::this_thread::get_id()) {}
 
   void Init(GLFWwindow* window_ptr);
 
@@ -274,6 +274,6 @@ class Input : public Ticker {
   std::stack<std::shared_ptr<ScrollCallbackFun>> scroll_callbacks_;
   std::stack<std::shared_ptr<DropCallbackFun>> drop_callbacks_;
 
-  GLFWwindow* window_ptr_;
+  GLFWwindow* window_ptr_ = nullptr;
 };
 }  // namespace engine::core

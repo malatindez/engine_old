@@ -8,7 +8,7 @@ class Ticker {
       : tickrate_(tickrate),
         thread_id_(std::make_shared<std::thread::id>(thread_id)) {}
 
-  explicit Ticker(uint32_t tickrate) : tickrate_(tickrate) {}
+  explicit Ticker(const uint32_t tickrate) : tickrate_(tickrate) {}
 
   virtual ~Ticker() = default;
 
@@ -26,7 +26,7 @@ class Ticker {
                     .count())) /
         10e9;
     this->average_update_time_ =
-        average_update_time_ * calls_counter_ + exec_time;
+        average_update_time_ * double(calls_counter_) + exec_time;
     this->average_update_time_ /= ++calls_counter_;
   }
 
