@@ -10,7 +10,8 @@
 #undef STB_IMAGE_IMPLEMENTATION
 
 #include "core/Core.h"
-#include "render/misc/Camera.h"
+#include <core/client/misc/Window.h>
+#include <core/client/render/Camera.h>
 
 bool function(int32_t, int32_t) { return false; }
 int main() {
@@ -18,11 +19,12 @@ int main() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  auto window = std::make_shared<engine::core::Window>(1920, 1080, "engine",
+  auto window = std::make_shared<engine::client::Window>(
+      1920, 1080, "engine " + std::string(ENGINE_VERSION),
                                                        nullptr, nullptr);
   window->SetInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   using namespace std::placeholders;
-  auto wKeybindPtr = std::make_shared<engine::core::Input::KeyBindCallback>(
+  auto wKeybindPtr = std::make_shared<engine::client::Input::KeyBindCallback>(
       std::bind(&function, _1, _2));
   window->AddKeyCallback(glfwGetKeyScancode(GLFW_KEY_W), wKeybindPtr);
   window->MakeContextCurrent();
@@ -43,7 +45,7 @@ int main() {
     return -1;
   }
   glEnable(GL_DEPTH_TEST);
-  engine::render::Camera cam(window, glm::vec3(0, 1, 0));
+  engine::client::render::Camera cam(window, glm::vec3(0, 1, 0));
   window->SwapInterval(0);
   while (!window->ShouldClose()) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);

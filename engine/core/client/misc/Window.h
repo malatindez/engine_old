@@ -6,7 +6,7 @@
 #include "Input.h"
 #pragma warning(disable : 26495)
 // Functions from this class should be called only in the main thread.
-namespace engine::core {
+namespace engine::client {
 class Window : public Input {
  public:
   using PosFun = std::function<bool(int32_t, int32_t)>;
@@ -320,5 +320,5 @@ class Window : public Input {
   std::string title_;
   GLFWwindow* window_ptr_;
 };
-}  // namespace engine::core
+}  // namespace engine::client
 #pragma warning(default : 26495)

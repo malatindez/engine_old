@@ -13,7 +13,7 @@
 #include <thread>
 #include <vector>
 
-namespace engine::core {
+namespace engine::client {
 // Functions from this class should be called only in the main thread.
 
 /// <summary>
@@ -27,7 +27,7 @@ namespace engine::core {
 ///
 /// Other callbacks in the stack won't be called.
 /// </summary>
-class Input : public Ticker {
+class Input : public core::Ticker {
  public:
   using KeyCallbackFun =
       std::function<bool(int32_t, int32_t, int32_t, int32_t)>;
@@ -276,4 +276,4 @@ class Input : public Ticker {
 
   GLFWwindow* window_ptr_ = nullptr;
 };
-}  // namespace engine::core
+}  // namespace engine::client

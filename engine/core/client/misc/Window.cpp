@@ -1,7 +1,7 @@
 #pragma once
 #include "Window.h"
 
-namespace engine::core {
+namespace engine::client {
 Window::Window(int x, int y, std::string const& title, GLFWmonitor* monitor,
                GLFWwindow* share)
     : title_(title) {
@@ -352,4 +352,4 @@ void Window::StaticContentScaleCallback(GLFWwindow* window, float xscale,
     casted_window->ContentScaleCallback(xscale, yscale);
   }
 }
-}  // namespace engine::core
+}  // namespace engine::client

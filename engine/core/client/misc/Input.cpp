@@ -1,7 +1,7 @@
 #pragma once
 #include "Input.h"
 
-namespace engine::core {
+namespace engine::client {
 std::map<GLFWwindow*, Input*> Input::instances_;
 
 Input::~Input() { instances_.erase(window_ptr_); }
@@ -175,4 +175,4 @@ void Input::DropCallback(int32_t path_count, const char* paths[]) {
   }
 }
 
-}  // namespace engine::core
+}  // namespace engine::client

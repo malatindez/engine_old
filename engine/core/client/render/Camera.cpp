@@ -1,17 +1,17 @@
 #include "Camera.h"
 
-namespace engine::render {
+namespace engine::client::render {
 const float Camera::kDefaultYaw = -90.0F;
 const float Camera::kDefaultPitch = 0;
 const float Camera::kDefaultSensivity = 0.1F;
 const float Camera::kDefaultFOV = 90.0F;
 const float Camera::kMaxFOV = 120.0F;
-Camera::Camera(std::shared_ptr<core::Window> window, glm::vec3 world_up,
+Camera::Camera(std::shared_ptr<Window> window, glm::vec3 world_up,
                float yaw, float pitch)
     : world_up_(world_up), yaw_(yaw), pitch_(pitch) {
   using namespace std::placeholders;
   this->cp_callback_pointer_ =
-      std::make_shared<core::Window::CursorPosCallbackFun>(
+      std::make_shared<Window::CursorPosCallbackFun>(
           std::bind(&Camera::CursorCallback, this, _1, _2));
   window->PushCursorPosCallback(cp_callback_pointer_);
 }
@@ -48,4 +48,4 @@ bool Camera::CursorCallback(const float posx, const float posy) {
   return false;
 }
 
-}  // namespace engine::render
+}  // namespace engine::client::render

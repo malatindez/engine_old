@@ -2,7 +2,6 @@
 #include <memory>
 #include <vector>
 
-#include "../render/render.h"
 #include "Ticker.h"
 
 namespace engine::core {

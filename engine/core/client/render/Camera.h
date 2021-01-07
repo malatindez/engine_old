@@ -5,8 +5,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "../../core/misc/Window.h"
-namespace engine::render {
+#include <core/client/misc/Window.h>
+namespace engine::client::render {
 
 class Camera {
  public:
@@ -16,7 +16,7 @@ class Camera {
   static const float kDefaultFOV;
   static const float kMaxFOV;
 
-  Camera(std::shared_ptr<core::Window> window, glm::vec3 world_up,
+  Camera(std::shared_ptr<Window> window, glm::vec3 world_up,
          float yaw = kDefaultYaw, float pitch = kDefaultPitch);
 
   bool constrain_pitch() const noexcept { return constrain_pitch_; }
@@ -59,6 +59,6 @@ class Camera {
   float prev_pos_x_ = 0.0F;
   float prev_pos_y_ = 0.0F;
 
-  std::shared_ptr<core::Window::CursorPosCallbackFun> cp_callback_pointer_;
+  std::shared_ptr<Window::CursorPosCallbackFun> cp_callback_pointer_;
 };
-}  // namespace engine::render
+}  // namespace engine::client::render

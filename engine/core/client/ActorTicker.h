@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Ticker.h"
+#include <core/Ticker.h>
 
-namespace engine::core {
-class ActorTicker : public Ticker {
+namespace engine::client::client {
+class ActorTicker : public core::Ticker {
  public:
   explicit ActorTicker(const uint32_t tickrate) : Ticker(tickrate) {}
 };
-}  // namespace engine::core
+}  // namespace engine::client::client
