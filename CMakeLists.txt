@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.10)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(ENGINE_VERSION_MAJOR 0 CACHE INTERNAL "Major version of the project")
 set(ENGINE_VERSION_MINOR 0 CACHE INTERNAL "Minor version of the project")
 set(ENGINE_VERSION_PATCH 1-alpha CACHE STRING "Patch version of the project")
+
 
 project(Engine)
 
@@ -21,26 +23,25 @@ file(GLOB_RECURSE SERVER_HEADERS ${SRC_DIR} *.h)
 file(GLOB_RECURSE LIB_SOURCES ${SRC_DIR} *.cpp)
 file(GLOB_RECURSE LIB_HEADERS ${SRC_DIR} *.h)
 
+# separate sources by server/client/core
 
 list(FILTER LIB_SOURCES INCLUDE REGEX "${SRC_DIR}/*" )
 list(FILTER LIB_HEADERS INCLUDE REGEX "${SRC_DIR}/*")
-list(FILTER CLIENT_SOURCES INCLUDE REGEX "${SRC_DIR}/*" )
-list(FILTER CLIENT_HEADERS INCLUDE REGEX "${SRC_DIR}/*")
-list(FILTER SERVER_SOURCES INCLUDE REGEX "${SRC_DIR}/*" )
-list(FILTER SERVER_HEADERS INCLUDE REGEX "${SRC_DIR}/*")
-message(${LIB_SOURCES})
-message(${LIB_HEADERS})
 list(FILTER LIB_SOURCES EXCLUDE REGEX "/client/")
 list(FILTER LIB_SOURCES EXCLUDE REGEX "/server/")
 list(FILTER LIB_HEADERS EXCLUDE REGEX "/client/")
 list(FILTER LIB_HEADERS EXCLUDE REGEX "/server/")
 list(FILTER LIB_SOURCES EXCLUDE REGEX "Client.cpp")
 list(FILTER LIB_SOURCES EXCLUDE REGEX "Server.cpp")
-message(${LIB_SOURCES})
-message(${LIB_HEADERS})
+
+list(FILTER CLIENT_SOURCES INCLUDE REGEX "${SRC_DIR}/*" )
+list(FILTER CLIENT_HEADERS INCLUDE REGEX "${SRC_DIR}/*")
 list(FILTER CLIENT_SOURCES EXCLUDE REGEX "Server.cpp")
 list(FILTER CLIENT_SOURCES EXCLUDE REGEX "/server/")
 list(FILTER CLIENT_HEADERS EXCLUDE REGEX "/server/")
+
+list(FILTER SERVER_SOURCES INCLUDE REGEX "${SRC_DIR}/*" )
+list(FILTER SERVER_HEADERS INCLUDE REGEX "${SRC_DIR}/*")
 list(FILTER SERVER_SOURCES EXCLUDE REGEX "Client.cpp")
 list(FILTER SERVER_SOURCES EXCLUDE REGEX "/client/")
 list(FILTER SERVER_HEADERS EXCLUDE REGEX "/client/")
@@ -49,6 +50,7 @@ add_library( Engine ${LIB_SOURCES} ${LIB_HEADERS} )
 
 add_executable(Client ${CLIENT_SOURCES} ${CLIENT_HEADERS})
 add_executable(Server ${SERVER_SOURCES} ${SERVER_HEADERS})
+
 
 function(assign_source_group)
     foreach(_source IN ITEMS ${ARGN})
@@ -132,8 +134,22 @@ if(tests)
   # Add test cpp file
   file(GLOB_RECURSE TEST_SOURCES ${PROJECT_SOURCE_DIR}/tests *.*)
   list(FILTER TEST_SOURCES INCLUDE REGEX "${PROJECT_SOURCE_DIR}/tests/*" )
-  add_executable(runUnitTests ${TEST_SOURCES})
-  target_link_libraries(runUnitTests gtest gtest_main)
+  add_executable(Tests ${TEST_SOURCES})
+  target_link_libraries(Tests gtest gtest_main)
   add_test(NAME TEST COMMAND runUnitTests)
 
 endif()
+
+# move libraries to special folder
+set_target_properties(glfw PROPERTIES FOLDER Libraries)
+set_target_properties(glad PROPERTIES FOLDER Libraries)
+set_target_properties(gmock PROPERTIES FOLDER Libraries)
+set_target_properties(gmock_main PROPERTIES FOLDER Libraries)
+set_target_properties(gtest PROPERTIES FOLDER Libraries)
+set_target_properties(gtest_main PROPERTIES FOLDER Libraries)
+
+# move projects to Engine folder
+set_target_properties(Engine PROPERTIES FOLDER Engine)
+set_target_properties(Client PROPERTIES FOLDER Engine)
+set_target_properties(Server PROPERTIES FOLDER Engine)
+set_target_properties(Tests  PROPERTIES FOLDER Engine)
