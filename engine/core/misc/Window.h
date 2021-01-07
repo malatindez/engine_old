@@ -26,8 +26,7 @@ class Window : public Input {
   Window& operator=(Window&&) = delete;
 
   Window(glm::ivec2 resolution, std::string const& title,
-         GLFWmonitor* monitor = nullptr,
-         GLFWwindow* share = nullptr)
+         GLFWmonitor* monitor = nullptr, GLFWwindow* share = nullptr)
       : Window(resolution.x, resolution.y, title, monitor, share) {}
 
   Window(int x, int y, std::string const& title, GLFWmonitor* monitor = nullptr,
@@ -181,9 +180,9 @@ class Window : public Input {
   // rate of the desired video mode and switches to the video mode closest to
   // it. The window position is ignored when setting a monitor.
   //
-  // When the monitor is nullptr, the position, width and height are used to place
-  // the window content area. The refresh rate is ignored when no monitor is
-  // specified.
+  // When the monitor is nullptr, the position, width and height are used to
+  // place the window content area. The refresh rate is ignored when no monitor
+  // is specified.
   //
   // When a window transitions from full screen to windowed mode, this function
   // restores any previous window settings such as whether it is decorated,

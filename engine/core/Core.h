@@ -31,6 +31,8 @@ class Core final {
   
   uint64_t current_tick_ = 0;
 
-  std::vector<std::shared_ptr<Ticker>> ticking_objects_;
+  std::vector<std::shared_ptr<Ticker>> all_ticking_objects_;
+  
+  
 };
 }  // namespace engine::core

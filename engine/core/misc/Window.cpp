@@ -37,7 +37,7 @@ void Window::MakeContextCurrent() { glfwMakeContextCurrent(window_ptr_); }
 
 void Window::SwapBuffers() const { glfwSwapBuffers(window_ptr_); }
 
-void Window::PollEvents() const{ glfwPollEvents(); }
+void Window::PollEvents() const { glfwPollEvents(); }
 
 void Window::SwapInterval(int interval) const { glfwSwapInterval(interval); }
 
@@ -126,7 +126,8 @@ void Window::SetMonitor(GLFWmonitor* monitor, int xpos, int ypos, int width,
   if (refresh_rate == 0) {
     refresh_rate = mode->refreshRate;
   }
-  glfwSetWindowMonitor(window_ptr_, monitor, xpos, ypos, width, height, refresh_rate);
+  glfwSetWindowMonitor(window_ptr_, monitor, xpos, ypos, width, height,
+                       refresh_rate);
 }
 
 void Window::IconifyWindow() { glfwIconifyWindow(window_ptr_); }

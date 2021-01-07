@@ -1,21 +1,18 @@
 
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
-#include <iostream>
 #include <functional>
+#include <iostream>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #undef STB_IMAGE_IMPLEMENTATION
 
-
 #include "core/Core.h"
 #include "render/misc/Camera.h"
 
-bool function(int32_t, int32_t) {
-  return false;
-}
+bool function(int32_t, int32_t) { return false; }
 int main() {
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -25,8 +22,8 @@ int main() {
                                                        nullptr, nullptr);
   window->SetInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   using namespace std::placeholders;
-  auto wKeybindPtr =
-      std::make_shared<engine::core::Input::KeyBindCallback>(std::bind(&function, _1, _2));
+  auto wKeybindPtr = std::make_shared<engine::core::Input::KeyBindCallback>(
+      std::bind(&function, _1, _2));
   window->AddKeyCallback(glfwGetKeyScancode(GLFW_KEY_W), wKeybindPtr);
   window->MakeContextCurrent();
 
@@ -46,12 +43,13 @@ int main() {
     return -1;
   }
   glEnable(GL_DEPTH_TEST);
-  engine::render::Camera cam(window, glm::vec3(0,1,0));
+  engine::render::Camera cam(window, glm::vec3(0, 1, 0));
+  window->SwapInterval(0);
   while (!window->ShouldClose()) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     glClearColor(0.1F, 0.1F, 0.15F, 1.0F);
     window->SwapBuffers();
     window->PollEvents();
-    window->Update(0,0);
+    window->UpdateExecutionTime(0, 0);
   }
 }

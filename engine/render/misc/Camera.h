@@ -1,7 +1,6 @@
 #pragma once
 
 #include <functional>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -16,7 +15,6 @@ class Camera {
   static const float kDefaultSensivity;
   static const float kDefaultFOV;
   static const float kMaxFOV;
-
 
   Camera(std::shared_ptr<core::Window> window, glm::vec3 world_up,
          float yaw = kDefaultYaw, float pitch = kDefaultPitch);

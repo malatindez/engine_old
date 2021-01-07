@@ -7,7 +7,8 @@ const float Camera::kDefaultSensivity = 0.1F;
 const float Camera::kDefaultFOV = 90.0F;
 const float Camera::kMaxFOV = 120.0F;
 Camera::Camera(std::shared_ptr<core::Window> window, glm::vec3 world_up,
-               float yaw, float pitch) : world_up_(world_up), yaw_(yaw), pitch_(pitch) {
+               float yaw, float pitch)
+    : world_up_(world_up), yaw_(yaw), pitch_(pitch) {
   using namespace std::placeholders;
   this->cp_callback_pointer_ =
       std::make_shared<core::Window::CursorPosCallbackFun>(

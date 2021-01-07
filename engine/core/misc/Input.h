@@ -49,12 +49,14 @@ class Input : public Ticker {
   ~Input() override;
 
   /// <summary>
-  /// This function returns the value of an input option for the specified window.
+  /// This function returns the value of an input option for the specified
+  /// window.
   /// </summary>
-  /// <param name="mode">One of GLFW_CURSOR, GLFW_STICKY_KEYS, GLFW_STICKY_MOUSE_BUTTONS, GLFW_LOCK_KEY_MODS or GLFW_RAW_MOUSE_MOTION.</param>
-  /// <returns>Returns the value of an input option for the specified window.</returns>
-  [[nodiscard]] 
-  int32_t input_mode(int32_t mode) {
+  /// <param name="mode">One of GLFW_CURSOR, GLFW_STICKY_KEYS,
+  /// GLFW_STICKY_MOUSE_BUTTONS, GLFW_LOCK_KEY_MODS or
+  /// GLFW_RAW_MOUSE_MOTION.</param> <returns>Returns the value of an input
+  /// option for the specified window.</returns>
+  [[nodiscard]] int32_t input_mode(int32_t mode) {
     return glfwGetInputMode(window_ptr_, mode);
   }
 
