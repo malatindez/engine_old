@@ -3,7 +3,6 @@
 #include <glad/glad.h>
 
 #include <functional>
-#include <iostream>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -14,7 +13,14 @@
 #include <core/client/render/Camera.h>
 
 bool function(int32_t, int32_t) { return false; }
+#ifdef WIN32
+#include <Windows.h>
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+                    PWSTR pCmdLine, int nCmdShow) {
+#else
 int main() {
+#endif
+
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
