@@ -1,20 +1,23 @@
 #include "Config.h"
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
-
-#include <functional>
-
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #undef STB_IMAGE_IMPLEMENTATION
 
-#include "core/Core.h"
-#include <core/client/misc/Window.h>
-#include <core/client/render/Camera.h>
+#include <functional>
+#ifdef WIN32
+#include <Windows.h>
+#endif
+
+#define ENGINE_CLIENT
+
+#include "engine/Core.h"
+#include <engine/client/misc/Window.h>
+#include <engine/client/render/Camera.h>
 
 bool function(int32_t, int32_t) { return false; }
 #ifdef WIN32
-#include <Windows.h>
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                     PWSTR pCmdLine, int nCmdShow) {
 #else

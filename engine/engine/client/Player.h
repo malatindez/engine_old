@@ -1,6 +1,6 @@
 #pragma once
 
-#include <core/client/render/Camera.h>
+#include <engine/client/render/Camera.h>
 
 #include "misc/Input.h"
 
@@ -20,9 +20,9 @@ class Player {
         render::Camera(window, worldUp, 0, 45.0F));
   }
 
-  void setPosition(glm::vec3 x) noexcept { this->position_ = x; }
+  void SetPosition(glm::vec3 x) noexcept { this->position_ = x; }
   [[nodiscard]] glm::vec3 position() const noexcept { return position_; }
-  void setMovementSpeed(float x) noexcept { this->speed_ = x; }
+  void SetMovementSpeed(float x) noexcept { this->speed_ = x; }
   [[nodiscard]] float movement_speed() const noexcept { return speed_; }
 
  private:

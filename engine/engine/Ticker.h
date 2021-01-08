@@ -4,6 +4,12 @@
 namespace engine::core {
 class Ticker {
  public:
+  /// <summary>
+  /// Ticker class constructor.
+  /// If tickrate is zero, 
+  /// </summary>
+  /// <param name="tickrate">frequency with which we should call the Update function</param>
+  /// <param name="thread_id">thread id if class should be bound to thread</param>
   Ticker(uint32_t tickrate, std::thread::id &thread_id)
       : tickrate_(tickrate),
         thread_id_(std::make_shared<std::thread::id>(thread_id)) {}
@@ -17,7 +23,7 @@ class Ticker {
   /// </summary>
   /// <param name="tick"></param>
   /// <param name="time_delta"></param>
-  void UpdateExecutionTime(const unsigned int tick, const float time_delta) {
+  void UpdateExecutionTime(const uint64_t tick, const float time_delta) {
     auto start = std::chrono::high_resolution_clock::now();
     Update(tick, time_delta);
     double exec_time =
@@ -31,11 +37,11 @@ class Ticker {
   }
 
   /// <summary>
-  ///
+  /// 
   /// </summary>
   /// <param name="tick">current engine tick</param>
   /// <param name="time_delta"></param>
-  virtual void Update(const unsigned int tick, const float time_delta) {
+  virtual void Update(const uint64_t tick, const float time_delta) {
     // Intentionally unimplemented
   }
 

@@ -46,7 +46,7 @@ void Input::StaticDropCallback(GLFWwindow* window, int path_count,
   instances_.find(window)->second->DropCallback(path_count, paths);
 }
 
-void Input::Update(const unsigned int, const float) {
+void Input::Update(const uint64_t, const float) {
   // after each event update we shall call each callback
   for (auto i = key_bind_callbacks_.begin(); i != key_bind_callbacks_.end();) {
     auto cpk_itr = currently_pressed_keys_.find(i->first);

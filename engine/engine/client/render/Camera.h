@@ -5,7 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <core/client/misc/Window.h>
+#include <engine/client/misc/Window.h>
 namespace engine::client::render {
 
 class Camera {
