@@ -23,9 +23,9 @@ class Ticker {
   /// </summary>
   /// <param name="tick"></param>
   /// <param name="time_delta"></param>
-  void UpdateExecutionTime(const uint64_t tick, const float time_delta) {
+  void UpdateExecutionTime(const uint64_t tick) {
     auto start = std::chrono::high_resolution_clock::now();
-    Update(tick, time_delta);
+    Update(tick);
     double exec_time =
         (double(std::chrono::duration_cast<std::chrono::nanoseconds>(
                     std::chrono::high_resolution_clock::now() - start)
@@ -35,19 +35,19 @@ class Ticker {
         average_update_time_ * double(calls_counter_) + exec_time;
     this->average_update_time_ /= ++calls_counter_;
   }
-
   /// <summary>
   /// 
   /// </summary>
   /// <param name="tick">current engine tick</param>
   /// <param name="time_delta"></param>
-  virtual void Update(const uint64_t tick, const float time_delta) {
+  virtual void Update(const uint64_t tick) {
     // Intentionally unimplemented
   }
 
   [[nodiscard]] uint32_t tickrate() const noexcept { return tickrate_; }
 
-  // can return nullptr
+  // If the thread_id() is not equal to nullptr, then we should update this
+  // object only in the thread with this id
   [[nodiscard]] std::weak_ptr<std::thread::id> thread_id() const {
     return std::weak_ptr<std::thread::id>(thread_id_);
   }
