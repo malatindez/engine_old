@@ -1,11 +1,14 @@
-
+#pragma once
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 #include <string>
+#include <fstream>
+#include <sstream>
 
 namespace engine::client::render {
 class Shader {
@@ -24,6 +27,22 @@ class Shader {
     ~Shader();
 
     void operator()() const noexcept { Use(); }
+
+   static std::string LoadSourceCode(std::string const& path) {
+     std::ifstream shader_file;
+     shader_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+     std::string return_value = "";
+     try {
+       shader_file.open(path);
+       std::stringstream shaderStream;
+       shaderStream << shader_file.rdbuf();
+       shader_file.close();
+       return_value = shaderStream.str();
+     } catch (std::ifstream::failure const&) {
+       return_value = "";
+     }
+     return return_value;
+   }
 
     void Use() const noexcept { glUseProgram(sp_id_); }
 
