@@ -19,25 +19,33 @@ class Camera {
   Camera(std::shared_ptr<Window> window, glm::vec3 world_up,
          float yaw = kDefaultYaw, float pitch = kDefaultPitch);
 
-  bool constrain_pitch() const noexcept { return constrain_pitch_; }
+  [[nodiscard]] bool constrain_pitch() const noexcept {
+    return constrain_pitch_;
+  }
   void SetConstrainPitch(bool cp = true) noexcept { constrain_pitch_ = cp; }
-  float yaw() const noexcept { return this->yaw_; }
+
+  [[nodiscard]] float yaw() const noexcept { return this->yaw_; }
   void SetYaw(const float value) noexcept { this->yaw_ = value; }
-  float pitch() const noexcept { return this->pitch_; }
+
+  [[nodiscard]] float pitch() const noexcept { return this->pitch_; }
   void SetPitch(const float value) noexcept { this->pitch_ = value; }
-  float sensivity() const noexcept { return this->sensivity_; }
+
+  [[nodiscard]] float sensivity() const noexcept { return this->sensivity_; }
   void SetSensivity(const float value) noexcept { this->sensivity_ = value; }
-  float FOV() const noexcept { return this->fov_; }
+
+  [[nodiscard]] float FOV() const noexcept { return this->fov_; }
   void SetFOV(const float value) noexcept { this->fov_ = value; }
-  glm::vec3 world_up() const noexcept { return this->world_up_; }
+
+  [[nodiscard]] glm::vec3 world_up() const noexcept { return this->world_up_; }
   void SetWorldUp(const glm::vec3 value) noexcept { this->world_up_ = value; }
-  glm::vec3 position() const noexcept { return this->position_; }
+
+  [[nodiscard]] glm::vec3 position() const noexcept { return this->position_; }
   void SetPosition(glm::vec3 pos) noexcept { this->position_ = pos; }
 
-  glm::vec3 front() const noexcept { return front_; }
-  glm::vec3 up() const noexcept { return up_; }
-  glm::vec3 right() const noexcept { return right_; }
-  glm::mat4 view_matrix() const noexcept {
+  [[nodiscard]] glm::vec3 front() const noexcept { return front_; }
+  [[nodiscard]] glm::vec3 up() const noexcept { return up_; }
+  [[nodiscard]] glm::vec3 right() const noexcept { return right_; }
+  [[nodiscard]] glm::mat4 view_matrix() const noexcept {
     return glm::lookAt(position_, position_ + front_, up_);
   }
 
