@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 set(ENGINE_VERSION_MAJOR 0 CACHE INTERNAL "Major version of the project")
 set(ENGINE_VERSION_MINOR 0 CACHE INTERNAL "Minor version of the project")
-set(ENGINE_VERSION_PATCH 1-alpha CACHE STRING "Patch version of the project")
+set(ENGINE_VERSION_PATCH 1 CACHE STRING "Patch version of the project")
 
 # set the project name
 project(Engine VERSION 0.1)
@@ -18,7 +18,12 @@ set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libraries")
 file(GLOB_RECURSE SOURCES ${SRC_DIR} *.*)
 list(FILTER SOURCES INCLUDE REGEX "${SRC_DIR}/*" )
 
+if (WIN32)
+add_executable(Engine WIN32 ${SOURCES})
+else()
 add_executable(${PROJECT_NAME} ${SOURCES})
+endif (WIN32)
+
 
 function(assign_source_group)
     foreach(_source IN ITEMS ${ARGN})
