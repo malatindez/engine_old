@@ -1,11 +1,14 @@
 #pragma once
 #include <GLFW/glfw3.h>
 
+#include <chrono>
+#include <map>
 #include <memory>
 #include <mutex>
 #include <vector>
 
 #include "Ticker.h"
+#include "engine/client/render/Shader.h"
 
 namespace engine::core {
 
@@ -47,14 +50,14 @@ class Core final {
       return 0;
     }
     if (temp->thread_id().expired()) {  // we can add the object to any thread
-      std::scoped_lock<std::mutex> lock(threads_mutex);
+      std::scoped_lock<std::mutex> lock(threads_mutex_);
 
-      if (threads.empty()) {
+      if (threads_.empty()) {
         return 0;
       }
 
-      auto min_execution_thread = threads.begin();
-      for (auto i = threads.begin() + 1; i != threads.end(); i++) {
+      auto min_execution_thread = threads_.begin();
+      for (auto i = threads_.begin() + 1; i != threads_.end(); i++) {
         if ((*i).get()->exec_time() <
             min_execution_thread->get()->exec_time()) {
           min_execution_thread = i;
@@ -62,19 +65,37 @@ class Core final {
       }
       min_execution_thread->get()->AddObject(object);
     } else {
-      threads_mutex.lock();
+      threads_mutex_.lock();
       auto k = temp->thread_id().lock();
       // adding object to thread with demanded id
-      for (auto i = threads.begin(); i != threads.end(); i++) {
+      for (auto i = threads_.begin(); i != threads_.end(); i++) {
         if (*k == i->get()->thread_id()) {
           i->get()->AddObject(object);
           break;
         }
       }
-      threads_mutex.unlock();
+      threads_mutex_.unlock();
     }
 
     return 1;
+  }
+
+  std::shared_ptr<engine::client::render::Shader> LoadShader(
+      std::string const& vertex_path, std::string const& fragment_path,
+      std::string const& geometry_path = "") {
+    std::string key = vertex_path + "#" + fragment_path + "#" + geometry_path;
+    if (shaders_.find(key) != shaders_.end()) {
+      return shaders_[key];
+    }
+    using engine::client::render::Shader;
+    std::scoped_lock<std::mutex> lock(shaders_mutex_);
+
+    auto ptr = std::make_shared<engine::client::render::Shader>(
+        Shader::LoadSourceCode(vertex_path),
+        Shader::LoadSourceCode(fragment_path),
+        Shader::LoadSourceCode(geometry_path));
+    shaders_[key] = ptr;
+    return ptr;
   }
 
  private:
@@ -97,8 +118,9 @@ class Core final {
     }
 
    private:
-    void ThreadFunction() {
-      auto core = Core::GetInstance();
+    [[noreturn]] void ThreadFunction() {
+      std::shared_ptr<Core> core = Core::GetInstance();
+      core->ThreadReady(thread_->get_id());
       while (true) {
         for (const auto& object : objects_) {
           object.lock()->UpdateExecutionTime(core->global_tick_);
@@ -133,46 +155,64 @@ class Core final {
     // stores current local tick
     uint64_t local_tick_ = 0;
   };
-  std::thread::id operational_thread_id_;
-  std::mutex thread_ready_counter_mutex_;
-  int thread_ready_counter_ = -100000;
   void ThreadReady(std::thread::id id) {
-    {
+    if (operational_thread_id_ != id) {
       std::scoped_lock<std::mutex> lock(thread_ready_counter_mutex_);
+      thread_ready_counter_ += 1;
+    } else {
+      auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(
+                        std::chrono::system_clock::now().time_since_epoch())
+                        .count();
+      std::this_thread::sleep_for(std::chrono::milliseconds(
+          int(1000 / tickrate_ - (millis - last_tick_timestamp) / 1000)));
       thread_ready_counter_ += 1;
     }
     while (thread_ready_counter_ < 0) {
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     if (operational_thread_id_ == id) {
-      thread_ready_counter_ = -(int32_t)threads.size();
+      thread_ready_counter_ = -(int32_t)threads_.size();
       global_tick_ += 1;
     }
   }
 
   Core() {
+    thread_ready_counter_ = -1 - (int32_t)std::thread::hardware_concurrency();
     for (size_t i = 0; i < std::thread::hardware_concurrency(); i++) {
       auto ptr = std::make_unique<UpdateThread>(global_tick_);
-      threads.push_back(std::move(ptr));
+      threads_.push_back(std::move(ptr));
     }
-    operational_thread_id_ = threads[0]->thread_id();
-    while (thread_ready_counter_ != -100000 + threads.size()) {
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    std::scoped_lock<std::mutex> lock(thread_ready_counter_mutex_);
-    thread_ready_counter_ = 0;
+    operational_thread_id_ = threads_[0]->thread_id();
 
-    last_tick_timestamp = glfwGetTime();
+    std::scoped_lock<std::mutex> lock(thread_ready_counter_mutex_);
+    thread_ready_counter_++;
+
+    std::chrono::time_point<std::chrono::system_clock> now =
+        std::chrono::system_clock::now();
+    auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(
+                      now.time_since_epoch())
+                      .count();
+    last_tick_timestamp = millis;
   }
 
+  static std::mutex core_creation_mutex_;
   static std::shared_ptr<Core> core_ptr_;
+
+  int thread_ready_counter_ = -100000;
+  std::mutex thread_ready_counter_mutex_;
+
+  std::thread::id operational_thread_id_;
 
   double last_tick_timestamp = 0;
   uint64_t global_tick_ = 0;
 
-  uint64_t tickrate_ = 0;
+  uint64_t tickrate_ = 32;
 
-  std::vector<std::unique_ptr<UpdateThread>> threads;
-  std::mutex threads_mutex;
+  std::vector<std::unique_ptr<UpdateThread>> threads_;
+  std::mutex threads_mutex_;
+
+  std::map<std::string, std::shared_ptr<engine::client::render::Shader>>
+      shaders_;
+  std::mutex shaders_mutex_;
 };
 }  // namespace engine::core
