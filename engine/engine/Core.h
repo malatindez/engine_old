@@ -1,4 +1,6 @@
 #pragma once
+#include <GLFW/glfw3.h>
+
 #include <memory>
 #include <mutex>
 #include <vector>
@@ -53,21 +55,19 @@ class Core final {
 
       auto min_execution_thread = threads.begin();
       for (auto i = threads.begin() + 1; i != threads.end(); i++) {
-        if ((*i).get()->exec_time < min_execution_thread->get()->exec_time) {
+        if ((*i).get()->exec_time() <
+            min_execution_thread->get()->exec_time()) {
           min_execution_thread = i;
         }
       }
-      std::scoped_lock<std::mutex> lock_(
-          min_execution_thread->get()->ticking_objects_mutex);
-      min_execution_thread->get()->ticking_objects.push_back(object);
+      min_execution_thread->get()->AddObject(object);
     } else {
       threads_mutex.lock();
       auto k = temp->thread_id().lock();
       // adding object to thread with demanded id
       for (auto i = threads.begin(); i != threads.end(); i++) {
-        if (*k == i->get()->thread.get_id()) {
-          std::scoped_lock<std::mutex> lock(i->get()->ticking_objects_mutex);
-          (*i).get()->ticking_objects.push_back(object);
+        if (*k == i->get()->thread_id()) {
+          i->get()->AddObject(object);
           break;
         }
       }
@@ -80,92 +80,88 @@ class Core final {
  private:
   class UpdateThread {
    public:
+    explicit UpdateThread(uint32_t tick) : local_tick_(tick) {
+      this->thread_ =
+          std::make_unique<std::thread>(&UpdateThread::ThreadFunction, this);
+    }
+
     [[nodiscard]] double exec_time() const noexcept { return exec_time_; }
 
     void AddObject(std::weak_ptr<Ticker> object) {
-      std::scoped_lock<std::mutex> lock(objects_mutex_);
-      objects_.push_back(object);
-      optimize_ = true;
+      std::scoped_lock<std::mutex> lock(objects_to_add_mutex_);
+      objects_to_add_.push_back(object);
+    }
+
+    [[nodiscard]] std::thread::id thread_id() const noexcept {
+      return thread_->get_id();
     }
 
    private:
-
-     struct ExecutionList {
-       using ObjectIterator = std::vector<std::weak_ptr<Ticker>>::iterator;
-       std::vector<ObjectIterator> objects;
-       double execution_time;
-     };
-
     void ThreadFunction() {
       auto core = Core::GetInstance();
       while (true) {
-        auto exec_list =
-            optimized_queue_.begin() + local_tick_ % optimized_queue_.size();
-        for (const auto& object : exec_list->objects) {
-            object->lock()->UpdateExecutionTime(core->global_tick_);
+        for (const auto& object : objects_) {
+          object.lock()->UpdateExecutionTime(core->global_tick_);
         }
-
-        // update exec_list execution_time once per 60 ticks
-        if ((local_tick_ + local_tick_ % optimized_queue_.size()) % 60 == 0) {
-          exec_list->execution_time = 0;
-          for (auto itr = objects_.begin();
-               itr != objects_.end(); itr++) {
-            exec_list->execution_time += itr->lock()->average_update_time();
+        if (local_tick_ % (core->tickrate_ / 10) == 0 &&
+            !objects_to_add_.empty()) {
+          std::scoped_lock<std::mutex> lock(objects_to_add_mutex_);
+          objects_.insert(objects_.end(), objects_to_add_.begin(),
+                          objects_to_add_.end());
+          objects_to_add_.clear();
+        }
+        if (local_tick_ % (core->tickrate_ / 2) == 0) {
+          for (auto itr = objects_.begin(); itr != objects_.end(); itr++) {
+            exec_time_ +=
+                itr->lock()->average_update_time() / itr->lock()->tickrate();
           }
         }
-
-        if (optimize_) {
-          OptimizeQueue();
-        }
-      }
-    }
-    
-
-    void OptimizeQueue() { 
-      std::scoped_lock<std::mutex> lock(objects_mutex_);
-      std::map<uint32_t, std::vector<ExecutionList::ObjectIterator>> map;
-      for (auto itr = objects_.begin(); itr != objects_.end(); itr++) {
-        uint32_t tickrate = itr->lock()->tickrate();
-        if (map.count(tickrate)) {
-          map[tickrate].push_back(itr);
-        } else {
-          map[tickrate] = std::vector<ExecutionList::ObjectIterator>();
-          map[tickrate].push_back(itr);
-        }
-      }
-      optimized_queue_.clear();
-      uint32_t max_tickrate = 0;
-      for (auto itr = map.begin(); itr != map.end(); itr++) {
-        max_tickrate = max(itr->first, max_tickrate);
+        core->ThreadReady(thread_->get_id());
+        local_tick_ = core->global_tick_;
       }
     }
 
-    // Optimization flag, if set to true, optimize_queue will be called.
-    bool optimize_;
+    std::mutex objects_to_add_mutex_;
+    std::vector<std::weak_ptr<Ticker>> objects_to_add_;
 
-    std::vector<ExecutionList> optimized_queue_;
-
-    std::mutex objects_mutex_;
     std::vector<std::weak_ptr<Ticker>> objects_;
-
-
 
     std::unique_ptr<std::thread> thread_;
 
-    // stores current local tick
-    uint64_t local_tick_;
-
     double exec_time_ = 0;
+
+    // stores current local tick
+    uint64_t local_tick_ = 0;
   };
+  std::thread::id operational_thread_id_;
+  std::mutex thread_ready_counter_mutex_;
+  int thread_ready_counter_ = -100000;
+  void ThreadReady(std::thread::id id) {
+    {
+      std::scoped_lock<std::mutex> lock(thread_ready_counter_mutex_);
+      thread_ready_counter_ += 1;
+    }
+    while (thread_ready_counter_ < 0) {
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    if (operational_thread_id_ == id) {
+      thread_ready_counter_ = -(int32_t)threads.size();
+      global_tick_ += 1;
+    }
+  }
 
   Core() {
-    for (int i = 0; i < std::thread::hardware_concurrency(); i++) {
-      auto ptr = std::make_unique<ThreadData>();
-      ptr->thread = std::make_unique<std::thread>(
-          std::thread(&Core::Updater, this, ptr.get()));
-      ptr->local_tick = 0;
-      ptr->exec_time = 0;
+    for (size_t i = 0; i < std::thread::hardware_concurrency(); i++) {
+      auto ptr = std::make_unique<UpdateThread>(global_tick_);
+      threads.push_back(std::move(ptr));
     }
+    operational_thread_id_ = threads[0]->thread_id();
+    while (thread_ready_counter_ != -100000 + threads.size()) {
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    std::scoped_lock<std::mutex> lock(thread_ready_counter_mutex_);
+    thread_ready_counter_ = 0;
+
     last_tick_timestamp = glfwGetTime();
   }
 
@@ -176,7 +172,7 @@ class Core final {
 
   uint64_t tickrate_ = 0;
 
-  std::vector<std::unique_ptr<ThreadData>> threads;
+  std::vector<std::unique_ptr<UpdateThread>> threads;
   std::mutex threads_mutex;
 };
 }  // namespace engine::core
