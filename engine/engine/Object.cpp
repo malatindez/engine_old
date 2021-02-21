@@ -12,8 +12,8 @@ namespace engine::core {
   return scale_matrix_; 
 }
 
-[[nodiscard]] glm::mat4 Object::full_matrix() noexcept {
-  UpdateFullMatrix();
+[[nodiscard]] glm::mat4 Object::model_matrix() noexcept {
+  UpdateModelMatrix();
   return full_matrix_;
 }
 
@@ -101,7 +101,7 @@ void Object::SetScale(glm::vec3 const& scale) noexcept {
 }
 
 
-void Object::UpdateFullMatrix() noexcept {
+void Object::UpdateModelMatrix() noexcept {
   bool flag = false;
   if (translation_matrix_buf_ != translation_matrix_) {
     translation_matrix_buf_ = translation_matrix_;

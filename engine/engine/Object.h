@@ -1,6 +1,4 @@
-
-#include "Ticker.h"
-
+#pragma once
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
@@ -9,6 +7,12 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
 
+#include "Ticker.h"
+#include "engine/client/render/Renderer.h"
+
+namespace engine::client::render {
+class Renderer;
+}
 namespace engine::core {
 class Object : public Ticker {
  public:
@@ -30,12 +34,18 @@ class Object : public Ticker {
     this->Scale(scale);
   }
 
+
+  [[nodiscard]] virtual std::shared_ptr<engine::client::render::Renderer>
+  renderer()  {
+    return {};
+  }
+
   // This function returns rotation & coordinate matrix, which we can process &
   // use in shader
   [[nodiscard]] glm::mat4 translation_matrix() const noexcept;
   [[nodiscard]] glm::mat4 rotation_matrix() const noexcept;
   [[nodiscard]] glm::mat4 scale_matrix() const noexcept;
-  [[nodiscard]] glm::mat4 full_matrix() noexcept;
+  [[nodiscard]] glm::mat4 model_matrix() noexcept;
 
   // move object by this coords(object.x += coords.x, object.y += coords.y etc.)
   void Move(glm::vec3 const& coords) noexcept;
@@ -86,7 +96,7 @@ class Object : public Ticker {
   void SetScale(glm::vec3 const& scale) noexcept;
 
  private:
-  void UpdateFullMatrix() noexcept;
+  void UpdateModelMatrix() noexcept;
 
   glm::mat4 translation_matrix_ = glm::mat4(1.0F);
   glm::mat4 rotation_matrix_ = glm::mat4(1.0F);
