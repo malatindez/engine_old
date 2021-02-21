@@ -1,4 +1,5 @@
 #include "Config.h"
+
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 #define STB_IMAGE_IMPLEMENTATION
@@ -6,6 +7,7 @@
 #undef STB_IMAGE_IMPLEMENTATION
 
 #include <functional>
+#include <iostream>
 #ifdef WIN32
 #include <Windows.h>
 #endif
@@ -18,12 +20,15 @@
 
 bool function(int32_t, int32_t) { return false; }
 #ifdef WIN32
-int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    PWSTR pCmdLine, int nCmdShow) {
+int WINAPI wWinMain([[maybe_unused]] HINSTANCE hInstance,
+                    [[maybe_unused]] HINSTANCE hPrevInstance,
+                    [[maybe_unused]] PWSTR pCmdLine,
+                    [[maybe_unused]] int nCmdShow) {
 #else
 int main() {
 #endif
 
+  int i = 0;
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -61,6 +66,6 @@ int main() {
     glClearColor(0.1F, 0.1F, 0.15F, 1.0F);
     window->SwapBuffers();
     window->PollEvents();
-    window->UpdateExecutionTime(0, 0);
+    window->UpdateExecutionTime(0);
   }
 }
