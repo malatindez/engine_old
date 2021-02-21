@@ -11,10 +11,10 @@ uniform mat4 fullMatrix;
 uniform sampler2D normals;
 void main()
 {
-    FragPos = vec3(model * vec4(aPos, 1.0));
-    Normal = mat3(transpose(inverse(model))) * texture(normals,aTexCoords).xyz;  
+    FragPos = aPos;
+    Normal = texture(normals,aTexCoords).xyz;  
     TexCoords = aTexCoords;
     
-    gl_Position = fullMatrix * vec4(FragPos,1.0);
+    gl_Position = vec4(FragPos,1.0);
     pos = vec3(gl_Position);
 }
