@@ -10,7 +10,7 @@ class Ticker {
   /// </summary>
   /// <param name="tickrate">frequency with which we should call the Update function</param>
   /// <param name="thread_id">thread id if class should be bound to thread</param>
-  Ticker(uint32_t tickrate, std::thread::id &thread_id)
+  Ticker(const uint32_t tickrate, std::thread::id const& thread_id)
       : tickrate_(tickrate),
         thread_id_(std::make_shared<std::thread::id>(thread_id)) {}
 
@@ -24,6 +24,9 @@ class Ticker {
   /// <param name="tick"></param>
   /// <param name="time_delta"></param>
   void UpdateExecutionTime(const uint64_t tick) {
+    if (tick % tickrate() != 0 || ! needs_update_) {
+      return;
+    }
     auto start = std::chrono::high_resolution_clock::now();
     Update(tick);
     double exec_time =
