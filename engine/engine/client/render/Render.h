@@ -1,2 +1,7 @@
 #pragma once
-namespace engine::client::render {}
+namespace engine::client::render {
+  class Render {
+
+
+  };
+}
