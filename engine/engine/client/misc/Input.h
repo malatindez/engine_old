@@ -211,7 +211,7 @@ class Input : public core::Ticker {
     drop_callbacks_.push(ptr);
   }
 
-  void Update(const uint64_t, const float) override;
+  void Update(const uint64_t) override;
 
   bool AddKeyCallback(int32_t scancode, std::shared_ptr<KeyBindCallback> kbc,
                       bool rewrite = false);
