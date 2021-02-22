@@ -17,6 +17,15 @@ namespace engine::core {
   return full_matrix_;
 }
 
+[[nodiscard]] glm::vec3 Object::position() const noexcept {
+  return glm::vec3(translation_matrix_[3][0], translation_matrix_[3][1],
+                   translation_matrix_[3][2]);
+}
+[[nodiscard]] glm::vec3 Object::scale() const noexcept {
+  return glm::vec3(scale_matrix_[0][0], scale_matrix_[1][1],
+                   scale_matrix_[2][2]);
+}
+
 void Object::Move(glm::vec3 const& coords) noexcept {
   translation_matrix_ = glm::translate(translation_matrix_, coords);
 }

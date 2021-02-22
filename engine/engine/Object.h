@@ -47,6 +47,9 @@ class Object : public Ticker {
   [[nodiscard]] glm::mat4 scale_matrix() const noexcept;
   [[nodiscard]] glm::mat4 model_matrix() noexcept;
 
+  [[nodiscard]] glm::vec3 position() const noexcept;
+  [[nodiscard]] glm::vec3 scale() const noexcept;
+
   // move object by this coords(object.x += coords.x, object.y += coords.y etc.)
   void Move(glm::vec3 const& coords) noexcept;
   // move object by this coords(object.x += coords.x, object.y += coords.y etc.)
