@@ -2,8 +2,8 @@
 
 #include <engine/client/render/Camera.h>
 
-#include "misc/Input.h"
 #include "engine/Core.h"
+#include "misc/Input.h"
 
 namespace engine::client {
 class Player {
@@ -17,8 +17,7 @@ class Player {
   Player(std::shared_ptr<Window> window, glm::vec3 world_up,
          glm::vec3 position = glm::vec3(0.0F)) {
     core_ = engine::core::Core::GetInstance();
-    camera_ =
-        std::make_shared<render::Camera>(window, world_up, 0, 45.0F);
+    camera_ = std::make_shared<render::Camera>(window, world_up, 0, 45.0F);
     camera_->SetPosition(position);
     using namespace std::placeholders;
 
@@ -32,16 +31,18 @@ class Player {
   }
 
   void SetPosition(glm::vec3 x) noexcept { camera_->SetPosition(x); }
-  [[nodiscard]] glm::vec3 position() const noexcept { return camera_->position(); }
+  [[nodiscard]] glm::vec3 position() const noexcept {
+    return camera_->position();
+  }
 
   void SetMovementSpeed(float x) noexcept { this->speed_ = x; }
   [[nodiscard]] float movement_speed() const noexcept { return speed_; }
 
-  [[nodiscard]] std::shared_ptr<render::Camera> camera() const { return camera_; }
+  [[nodiscard]] std::shared_ptr<render::Camera> camera() const {
+    return camera_;
+  }
 
  private:
-  
-  
   bool Move(int32_t scancode, int32_t action) {
     if (action == 0) {
       return false;
@@ -50,22 +51,28 @@ class Player {
     glm::vec3 position = camera_->position();
     if (local_tick_ != Core::global_tick()) {
       if (scancode == kScancodeW) {
-        position += camera_->front() * speed_ * (float)Core::tick_delta();
+        glm::vec3 vec(camera_->front().x / cos(glm::radians(camera_->pitch())),
+                      0,
+                      camera_->front().z / cos(glm::radians(camera_->pitch())));
+        position += vec * speed_ * (float)Core::tick_delta();
       } else if (scancode == kScancodeS) {
-        position -= camera_->front() * speed_ * (float)Core::tick_delta();
+        glm::vec3 vec(camera_->front().x / cos(glm::radians(camera_->pitch())),
+                      0,
+                      camera_->front().z / cos(glm::radians(camera_->pitch())));
+        position -= vec * speed_ * (float)Core::tick_delta();
       } else if (scancode == kScancodeA) {
-        position -=
-            glm::normalize(glm::cross(camera_->front(), camera_->up())) *
-            speed_ * (float)Core::tick_delta();
+        position -= camera_->right() * speed_ * (float)Core::tick_delta();
       } else if (scancode == kScancodeD) {
-        position +=
-            glm::normalize(glm::cross(camera_->front(), camera_->up())) *
-            speed_ * (float)Core::tick_delta();
+        position += camera_->right() * speed_ * (float)Core::tick_delta();
+      } else if (scancode == kScancodeSpace) {
+        position += glm::vec3(0, 1, 0) * speed_ * (float)Core::tick_delta();
+      } else if (scancode == kScancodeControl) {
+        position -= glm::vec3(0, 1, 0) * speed_ * (float)Core::tick_delta();
       }
       camera_->SetPosition(position);
       local_tick_ = Core::global_tick();
     }
-    return false; 
+    return false;
   }
 
   uint64_t local_tick_ = 0;
@@ -74,6 +81,8 @@ class Player {
   const int32_t kScancodeA = glfwGetKeyScancode(GLFW_KEY_A);
   const int32_t kScancodeS = glfwGetKeyScancode(GLFW_KEY_S);
   const int32_t kScancodeD = glfwGetKeyScancode(GLFW_KEY_D);
+  const int32_t kScancodeSpace = glfwGetKeyScancode(GLFW_KEY_SPACE);
+  const int32_t kScancodeControl = glfwGetKeyScancode(GLFW_KEY_LEFT_CONTROL);
 
   std::shared_ptr<engine::core::Core> core_;
 
@@ -83,4 +92,4 @@ class Player {
 
   std::shared_ptr<Window::KeyBindCallback> move_cb_ptr_;
 };
-}  // namespace engine::client::client
+}  // namespace engine::client
