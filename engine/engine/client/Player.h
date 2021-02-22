@@ -35,8 +35,8 @@ class Player {
     return camera_->position();
   }
 
-  void SetMovementSpeed(float x) noexcept { this->speed_ = x; }
-  [[nodiscard]] float movement_speed() const noexcept { return speed_; }
+  void SetVelocity(float x) noexcept { this->velocity_ = x; }
+  [[nodiscard]] float velocity() const noexcept { return velocity_; }
 
   [[nodiscard]] std::shared_ptr<render::Camera> camera() const {
     return camera_;
@@ -54,20 +54,20 @@ class Player {
         glm::vec3 vec(camera_->front().x / cos(glm::radians(camera_->pitch())),
                       0,
                       camera_->front().z / cos(glm::radians(camera_->pitch())));
-        position += vec * speed_ * (float)Core::tick_delta();
+        position += vec * velocity_ * (float)Core::tick_delta();
       } else if (scancode == kScancodeS) {
         glm::vec3 vec(camera_->front().x / cos(glm::radians(camera_->pitch())),
                       0,
                       camera_->front().z / cos(glm::radians(camera_->pitch())));
-        position -= vec * speed_ * (float)Core::tick_delta();
+        position -= vec * velocity_ * (float)Core::tick_delta();
       } else if (scancode == kScancodeA) {
-        position -= camera_->right() * speed_ * (float)Core::tick_delta();
+        position -= camera_->right() * velocity_ * (float)Core::tick_delta();
       } else if (scancode == kScancodeD) {
-        position += camera_->right() * speed_ * (float)Core::tick_delta();
+        position += camera_->right() * velocity_ * (float)Core::tick_delta();
       } else if (scancode == kScancodeSpace) {
-        position += glm::vec3(0, 1, 0) * speed_ * (float)Core::tick_delta();
+        position += glm::vec3(0, 1, 0) * velocity_ * (float)Core::tick_delta();
       } else if (scancode == kScancodeControl) {
-        position -= glm::vec3(0, 1, 0) * speed_ * (float)Core::tick_delta();
+        position -= glm::vec3(0, 1, 0) * velocity_ * (float)Core::tick_delta();
       }
       camera_->SetPosition(position);
       local_tick_ = Core::global_tick();
@@ -88,7 +88,7 @@ class Player {
 
   std::shared_ptr<render::Camera> camera_;
 
-  float speed_ = 0.05F;
+  float velocity_ = 0.05F;
 
   std::shared_ptr<Window::KeyBindCallback> move_cb_ptr_;
 };
