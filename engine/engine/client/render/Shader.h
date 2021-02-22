@@ -73,7 +73,8 @@ class Shader {
     void SetMat4x4(const std::string& name, const glm::mat4x4& value) const;
 
    private:
-    static int32_t Shader::CompileShader(std::string_view shader_code, uint32_t& id);
+    static int32_t Shader::CompileShader(std::string_view shader_code,
+                                         uint32_t& id, GLenum type);
 
     // shader program id
     unsigned int sp_id_ = 0;

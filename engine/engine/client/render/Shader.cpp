@@ -2,8 +2,8 @@
 namespace engine::client::render {
 
 //
-int32_t Shader::CompileShader(std::string_view shader_code, uint32_t& id) {
-  id = glCreateShader(GL_VERTEX_SHADER);
+int32_t Shader::CompileShader(std::string_view shader_code, uint32_t& id, GLenum type) {
+  id = glCreateShader(type);
   const char* shader_code_c_str = shader_code.data();
   glShaderSource(id, 1, &shader_code_c_str, nullptr);
   glCompileShader(id);
@@ -20,13 +20,13 @@ Shader::Shader(std::string_view vertex_shader_code,
   uint32_t geometry = -1;
 
 
-  if (!CompileShader(vertex_shader_code, vertex)) {
+  if (!CompileShader(vertex_shader_code, vertex, GL_VERTEX_SHADER)) {
     glDeleteShader(vertex);
     // TODO exception output
     return;
   }
 
-  if (!CompileShader(fragment_shader_code, fragment)) {
+  if (!CompileShader(fragment_shader_code, fragment, GL_FRAGMENT_SHADER)) {
     glDeleteShader(fragment);
     glDeleteShader(vertex);
     // TODO exception output
@@ -34,7 +34,7 @@ Shader::Shader(std::string_view vertex_shader_code,
   }
 
   if (geometry_shader_code != "" &&
-      !CompileShader(geometry_shader_code, geometry)) {
+      !CompileShader(geometry_shader_code, geometry, GL_GEOMETRY_SHADER)) {
     glDeleteShader(fragment);
     glDeleteShader(vertex);
     glDeleteShader(geometry);
@@ -53,6 +53,9 @@ Shader::Shader(std::string_view vertex_shader_code,
 
   if (!compile_success) {
     // TODO exception output
+    GLchar info_log[1024];
+    glGetProgramInfoLog(sp_id_, 1024, nullptr, info_log);
+
     glDeleteShader(vertex);
     glDeleteShader(fragment);
     if (geometry_shader_code != "") glDeleteShader(geometry);
