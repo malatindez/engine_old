@@ -58,28 +58,34 @@ int main() {
   }
   glEnable(GL_DEPTH_TEST);
 
+
+  auto core = engine::core::Core::GetInstance();
+  core->AddTickingObject(window);
   engine::client::Player player(window, glm::vec3(0, 1, 0));
 
-  window->SwapInterval(0);
+  window->SwapInterval(1);
 
   auto f = std::make_shared<content::objects::Fractal>();
   auto shader = f->renderer()->shader();
 
+  f->SetPosition(glm::vec3(0, 0, 1));
 
   while (!window->ShouldClose()) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     glClearColor(0.1F, 0.1F, 0.15F, 1.0F);
-    window->UpdateExecutionTime(0);
     glm::mat4 matrix = glm::perspective(glm::radians(player.camera()->FOV()),
                                         (float)window->GetWindowSize().x /
                                             (float)window->GetWindowSize().y,
-                                        0.001F, 100.0F) *
+                                        0.0000001F, 100.0F) *
                        player.camera()->view_matrix();
     shader.lock()->Use();
     shader.lock()->SetMat4("fullMatrix", matrix);
     f->renderer()->Draw(f);
     window->SwapBuffers();
     window->PollEvents();
+    double t = abs(player.position().z -  f->position().z);
+    double u = log(t + 1);
+    player.SetMovementSpeed((float)u);
   }
 }
 /*
