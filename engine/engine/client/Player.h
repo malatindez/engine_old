@@ -3,6 +3,7 @@
 #include <engine/client/render/Camera.h>
 
 #include "misc/Input.h"
+#include "engine/Core.h"
 
 namespace engine::client {
 class Player {
@@ -15,7 +16,8 @@ class Player {
 
   Player(std::shared_ptr<Window> window, glm::vec3 world_up,
          glm::vec3 position = glm::vec3(0.0F)) {
-    this->camera_ =
+    core_ = engine::core::Core::GetInstance();
+    camera_ =
         std::make_shared<render::Camera>(window, world_up, 0, 45.0F);
     camera_->SetPosition(position);
     using namespace std::placeholders;
@@ -38,31 +40,42 @@ class Player {
   [[nodiscard]] std::shared_ptr<render::Camera> camera() const { return camera_; }
 
  private:
-   
+  
+  
   bool Move(int32_t scancode, int32_t action) {
     if (action == 0) {
       return false;
     }
+    using engine::core::Core;
     glm::vec3 position = camera_->position();
-    if (scancode == kScancodeW) {
-      position += speed_ * camera_->front();
-    } else if (scancode == kScancodeS) {
-      position -= speed_ * camera_->front();
-    } else if (scancode == kScancodeA) {
-      position -=
-          glm::normalize(glm::cross(camera_->front(), camera_->up())) * speed_;
-    } else if (scancode == kScancodeD) {
-      position +=
-          glm::normalize(glm::cross(camera_->front(), camera_->up())) * speed_;
+    if (local_tick_ != Core::global_tick()) {
+      if (scancode == kScancodeW) {
+        position += camera_->front() * speed_ * (float)Core::tick_delta();
+      } else if (scancode == kScancodeS) {
+        position -= camera_->front() * speed_ * (float)Core::tick_delta();
+      } else if (scancode == kScancodeA) {
+        position -=
+            glm::normalize(glm::cross(camera_->front(), camera_->up())) *
+            speed_ * (float)Core::tick_delta();
+      } else if (scancode == kScancodeD) {
+        position +=
+            glm::normalize(glm::cross(camera_->front(), camera_->up())) *
+            speed_ * (float)Core::tick_delta();
+      }
+      camera_->SetPosition(position);
+      local_tick_ = Core::global_tick();
     }
-    camera_->SetPosition(position);
     return false; 
   }
+
+  uint64_t local_tick_ = 0;
 
   const int32_t kScancodeW = glfwGetKeyScancode(GLFW_KEY_W);
   const int32_t kScancodeA = glfwGetKeyScancode(GLFW_KEY_A);
   const int32_t kScancodeS = glfwGetKeyScancode(GLFW_KEY_S);
   const int32_t kScancodeD = glfwGetKeyScancode(GLFW_KEY_D);
+
+  std::shared_ptr<engine::core::Core> core_;
 
   std::shared_ptr<render::Camera> camera_;
 
