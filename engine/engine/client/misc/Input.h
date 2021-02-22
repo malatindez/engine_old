@@ -217,7 +217,7 @@ class Input : public core::Ticker {
                       bool rewrite = false);
 
  protected:
-  Input() : Ticker(1u, std::this_thread::get_id()) {}
+  Input() : Ticker(1u) {}
 
   void Init(GLFWwindow* window_ptr);
 
