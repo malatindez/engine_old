@@ -65,19 +65,21 @@ int main() {
   auto f = std::make_shared<content::objects::Fractal>();
   auto shader = f->renderer()->shader();
 
+
   while (!window->ShouldClose()) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     glClearColor(0.1F, 0.1F, 0.15F, 1.0F);
-    window->SwapBuffers();
-    window->PollEvents();
     window->UpdateExecutionTime(0);
     glm::mat4 matrix = glm::perspective(glm::radians(player.camera()->FOV()),
                                         (float)window->GetWindowSize().x /
                                             (float)window->GetWindowSize().y,
-                                        0.0000001F, 100.0F) *
+                                        0.001F, 100.0F) *
                        player.camera()->view_matrix();
+    shader.lock()->Use();
     shader.lock()->SetMat4("fullMatrix", matrix);
     f->renderer()->Draw(f);
+    window->SwapBuffers();
+    window->PollEvents();
   }
 }
 /*
