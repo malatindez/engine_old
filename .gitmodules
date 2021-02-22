@@ -13,3 +13,7 @@
 	path = libraries/gtest
 	url = https://github.com/google/googletest.git
 	branch = '703bd9caab50b139428cea1aaff9974ebee5742e'
+[submodule "libraries\\freetype"]
+	path = libraries\\freetype
+	url = https://gitlab.freedesktop.org/freetype/freetype.git
+	branch = GSoC-2020-priyesh

@@ -72,6 +72,10 @@ set(GLM_DIR "${LIB_DIR}/glm")
 add_subdirectory("${GLM_DIR}")
 target_include_directories(${PROJECT_NAME} PRIVATE "${GLM_DIR}")
 
+set(FREETYPE_DIR "${LIB_DIR}/freetype")
+add_subdirectory("${FREETYPE_DIR}")
+target_include_directories(${PROJECT_NAME} PRIVATE "${FREETYPE_DIR}/include")
+
 # include stb_image
 target_include_directories(${PROJECT_NAME} PRIVATE "${LIB_DIR}")
 
