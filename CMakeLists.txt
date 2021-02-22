@@ -18,11 +18,11 @@ set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libraries")
 file(GLOB_RECURSE SOURCES ${SRC_DIR} *.*)
 list(FILTER SOURCES INCLUDE REGEX "${SRC_DIR}/*" )
 
-if (WIN32)
-add_executable(Engine WIN32 ${SOURCES})
-else()
+#if (WIN32)
+#add_executable(Engine WIN32 ${SOURCES})
+#else()
 add_executable(${PROJECT_NAME} ${SOURCES})
-endif (WIN32)
+#endif (WIN32)
 
 
 function(assign_source_group)

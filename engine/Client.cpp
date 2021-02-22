@@ -21,15 +21,15 @@
 
 #include "content/code/Objects/Fractal.h"
 #include "engine/Core.h"
-
+/*
 #ifdef WIN32
 int WINAPI wWinMain([[maybe_unused]] HINSTANCE hInstance,
                     [[maybe_unused]] HINSTANCE hPrevInstance,
                     [[maybe_unused]] PWSTR pCmdLine,
                     [[maybe_unused]] int nCmdShow) {
-#else
+#else*/
 int main() {
-#endif
+//#endif
 
   int i = 0;
   glfwInit();
