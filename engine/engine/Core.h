@@ -6,6 +6,8 @@
 #include <memory>
 #include <mutex>
 #include <vector>
+#include <iostream>
+#include <algorithm>
 
 #include "Ticker.h"
 #include "engine/client/render/Shader.h"
@@ -25,6 +27,16 @@ class Core final {
   Core& operator=(const Core&) = delete;
   Core& operator=(Core&&) = delete;
 
+  [[nodiscard]] static double time() {
+    std::chrono::time_point<std::chrono::system_clock> now =
+        std::chrono::system_clock::now();
+    double microseconds =
+        (double)std::chrono::duration_cast<std::chrono::microseconds>(
+            now.time_since_epoch())
+            .count();
+    return microseconds / 1e6;
+  }
+
   [[nodiscard]] static uint64_t global_tick() noexcept {
     return core_ptr_->global_tick_;
   }
@@ -40,6 +52,10 @@ class Core final {
   /// called</param> <returns>Tickrate</returns>
   [[nodiscard]] static uint32_t CalcTickrate(uint32_t times_per_second) {
     return (uint32_t)ceil(double(core_ptr_->tickrate_) / times_per_second);
+  }
+
+  [[nodiscard]] static double tick_delta() {
+    return core_ptr_->last_tick_timedelta_;
   }
 
   // returns 1 if succeed
@@ -116,7 +132,8 @@ class Core final {
     [[nodiscard]] std::thread::id thread_id() const noexcept {
       return thread_->get_id();
     }
-
+    
+    
    private:
     [[noreturn]] void ThreadFunction() {
       std::shared_ptr<Core> core = Core::GetInstance();
@@ -125,14 +142,14 @@ class Core final {
         for (const auto& object : objects_) {
           object.lock()->UpdateExecutionTime(core->global_tick_);
         }
-        if (local_tick_ % (core->tickrate_ / 10) == 0 &&
+        if ((local_tick_ * core->tickrate_ / 8) % core->tickrate_ == 0 &&
             !objects_to_add_.empty()) {
           std::scoped_lock<std::mutex> lock(objects_to_add_mutex_);
           objects_.insert(objects_.end(), objects_to_add_.begin(),
                           objects_to_add_.end());
           objects_to_add_.clear();
         }
-        if (local_tick_ % (core->tickrate_ / 2) == 0) {
+        if ((local_tick_ * core->tickrate_ / 16) % core->tickrate_ == 0) {
           for (auto itr = objects_.begin(); itr != objects_.end(); itr++) {
             exec_time_ +=
                 itr->lock()->average_update_time() / itr->lock()->tickrate();
@@ -155,58 +172,97 @@ class Core final {
     // stores current local tick
     uint64_t local_tick_ = 0;
   };
-  void ThreadReady(std::thread::id id) {
-    if (operational_thread_id_ != id) {
-      std::scoped_lock<std::mutex> lock(thread_ready_counter_mutex_);
-      thread_ready_counter_ += 1;
-    } else {
-      auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(
-                        std::chrono::system_clock::now().time_since_epoch())
-                        .count();
-      std::this_thread::sleep_for(std::chrono::milliseconds(
-          int(1000 / tickrate_ - (millis - last_tick_timestamp) / 1000)));
-      thread_ready_counter_ += 1;
+
+  static std::chrono::nanoseconds calc_overhead() {
+    using namespace std::chrono;
+    constexpr size_t tests = 1001;
+    constexpr auto timer = 200us;
+
+    std::condition_variable t;
+    auto init = [&timer, &t]() {
+      auto end = steady_clock::now() + timer;
+      while (steady_clock::now() < end);
+      time();
+      t.notify_all();
+    };
+
+    time_point<steady_clock> start;
+    nanoseconds dur[tests];
+
+    for (auto& d : dur) {
+      start = steady_clock::now();
+      init();
+      d = steady_clock::now() - start - timer;
     }
-    while (thread_ready_counter_ < 0) {
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    if (operational_thread_id_ == id) {
-      thread_ready_counter_ = -(int32_t)threads_.size();
-      global_tick_ += 1;
-    }
+    std::sort(std::begin(dur), std::end(dur));
+    return dur[tests / 2];
   }
 
+  const std::chrono::nanoseconds overhead_ = calc_overhead();
+
+  inline void busy_sleep(std::chrono::nanoseconds t) const noexcept {
+    auto end = std::chrono::steady_clock::now() + t - overhead_;
+    while (std::chrono::steady_clock::now() < end);
+  }
+
+  void ThreadReady(std::thread::id id) {
+    std::unique_lock lock(sync_mutex_);
+
+    if (operational_thread_id_ != id) {
+      sync_threads_ += 1;
+      sync_var_.wait(lock);
+    } 
+    else {
+      
+      lock.unlock();
+      while (sync_threads_ + 1 < threads_.size()) {
+        std::this_thread::sleep_for(std::chrono::microseconds(1));
+      }
+      lock.lock();
+      double t = time();
+      double wait_t =
+          (1e9 / (double)tickrate_) - 1e9 * (t - last_tick_timestamp_);
+      if (wait_t > 0) {
+        busy_sleep(std::chrono::nanoseconds((uint32_t)wait_t));
+      }
+
+      t = time();
+      global_tick_ += 1;
+      last_tick_timedelta_ = t - last_tick_timestamp_;
+      last_tick_timestamp_ = t;
+
+      sync_threads_ = 0;
+      sync_var_.notify_all();
+      std::cout << 1 / last_tick_timedelta_ << std::endl;
+    }
+  }
+  std::mutex sync_mutex_;
+  std::condition_variable sync_var_;
+  size_t sync_threads_ = 0;
+
   Core() {
-    thread_ready_counter_ = -1 - (int32_t)std::thread::hardware_concurrency();
+    last_tick_timestamp_ = time();
     for (size_t i = 0; i < std::thread::hardware_concurrency(); i++) {
       auto ptr = std::make_unique<UpdateThread>(global_tick_);
       threads_.push_back(std::move(ptr));
     }
     operational_thread_id_ = threads_[0]->thread_id();
 
-    std::scoped_lock<std::mutex> lock(thread_ready_counter_mutex_);
-    thread_ready_counter_++;
-
-    std::chrono::time_point<std::chrono::system_clock> now =
-        std::chrono::system_clock::now();
-    auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(
-                      now.time_since_epoch())
-                      .count();
-    last_tick_timestamp = millis;
   }
+  
 
   static std::mutex core_creation_mutex_;
   static std::shared_ptr<Core> core_ptr_;
 
-  int thread_ready_counter_ = -100000;
-  std::mutex thread_ready_counter_mutex_;
 
   std::thread::id operational_thread_id_;
 
-  double last_tick_timestamp = 0;
+  double last_tick_timestamp_ = 0;
+  double last_tick_timedelta_ = 0;
+
   uint64_t global_tick_ = 0;
 
-  uint64_t tickrate_ = 32;
+  uint64_t tickrate_ = 64;
 
   std::vector<std::unique_ptr<UpdateThread>> threads_;
   std::mutex threads_mutex_;
