@@ -28,6 +28,8 @@ class Player {
     window->AddKeyCallback(glfwGetKeyScancode(GLFW_KEY_A), move_cb_ptr_);
     window->AddKeyCallback(glfwGetKeyScancode(GLFW_KEY_S), move_cb_ptr_);
     window->AddKeyCallback(glfwGetKeyScancode(GLFW_KEY_D), move_cb_ptr_);
+    window->AddKeyCallback(glfwGetKeyScancode(GLFW_KEY_SPACE), move_cb_ptr_);
+    window->AddKeyCallback(glfwGetKeyScancode(GLFW_KEY_LEFT_CONTROL), move_cb_ptr_);
   }
 
   void SetPosition(glm::vec3 x) noexcept { camera_->SetPosition(x); }
@@ -49,33 +51,27 @@ class Player {
     }
     using engine::core::Core;
     glm::vec3 position = camera_->position();
-    if (local_tick_ != Core::global_tick()) {
-      if (scancode == kScancodeW) {
-        glm::vec3 vec(camera_->front().x / cos(glm::radians(camera_->pitch())),
-                      0,
-                      camera_->front().z / cos(glm::radians(camera_->pitch())));
-        position += vec * velocity_ * (float)Core::tick_delta();
-      } else if (scancode == kScancodeS) {
-        glm::vec3 vec(camera_->front().x / cos(glm::radians(camera_->pitch())),
-                      0,
-                      camera_->front().z / cos(glm::radians(camera_->pitch())));
-        position -= vec * velocity_ * (float)Core::tick_delta();
-      } else if (scancode == kScancodeA) {
-        position -= camera_->right() * velocity_ * (float)Core::tick_delta();
-      } else if (scancode == kScancodeD) {
-        position += camera_->right() * velocity_ * (float)Core::tick_delta();
-      } else if (scancode == kScancodeSpace) {
-        position += glm::vec3(0, 1, 0) * velocity_ * (float)Core::tick_delta();
-      } else if (scancode == kScancodeControl) {
-        position -= glm::vec3(0, 1, 0) * velocity_ * (float)Core::tick_delta();
-      }
-      camera_->SetPosition(position);
-      local_tick_ = Core::global_tick();
+    if (scancode == kScancodeW) {
+      glm::vec3 vec(camera_->front().x / cos(glm::radians(camera_->pitch())), 0,
+                    camera_->front().z / cos(glm::radians(camera_->pitch())));
+      position += vec * velocity_ * (float)Core::tick_delta();
+    } else if (scancode == kScancodeS) {
+      glm::vec3 vec(camera_->front().x / cos(glm::radians(camera_->pitch())), 0,
+                    camera_->front().z / cos(glm::radians(camera_->pitch())));
+      position -= vec * velocity_ * (float)Core::tick_delta();
+    } else if (scancode == kScancodeA) {
+      position -= camera_->right() * velocity_ * (float)Core::tick_delta();
+    } else if (scancode == kScancodeD) {
+      position += camera_->right() * velocity_ * (float)Core::tick_delta();
+    } else if (scancode == kScancodeSpace) {
+      position += glm::vec3(0, 1, 0) * velocity_ * (float)Core::tick_delta();
+    } else if (scancode == kScancodeControl) {
+      position -= glm::vec3(0, 1, 0) * velocity_ * (float)Core::tick_delta();
     }
+    camera_->SetPosition(position);
     return false;
   }
 
-  uint64_t local_tick_ = 0;
 
   const int32_t kScancodeW = glfwGetKeyScancode(GLFW_KEY_W);
   const int32_t kScancodeA = glfwGetKeyScancode(GLFW_KEY_A);
