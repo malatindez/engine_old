@@ -85,7 +85,7 @@ int main() {
     window->PollEvents();
     double t = abs(player.position().z -  f->position().z);
     double u = log(t + 1);
-    player.SetMovementSpeed((float)u);
+    player.SetVelocity((float)u);
   }
 }
 /*
