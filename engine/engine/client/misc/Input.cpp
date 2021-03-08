@@ -88,12 +88,12 @@ void Input::KeyCallback(int32_t key, int32_t scancode, int32_t action,
   while (!key_callbacks_.empty()) {
     if (key_callbacks_.top().use_count() == 1) {
       key_callbacks_.pop();
-    } else {
-      if ((*key_callbacks_.top())(key, scancode, action, mods)) {
-        key_callbacks_.pop();
-      }
-      break;
+      continue;
     }
+    if ((*key_callbacks_.top())(key, scancode, action, mods)) {
+      key_callbacks_.pop();
+    }
+    break;
   }
   currently_pressed_keys_[scancode] = action;
 }
@@ -101,24 +101,24 @@ void Input::CharCallback(uint32_t codepoint) {
   while (!char_callbacks_.empty()) {
     if (char_callbacks_.top().use_count() == 1) {
       char_callbacks_.pop();
-    } else {
-      if ((*char_callbacks_.top())(codepoint)) {
-        char_callbacks_.pop();
-      }
-      break;
+      continue;
     }
+    if ((*char_callbacks_.top())(codepoint)) {
+      char_callbacks_.pop();
+    }
+    break;
   }
 }
 void Input::MouseButtonCallback(int32_t button, int32_t action, int32_t mods) {
   while (!mouse_button_callbacks_.empty()) {
     if (mouse_button_callbacks_.top().use_count() == 1) {
       mouse_button_callbacks_.pop();
-    } else {
-      if ((*mouse_button_callbacks_.top())(button, action, mods)) {
-        mouse_button_callbacks_.pop();
-      }
-      break;
+      continue;
     }
+    if ((*mouse_button_callbacks_.top())(button, action, mods)) {
+      mouse_button_callbacks_.pop();
+    }
+    break;
   }
 }
 void Input::CursorPosCallback(double xpos, double ypos) {
@@ -128,24 +128,24 @@ void Input::CursorPosCallback(double xpos, double ypos) {
   while (!cursor_pos_callbacks_.empty()) {
     if (cursor_pos_callbacks_.top().use_count() == 1) {
       cursor_pos_callbacks_.pop();
-    } else {
-      if ((*cursor_pos_callbacks_.top())(xpos, ypos)) {
-        cursor_pos_callbacks_.pop();
-      }
-      break;
+      continue;
     }
+    if ((*cursor_pos_callbacks_.top())(xpos, ypos)) {
+      cursor_pos_callbacks_.pop();
+    }
+    break;
   }
 }
 void Input::CursorEnterCallback(int32_t entered) {
   while (!cursor_enter_callbacks_.empty()) {
     if (cursor_enter_callbacks_.top().use_count() == 1) {
       cursor_enter_callbacks_.pop();
-    } else {
-      if ((*cursor_enter_callbacks_.top())(entered)) {
-        cursor_enter_callbacks_.pop();
-      }
-      break;
+      continue;
     }
+    if ((*cursor_enter_callbacks_.top())(entered)) {
+      cursor_enter_callbacks_.pop();
+    }
+    break;
   }
 }
 void Input::ScrollCallback(double xoffset, double yoffset) {
@@ -154,24 +154,24 @@ void Input::ScrollCallback(double xoffset, double yoffset) {
   while (!scroll_callbacks_.empty()) {
     if (scroll_callbacks_.top().use_count() == 1) {
       scroll_callbacks_.pop();
-    } else {
-      if ((*scroll_callbacks_.top())(xoffset, yoffset)) {
-        scroll_callbacks_.pop();
-      }
-      break;
+      continue;
     }
+    if ((*scroll_callbacks_.top())(xoffset, yoffset)) {
+      scroll_callbacks_.pop();
+    }
+    break;
   }
 }
 void Input::DropCallback(int32_t path_count, const char* paths[]) {
   while (!drop_callbacks_.empty()) {
     if (drop_callbacks_.top().use_count() == 1) {
       drop_callbacks_.pop();
-    } else {
-      if ((*drop_callbacks_.top())(path_count, paths)) {
-        drop_callbacks_.pop();
-      }
-      break;
+      continue;
     }
+    if ((*drop_callbacks_.top())(path_count, paths)) {
+      drop_callbacks_.pop();
+    }
+    break;
   }
 }
 
