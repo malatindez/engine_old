@@ -16,7 +16,7 @@ class Renderer;
 namespace engine::core {
 class Object : public Ticker {
  public:
-  Object(const uint32_t tickrate, glm::vec3 coords = glm::vec3(0.0F),
+  explicit Object(const uint32_t tickrate, glm::vec3 coords = glm::vec3(0.0F),
          glm::vec3 angle = glm::vec3(2 * 3.1415927F),
          glm::vec3 scale = glm::vec3(1.0F))
       : Ticker(tickrate) {
@@ -24,7 +24,7 @@ class Object : public Ticker {
     this->Rotate(angle);
     this->Scale(scale);
   }
-  Object(const uint32_t tickrate, std::thread::id const& thread_id,
+  explicit Object(const uint32_t tickrate, std::thread::id const& thread_id,
          glm::vec3 coords = glm::vec3(0.0F),
          glm::vec3 angle = glm::vec3(2 * 3.1415927F),
          glm::vec3 scale = glm::vec3(1.0F))

@@ -29,10 +29,12 @@ class Player {
     window->AddKeyCallback(glfwGetKeyScancode(GLFW_KEY_S), move_cb_ptr_);
     window->AddKeyCallback(glfwGetKeyScancode(GLFW_KEY_D), move_cb_ptr_);
     window->AddKeyCallback(glfwGetKeyScancode(GLFW_KEY_SPACE), move_cb_ptr_);
-    window->AddKeyCallback(glfwGetKeyScancode(GLFW_KEY_LEFT_CONTROL), move_cb_ptr_);
+    window->AddKeyCallback(glfwGetKeyScancode(GLFW_KEY_LEFT_CONTROL),
+                           move_cb_ptr_);
   }
 
   void SetPosition(glm::vec3 x) noexcept { camera_->SetPosition(x); }
+
   [[nodiscard]] glm::vec3 position() const noexcept {
     return camera_->position();
   }
@@ -71,7 +73,6 @@ class Player {
     camera_->SetPosition(position);
     return false;
   }
-
 
   const int32_t kScancodeW = glfwGetKeyScancode(GLFW_KEY_W);
   const int32_t kScancodeA = glfwGetKeyScancode(GLFW_KEY_A);

@@ -30,7 +30,6 @@ int WINAPI wWinMain([[maybe_unused]] HINSTANCE hInstance,
 #else*/
 int main() {
 //#endif
-  int i = 0;
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -110,7 +109,7 @@ int main() {
     window->SwapBuffers();
     window->PollEvents();
     double t = abs(player.position().z -  f->position().z);
-    double u = log(t + 1);
+    double u = log1p(t);
     player.SetVelocity((float)u);
   }
 }

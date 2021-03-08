@@ -23,7 +23,7 @@ class Shader {
           fragment_shader_code(fragment_shader_code),
           geometry_shader_code(geometry_shader_code) {}
 
-    [[nodiscard]] std::size_t hash();
+    [[nodiscard]] std::size_t hash() const noexcept;
   };
   /* Disable copy and move semantics. */
   Shader(const Shader&) = delete;

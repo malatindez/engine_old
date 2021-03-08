@@ -41,7 +41,6 @@ class Mesh {
       glActiveTexture(GL_TEXTURE0 +
                       i);  // activate proper texture unit before binding
       // retrieve texture number (the N in diffuse_textureN)
-      std::string number;
       if (textures_[i]->type() == Texture::Type::DIFFUSE) {
         shader->SetInt(
             ("material.diffuseTextures[" + std::to_string(diffuseNr++) + "]"),
@@ -62,7 +61,7 @@ class Mesh {
 
     // draw mesh
     glBindVertexArray(VAO_);
-    glDrawElements(GL_TRIANGLES, indices_size_, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, indices_size_, GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
   }
 

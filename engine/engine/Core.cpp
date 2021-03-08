@@ -74,8 +74,7 @@ std::chrono::nanoseconds Core::calc_overhead() {
   std::condition_variable t;
   auto init = [&timer, &t]() {
     auto end = steady_clock::now() + timer;
-    while (steady_clock::now() < end)
-      ;
+    while (steady_clock::now() < end);
     time();
     t.notify_all();
   };
@@ -176,9 +175,9 @@ void Core::UpdateThread::ThreadFunction() {
   };
 
   // 16 times per second
-  auto add_objects_tickrate = (size_t)ceil((double)core->tickrate_ / 16);
+  auto add_objects_tickrate = (uint32_t)ceil((double)core->tickrate_ / 16);
   // 4 times per second
-  auto update_exec_time_tickrate = (size_t)ceil((double)core->tickrate_ / 4);
+  auto update_exec_time_tickrate = (uint32_t)ceil((double)core->tickrate_ / 4);
 
   auto exec_time_accumulate_ =
       [](double a, std::weak_ptr<Ticker> object) malatindez_FORCE_INLINE {

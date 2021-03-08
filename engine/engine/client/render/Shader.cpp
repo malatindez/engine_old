@@ -17,7 +17,7 @@ int32_t Shader::CompileShader(std::string_view shader_code, uint32_t& id,
   }
   return success;
 }
-std::size_t Shader::ShaderSource::hash() {
+std::size_t Shader::ShaderSource::hash() const noexcept {
   return std::hash<ShaderSource>()(*this);
 }
 
@@ -65,14 +65,18 @@ Shader::Shader(ShaderSource const& source) {
 
     glDeleteShader(vertex);
     glDeleteShader(fragment);
-    if (source.geometry_shader_code != "") glDeleteShader(geometry);
+    if (source.geometry_shader_code != "") {
+      glDeleteShader(geometry);
+    }
     return;
   }
   // delete the shaders as they're linked into our program now and no longer
   // necessary
   glDeleteShader(vertex);
   glDeleteShader(fragment);
-  if (source.geometry_shader_code != "") glDeleteShader(geometry);
+  if (source.geometry_shader_code != "") {
+    glDeleteShader(geometry);
+  }
 }
 
 Shader::~Shader() { glDeleteProgram(sp_id_); }
