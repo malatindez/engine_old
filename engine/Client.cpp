@@ -97,7 +97,7 @@ int main() {
     shader_update_lambda();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     glClearColor(0.1F, 0.1F, 0.15F, 1.0F);
-    glm::mat4 matrix = glm::perspective(glm::radians(player.camera()->FOV()),
+    glm::mat4 matrix = glm::perspective(player.camera()->FOV(),
                                         (float)window->GetWindowSize().x /
                                             (float)window->GetWindowSize().y,
                                         0.0000001F, 100.0F) *
