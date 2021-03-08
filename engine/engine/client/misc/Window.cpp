@@ -183,12 +183,12 @@ void Window::PosCallback(int xpos, int ypos) {
   while (!pos_callbacks_.empty()) {
     if (pos_callbacks_.top().use_count() == 1) {
       pos_callbacks_.pop();
-    } else {
-      if ((*pos_callbacks_.top())(xpos, ypos)) {
-        pos_callbacks_.pop();
-      }
-      break;
+      continue;
     }
+    if ((*pos_callbacks_.top())(xpos, ypos)) {
+      pos_callbacks_.pop();
+    }
+    break;
   }
 }
 
@@ -196,12 +196,12 @@ void Window::SizeCallback(int width, int height) {
   while (!size_callbacks_.empty()) {
     if (size_callbacks_.top().use_count() == 1) {
       size_callbacks_.pop();
-    } else {
-      if ((*size_callbacks_.top())(width, height)) {
-        size_callbacks_.pop();
-      }
-      break;
+      continue;
     }
+    if ((*size_callbacks_.top())(width, height)) {
+      size_callbacks_.pop();
+    }
+    break;
   }
 }
 
@@ -209,12 +209,12 @@ void Window::CloseCallback() {
   while (!close_callbacks_.empty()) {
     if (close_callbacks_.top().use_count() == 1) {
       close_callbacks_.pop();
-    } else {
-      if ((*close_callbacks_.top())()) {
-        close_callbacks_.pop();
-      }
-      break;
+      continue;
     }
+    if ((*close_callbacks_.top())()) {
+      close_callbacks_.pop();
+    }
+    break;
   }
 }
 
@@ -222,12 +222,12 @@ void Window::RefreshCallback() {
   while (!refresh_callbacks_.empty()) {
     if (refresh_callbacks_.top().use_count() == 1) {
       refresh_callbacks_.pop();
-    } else {
-      if ((*refresh_callbacks_.top())()) {
-        refresh_callbacks_.pop();
-      }
-      break;
+      continue;
     }
+    if ((*refresh_callbacks_.top())()) {
+      refresh_callbacks_.pop();
+    }
+    break;
   }
 }
 
@@ -235,12 +235,12 @@ void Window::FocusCallback(int focused) {
   while (!focus_callbacks_.empty()) {
     if (focus_callbacks_.top().use_count() == 1) {
       focus_callbacks_.pop();
-    } else {
-      if ((*focus_callbacks_.top())(focused)) {
-        focus_callbacks_.pop();
-      }
-      break;
+      continue;
     }
+    if ((*focus_callbacks_.top())(focused)) {
+      focus_callbacks_.pop();
+    }
+    break;
   }
 }
 
@@ -248,12 +248,12 @@ void Window::IconifyCallback(int iconified) {
   while (!iconify_callbacks_.empty()) {
     if (iconify_callbacks_.top().use_count() == 1) {
       iconify_callbacks_.pop();
-    } else {
-      if ((*iconify_callbacks_.top())(iconified)) {
-        iconify_callbacks_.pop();
-      }
-      break;
+      continue;
     }
+    if ((*iconify_callbacks_.top())(iconified)) {
+      iconify_callbacks_.pop();
+    }
+    break;
   }
 }
 
@@ -261,12 +261,12 @@ void Window::MaximizeCallback(int maximized) {
   while (!maximize_callbacks_.empty()) {
     if (maximize_callbacks_.top().use_count() == 1) {
       maximize_callbacks_.pop();
-    } else {
-      if ((*maximize_callbacks_.top())(maximized)) {
-        maximize_callbacks_.pop();
-      }
-      break;
+      continue;
     }
+    if ((*maximize_callbacks_.top())(maximized)) {
+      maximize_callbacks_.pop();
+    }
+    break;
   }
 }
 
@@ -275,12 +275,12 @@ void Window::FramebufferSizeCallback(int width, int height) {
   while (!framebuffer_size_callbacks_.empty()) {
     if (framebuffer_size_callbacks_.top().use_count() == 1) {
       framebuffer_size_callbacks_.pop();
-    } else {
-      if ((*framebuffer_size_callbacks_.top())(width, height)) {
-        framebuffer_size_callbacks_.pop();
-      }
-      break;
+      continue;
     }
+    if ((*framebuffer_size_callbacks_.top())(width, height)) {
+      framebuffer_size_callbacks_.pop();
+    }
+    break;
   }
 }
 
@@ -288,12 +288,12 @@ void Window::ContentScaleCallback(float xscale, float yscale) {
   while (!content_scale_callbacks_.empty()) {
     if (content_scale_callbacks_.top().use_count() == 1) {
       content_scale_callbacks_.pop();
-    } else {
-      if ((*content_scale_callbacks_.top())(xscale, yscale)) {
-        content_scale_callbacks_.pop();
-      }
-      break;
+      continue;
     }
+    if ((*content_scale_callbacks_.top())(xscale, yscale)) {
+      content_scale_callbacks_.pop();
+    }
+    break;
   }
 }
 
