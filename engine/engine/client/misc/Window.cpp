@@ -119,7 +119,7 @@ GLFWmonitor* Window::GetMonitor() { return glfwGetWindowMonitor(window_ptr_); }
 void Window::SetMonitor(GLFWmonitor* monitor, int xpos, int ypos, int width,
                         int height, int refresh_rate) {
   const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-  if (width == height == 0) {
+  if (width == 0 && height == 0) {
     width = mode->width;
     height = mode->height;
   }
