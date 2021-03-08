@@ -8,7 +8,6 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
-#include <condition_variable>
 
 #include "Ticker.h"
 #include "engine/client/render/Shader.h"
@@ -35,7 +34,7 @@ class Core final {
 
   [[nodiscard]] static double time();
 
-  [[nodiscard]] static uint64_t global_tick();
+  [[nodiscard]] static uint64_t global_tick() noexcept;
 
   // returns shared pointer to the Core.
   [[nodiscard]] static std::shared_ptr<Core> GetInstance() noexcept;
@@ -54,9 +53,6 @@ class Core final {
   // 0 if failed
   int AddTickingObject(std::weak_ptr<Ticker> object);
 
-  std::shared_ptr<engine::client::render::Shader> LoadShader(
-      std::string const& vertex_path, std::string const& fragment_path,
-      std::string const& geometry_path = "");
 
  private:
   class UpdateThread {
@@ -76,11 +72,8 @@ class Core final {
 
     std::mutex objects_to_add_mutex_;
     std::vector<std::weak_ptr<Ticker>> objects_to_add_;
-
     std::vector<std::weak_ptr<Ticker>> objects_;
-
     std::unique_ptr<std::thread> thread_;
-
     double exec_time_ = 0;
 
     // stores current local tick
@@ -112,13 +105,9 @@ class Core final {
 
   uint64_t global_tick_ = 0;
 
-  uint64_t tickrate_ = 64;
+  const uint32_t tickrate_ = 64;
 
   std::vector<std::unique_ptr<UpdateThread>> threads_;
   std::mutex threads_mutex_;
-
-  std::map<std::string, std::shared_ptr<engine::client::render::Shader>>
-      shaders_;
-  std::mutex shaders_mutex_;
 };
 }  // namespace engine::core

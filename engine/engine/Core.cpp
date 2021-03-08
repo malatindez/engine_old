@@ -54,25 +54,16 @@ int Core::AddTickingObject(std::weak_ptr<Ticker> object) {
     return 1;
   }
 
-  return 1;
-}
-
-std::shared_ptr<engine::client::render::Shader> Core::LoadShader(
-    std::string const& vertex_path, std::string const& fragment_path,
-    std::string const& geometry_path = "") {
-  std::string key = vertex_path + "#" + fragment_path + "#" + geometry_path;
-  if (shaders_.find(key) != shaders_.end()) {
-    return shaders_[key];
+  // search for the thread with minimum execution time
+  auto min_execution_thread = threads_.begin();
+  for (auto i = threads_.begin() + 1; i != threads_.end(); i++) {
+    if ((*i).get()->exec_time() < min_execution_thread->get()->exec_time()) {
+      min_execution_thread = i;
+    }
   }
-  using engine::client::render::Shader;
-  std::scoped_lock<std::mutex> lock(shaders_mutex_);
+  min_execution_thread->get()->AddObject(object);
 
-  auto ptr = std::make_shared<engine::client::render::Shader>(
-      Shader::LoadSourceCode(vertex_path),
-      Shader::LoadSourceCode(fragment_path),
-      Shader::LoadSourceCode(geometry_path));
-  shaders_[key] = ptr;
-  return ptr;
+  return 1;
 }
 
 std::chrono::nanoseconds Core::calc_overhead() {
@@ -101,7 +92,7 @@ std::chrono::nanoseconds Core::calc_overhead() {
   return dur[tests / 2];
 }
 
-inline void Core::busy_sleep(std::chrono::nanoseconds t) const noexcept {
+inline void Core::busy_sleep(std::chrono::nanoseconds t) const {
   auto end = std::chrono::steady_clock::now() + t - overhead_;
   while (std::chrono::steady_clock::now() < end)
     ;
@@ -145,9 +136,10 @@ Core::Core() {
   operational_thread_id_ = threads_[0]->thread_id();
 }
 
-explicit Core::UpdateThread::UpdateThread(uint32_t tick) : local_tick_(tick) {
+Core::UpdateThread::UpdateThread(uint32_t tick) {
   this->thread_ =
       std::make_unique<std::thread>(&UpdateThread::ThreadFunction, this);
+  local_tick_ = tick;
 }
 Core::UpdateThread::~UpdateThread() {
   die_ = true;
@@ -164,29 +156,46 @@ std::thread::id Core::UpdateThread::thread_id() const noexcept {
   return thread_->get_id();
 }
 
+#ifdef _MSC_VER
+#define malatindez_ENGINE_FORCE_INLINE [[msvc::forceinline]]
+#else
+#define malatindez_ENGINE_FORCE_INLINE __attribute__((always_inline))
+#endif
+
 void Core::UpdateThread::ThreadFunction() {
   std::shared_ptr<Core> core = Core::GetInstance();
   core->ThreadReady(thread_->get_id());
-  while (!die_) {
+  auto update_objects = [this, &core]() malatindez_ENGINE_FORCE_INLINE {
     for (auto itr = objects_.begin(); itr != objects_.end();) {
-      if (itr->expired()) {
+      if (itr->expired()) {  // if object is expired, remove it from objects_
         itr = objects_.erase(itr);
-      } else {
+      } else {  // update non-expired object
         itr->lock()->UpdateExecutionTime(core->global_tick_);
         itr++;
       }
     }
-    if ((local_tick_ * core->tickrate_ / 8) % core->tickrate_ == 0 &&
-        !objects_to_add_.empty()) {
+  };
+
+  // 16 times per second
+  auto add_objects_tickrate = (size_t)ceil((double)core->tickrate_ / 16);
+  // 4 times per second
+  auto update_exec_time_tickrate = (size_t)ceil((double)core->tickrate_ / 4);
+
+  while (!die_) {
+    update_objects();
+
+    // add objects 16 times per second
+    if (local_tick_ % add_objects_tickrate == 0 && !objects_to_add_.empty()) {
       std::scoped_lock<std::mutex> lock(objects_to_add_mutex_);
       objects_.insert(objects_.end(), objects_to_add_.begin(),
                       objects_to_add_.end());
       objects_to_add_.clear();
     }
-    if ((local_tick_ * core->tickrate_ / 16) % core->tickrate_ == 0) {
+
+    if (local_tick_ % update_exec_time_tickrate == 0) {
       for (auto const& object : objects_) {
         exec_time_ +=
-            object.lock()->average_update_time() / object.lock()->tickrate();
+            object.lock()->average_update_time() / object.lock()->tickrate() * core->tickrate_;
       }
     }
     core->ThreadReady(thread_->get_id());
