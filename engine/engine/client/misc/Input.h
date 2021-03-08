@@ -217,7 +217,7 @@ class Input : public core::Ticker {
                       bool rewrite = false);
 
  protected:
-  Input() : Ticker(1u) {}
+  Input() : Ticker(1U) {}
 
   void Init(GLFWwindow* window_ptr);
 

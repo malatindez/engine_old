@@ -8,8 +8,8 @@ int32_t Shader::CompileShader(std::string_view shader_code, uint32_t& id,
   glShaderSource(id, 1, &shader_code_c_str, nullptr);
   glCompileShader(id);
   int32_t success = 0;
+  glGetShaderiv(id, GL_COMPILE_STATUS, &success);
   if (!success) {
-    glGetShaderiv(id, GL_COMPILE_STATUS, &success);
     GLchar info_log[1024];
     glGetShaderInfoLog(id, 1024, nullptr, info_log);
     std::cout << info_log << std::endl;

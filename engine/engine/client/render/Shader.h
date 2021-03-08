@@ -31,13 +31,14 @@ class Shader {
   Shader& operator=(const Shader&) = delete;
   Shader& operator=(Shader&&) = delete;
 
-  Shader(ShaderSource const&);
+  explicit Shader(ShaderSource const&);
 
   ~Shader();
 
   void operator()() const noexcept { Use(); }
 
   static std::string LoadSourceCode(std::string const& path) {
+    // TODO: create file loading class
     std::ifstream shader_file;
     shader_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     std::string return_value = "";
