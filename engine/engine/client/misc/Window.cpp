@@ -271,6 +271,7 @@ void Window::MaximizeCallback(int maximized) {
 }
 
 void Window::FramebufferSizeCallback(int width, int height) {
+  glViewport(0, 0, width, height);
   while (!framebuffer_size_callbacks_.empty()) {
     if (framebuffer_size_callbacks_.top().use_count() == 1) {
       framebuffer_size_callbacks_.pop();

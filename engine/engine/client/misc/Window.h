@@ -1,4 +1,6 @@
 #pragma once
+#include <glad/glad.h>
+
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
 #include <string>
@@ -241,9 +243,6 @@ class Window : public Input {
   // application, the system will end the request automatically.
   void RequestAttention();
 
-  // The function you provide is the key position callback, which is called when
-  // the window is moved. The callback is provided with the position, in screen
-  // coordinates, of the upper-left corner of the content area of the window.
   void PushPosCallback(const std::shared_ptr<PosFun> ptr) noexcept;
   void PushSizeCallback(const std::shared_ptr<SizeFun> ptr) noexcept;
   void PushCloseCallback(const std::shared_ptr<CloseFun> ptr) noexcept;
