@@ -45,12 +45,12 @@ int Core::AddTickingObject(std::weak_ptr<Ticker> object) {
   // add object thread with desired id
   if (!temp->thread_id().expired()) {
     auto k = temp->thread_id().lock();
-    for (auto const& thread : threads_) {
-      if (*k == thread->thread_id()) {
-        thread->AddObject(object);
-        break;
-      }
-    }
+
+    auto t = std::find_if(std::begin(threads_), std::end(threads_),
+                          [&k](std::unique_ptr<UpdateThread> thread) {
+                            return *k == thread->thread_id();
+                          });
+
     return 1;
   }
 
@@ -136,10 +136,9 @@ Core::Core() {
   operational_thread_id_ = threads_[0]->thread_id();
 }
 
-Core::UpdateThread::UpdateThread(uint32_t tick) {
+Core::UpdateThread::UpdateThread(uint32_t tick) : local_tick_(tick) {
   this->thread_ =
       std::make_unique<std::thread>(&UpdateThread::ThreadFunction, this);
-  local_tick_ = tick;
 }
 Core::UpdateThread::~UpdateThread() {
   die_ = true;
