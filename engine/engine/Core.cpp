@@ -47,7 +47,7 @@ int Core::AddTickingObject(std::weak_ptr<Ticker> object) {
     auto k = temp->thread_id().lock();
 
     auto t = std::find_if(std::begin(threads_), std::end(threads_),
-                          [&k](std::unique_ptr<UpdateThread> thread) {
+                          [&k](std::unique_ptr<UpdateThread> const& thread) {
                             return *k == thread->thread_id();
                           });
     t->get()->AddObject(object);
@@ -156,15 +156,15 @@ std::thread::id Core::UpdateThread::thread_id() const noexcept {
 }
 
 #ifdef _MSC_VER
-#define malatindez_ENGINE_FORCE_INLINE [[msvc::forceinline]]
+#define malatindez_FORCE_INLINE [[msvc::forceinline]]
 #else
-#define malatindez_ENGINE_FORCE_INLINE __attribute__((always_inline))
+#define malatindez_FORCE_INLINE __attribute__((always_inline))
 #endif
 
 void Core::UpdateThread::ThreadFunction() {
   std::shared_ptr<Core> core = Core::GetInstance();
   core->ThreadReady(thread_->get_id());
-  auto update_objects = [this, &core]() malatindez_ENGINE_FORCE_INLINE {
+  auto update_objects = [this, &core]() malatindez_FORCE_INLINE {
     for (auto itr = objects_.begin(); itr != objects_.end();) {
       if (itr->expired()) {  // if object is expired, remove it from objects_
         itr = objects_.erase(itr);
@@ -180,6 +180,12 @@ void Core::UpdateThread::ThreadFunction() {
   // 4 times per second
   auto update_exec_time_tickrate = (size_t)ceil((double)core->tickrate_ / 4);
 
+  auto exec_time_accumulate_ =
+      [](double a, std::weak_ptr<Ticker> object) malatindez_FORCE_INLINE {
+        return a +
+               object.lock()->average_update_time() / object.lock()->tickrate();
+      };
+
   while (!die_) {
     update_objects();
 
@@ -192,10 +198,9 @@ void Core::UpdateThread::ThreadFunction() {
     }
 
     if (local_tick_ % update_exec_time_tickrate == 0) {
-      for (auto const& object : objects_) {
-        exec_time_ +=
-            object.lock()->average_update_time() / object.lock()->tickrate() * core->tickrate_;
-      }
+      exec_time_ = std::accumulate(std::begin(objects_), std::end(objects_),
+                                   0.0, exec_time_accumulate_);
+      exec_time_ *= core->tickrate_;
     }
     core->ThreadReady(thread_->get_id());
     local_tick_ = core->global_tick_;

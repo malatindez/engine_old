@@ -8,6 +8,9 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
+#include <numeric>
+#include <functional>
+
 
 #include "Ticker.h"
 #include "engine/client/render/Shader.h"
