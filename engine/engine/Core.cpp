@@ -37,34 +37,21 @@ double Core::tick_delta() { return core_ptr_->last_tick_timedelta_; }
 
 int Core::AddTickingObject(std::weak_ptr<Ticker> object) {
   auto temp = object.lock();
-  if (temp == nullptr) {
+  if (temp == nullptr || threads_.empty()) {
     return 0;
   }
-  if (temp->thread_id().expired()) {  // we can add the object to any thread
-    std::scoped_lock<std::mutex> lock(threads_mutex_);
+  std::scoped_lock<std::mutex> lock(threads_mutex_);
 
-    if (threads_.empty()) {
-      return 0;
-    }
-
-    auto min_execution_thread = threads_.begin();
-    for (auto i = threads_.begin() + 1; i != threads_.end(); i++) {
-      if ((*i).get()->exec_time() < min_execution_thread->get()->exec_time()) {
-        min_execution_thread = i;
-      }
-    }
-    min_execution_thread->get()->AddObject(object);
-  } else {
-    threads_mutex_.lock();
+  // add object thread with desired id
+  if (!temp->thread_id().expired()) {
     auto k = temp->thread_id().lock();
-    // adding object to thread with demanded id
     for (auto const& thread : threads_) {
       if (*k == thread->thread_id()) {
         thread->AddObject(object);
         break;
       }
     }
-    threads_mutex_.unlock();
+    return 1;
   }
 
   return 1;
