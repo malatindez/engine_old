@@ -13,7 +13,7 @@ class Renderer {
   virtual ~Renderer() = default;
 
   // Should return a shader program which will be applied before Draw() call
-  // Multiple objects can have the same shader, so the Render engine will
+  // Multiple objects can have the same shader, so the RenderCore will
   // optimize shader calls
   virtual std::weak_ptr<Shader> shader() const noexcept { return {}; }
 
@@ -22,3 +22,4 @@ class Renderer {
   }
 };
 }  // namespace engine::client::render
+

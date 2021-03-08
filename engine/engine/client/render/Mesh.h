@@ -41,20 +41,7 @@ class Mesh {
       glActiveTexture(GL_TEXTURE0 +
                       i);  // activate proper texture unit before binding
       // retrieve texture number (the N in diffuse_textureN)
-      if (textures_[i]->type() == Texture::Type::DIFFUSE) {
-        shader->SetInt(
-            ("material.diffuseTextures[" + std::to_string(diffuseNr++) + "]"),
-            i);
-      } else if (textures_[i]->type() == Texture::Type::SPECULAR) {
-        shader->SetInt(
-            ("material.specularTextures[" + std::to_string(specularNr++) + "]"),
-            i);
-      } else if (textures_[i]->type() == Texture::Type::NORMALS) {
-        shader->SetInt("normal", i);
-      } else if (textures_[i]->type() == Texture::Type::HEIGHT) {
-        shader->SetInt(
-            "material.diffuseTextures[" + std::to_string(diffuseNr++) + "]", i);
-      }
+
       glBindTexture(GL_TEXTURE_2D, textures_[i]->id());
     }
     glActiveTexture(GL_TEXTURE0);
