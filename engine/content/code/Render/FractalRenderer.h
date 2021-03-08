@@ -8,6 +8,7 @@ class FractalRenderer : public engine::client::render::Renderer {
 
   FractalRenderer() {
     using engine::client::render::Mesh;
+    using engine::client::render::Shader;
     std::vector<Mesh::Vertex> vertices = {
         Mesh::Vertex(glm::vec3(0.5, 0.5, 0), glm::vec2(1, 1)),
         Mesh::Vertex(glm::vec3(0.5, -0.5, 0), glm::vec2(1, 0)),
@@ -20,9 +21,10 @@ class FractalRenderer : public engine::client::render::Renderer {
     vertices_->assign(vertices.begin(), vertices.end());
     indices_->assign(indices.begin(), indices.end());
     mesh_ = std::make_shared<Mesh>(vertices_, indices_);
-    fractal_shader_ = engine::core::Core::GetInstance()->LoadShader(
-        "F:\\cpp\\MVS\\engine\\engine\\content\\shaders\\triangle.vert",
-        "F:\\cpp\\MVS\\engine\\engine\\content\\shaders\\triangle.frag");
+    auto t = Shader::ShaderSource(
+        Shader::LoadSourceCode("content\\shaders\\triangle.vert"),
+        Shader::LoadSourceCode("content\\shaders\\triangle.frag"));
+    fractal_shader_ = std::make_shared<Shader>(t);
   }
   std::weak_ptr<engine::client::render::Shader> shader()
       const noexcept override {
@@ -34,6 +36,10 @@ class FractalRenderer : public engine::client::render::Renderer {
     mesh_->Draw(fractal_shader_);
   }
 
+  void SetShader(std::shared_ptr<engine::client::render::Shader> ptr) noexcept {
+    fractal_shader_.reset();
+    fractal_shader_ = ptr;
+  }
  private:
   std::shared_ptr<engine::client::render::Mesh> mesh_;
   std::shared_ptr<engine::client::render::Shader> fractal_shader_;
