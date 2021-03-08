@@ -50,7 +50,7 @@ int Core::AddTickingObject(std::weak_ptr<Ticker> object) {
                           [&k](std::unique_ptr<UpdateThread> thread) {
                             return *k == thread->thread_id();
                           });
-
+    t->get()->AddObject(object);
     return 1;
   }
 
