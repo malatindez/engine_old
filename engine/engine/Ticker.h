@@ -24,7 +24,7 @@ class Ticker {
   /// <param name="tick"></param>
   /// <param name="time_delta"></param>
   void UpdateExecutionTime(const uint64_t tick) {
-    if (tick % tickrate() != 0 || ! needs_update_) {
+    if ( (tick % tickrate() != 0) || !needs_update_) {
       return;
     }
     auto start = std::chrono::high_resolution_clock::now();

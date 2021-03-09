@@ -23,15 +23,15 @@ class Texture {
     glGenTextures(1, &id_);
     glBindTexture(GL_TEXTURE_2D, id_);
 
-    if (data) {
+    if (data != nullptr) {
       GLenum format = GL_RED;
-      if (channels == 1)
+      if (channels == 1) {
         format = GL_RED;
-      else if (channels == 3)
+      } else if (channels == 3) {
         format = GL_RGB;
-      else if (channels == 4)
+      } else if (channels == 4) {
         format = GL_RGBA;
-
+      }
       glBindTexture(GL_TEXTURE_2D, id_);
       glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format,
                    GL_UNSIGNED_BYTE, data);

@@ -52,25 +52,25 @@ class Player {
       return false;
     }
     using engine::core::Core;
-    glm::vec3 position = camera_->position();
+    glm::vec3 pos = camera_->position();
     if (scancode == kScancodeW) {
       glm::vec3 vec(camera_->front().x / cos(glm::radians(camera_->pitch())), 0,
                     camera_->front().z / cos(glm::radians(camera_->pitch())));
-      position += vec * velocity_ * (float)Core::tick_delta();
+      pos += vec * velocity_ * (float)Core::tick_delta();
     } else if (scancode == kScancodeS) {
       glm::vec3 vec(camera_->front().x / cos(glm::radians(camera_->pitch())), 0,
                     camera_->front().z / cos(glm::radians(camera_->pitch())));
-      position -= vec * velocity_ * (float)Core::tick_delta();
+      pos -= vec * velocity_ * (float)Core::tick_delta();
     } else if (scancode == kScancodeA) {
-      position -= camera_->right() * velocity_ * (float)Core::tick_delta();
+      pos -= camera_->right() * velocity_ * (float)Core::tick_delta();
     } else if (scancode == kScancodeD) {
-      position += camera_->right() * velocity_ * (float)Core::tick_delta();
+      pos += camera_->right() * velocity_ * (float)Core::tick_delta();
     } else if (scancode == kScancodeSpace) {
-      position += glm::vec3(0, 1, 0) * velocity_ * (float)Core::tick_delta();
+      pos += glm::vec3(0, 1, 0) * velocity_ * (float)Core::tick_delta();
     } else if (scancode == kScancodeControl) {
-      position -= glm::vec3(0, 1, 0) * velocity_ * (float)Core::tick_delta();
+      pos -= glm::vec3(0, 1, 0) * velocity_ * (float)Core::tick_delta();
     }
-    camera_->SetPosition(position);
+    camera_->SetPosition(pos);
     return false;
   }
 

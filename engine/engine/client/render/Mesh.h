@@ -35,8 +35,6 @@ class Mesh {
   }
 
   void Draw(std::shared_ptr<Shader> shader) const noexcept {
-    unsigned int diffuseNr = 0;
-    unsigned int specularNr = 0;
     for (unsigned int i = 0; i < textures_.size(); i++) {
       glActiveTexture(GL_TEXTURE0 +
                       i);  // activate proper texture unit before binding

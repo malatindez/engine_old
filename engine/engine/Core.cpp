@@ -111,7 +111,7 @@ void Core::ThreadReady(std::thread::id id) {
     lock.lock();
     double t = time();
     double wait_t =
-        (1e9 / (double)tickrate_) - 1e9 * (t - last_tick_timestamp_);
+        (1.0e9 / double(tickrate_)) - 1.0e9 * (t - last_tick_timestamp_);
     if (wait_t > 0) {
       busy_sleep(std::chrono::nanoseconds((uint32_t)wait_t));
     }
