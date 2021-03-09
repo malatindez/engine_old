@@ -105,7 +105,7 @@ void Core::ThreadReady(std::thread::id id) {
     sync_var_.wait(lock);
   } else {
     lock.unlock();
-    while (sync_threads_ + 1 < threads_.size()) {
+    while ((sync_threads_ + 1) < threads_.size()) {
       std::this_thread::sleep_for(std::chrono::microseconds(1));
     }
     lock.lock();
@@ -189,14 +189,14 @@ void Core::UpdateThread::ThreadFunction() {
     update_objects();
 
     // add objects 16 times per second
-    if (local_tick_ % add_objects_tickrate == 0 && !objects_to_add_.empty()) {
+    if ((local_tick_ % add_objects_tickrate) == 0 && !objects_to_add_.empty()) {
       std::scoped_lock<std::mutex> lock(objects_to_add_mutex_);
       objects_.insert(objects_.end(), objects_to_add_.begin(),
                       objects_to_add_.end());
       objects_to_add_.clear();
     }
 
-    if (local_tick_ % update_exec_time_tickrate == 0) {
+    if ((local_tick_ % update_exec_time_tickrate) == 0) {
       exec_time_ = std::accumulate(std::begin(objects_), std::end(objects_),
                                    0.0, exec_time_accumulate_);
       exec_time_ *= core->tickrate_;

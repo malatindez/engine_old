@@ -51,7 +51,9 @@ Shader::Shader(ShaderSource const& source) {
   sp_id_ = glCreateProgram();
   glAttachShader(sp_id_, vertex);
   glAttachShader(sp_id_, fragment);
-  if (source.geometry_shader_code != "") glAttachShader(sp_id_, geometry);
+  if (source.geometry_shader_code != "") {
+    glAttachShader(sp_id_, geometry);
+  }
   glLinkProgram(sp_id_);
 
   int32_t compile_success = 0;
