@@ -4,12 +4,15 @@ set(ENGINE_VERSION_MAJOR 0 CACHE INTERNAL "Major version of the project")
 set(ENGINE_VERSION_MINOR 0 CACHE INTERNAL "Minor version of the project")
 set(ENGINE_VERSION_PATCH 1 CACHE STRING "Patch version of the project")
 
+set(OPENGL_VERSION_MAJOR 3 CACHE STRING "Major context OpenGL version")
+set(OPENGL_VERSION_MINOR 3 CACHE STRING "Minor context OpenGL version")
+
 # set the project name
-project(Engine VERSION 0.1)
+project(Engine VERSION ${ENGINE_VERSION_MAJOR}.${ENGINE_VERSION_MINOR})
 
 configure_file (
-  "${PROJECT_SOURCE_DIR}/Config.h.in"
-  "${PROJECT_BINARY_DIR}/config/Config.h"
+  "${PROJECT_SOURCE_DIR}/EngineConfig.h.in"
+  "${PROJECT_BINARY_DIR}/config/EngineConfig.h"
   )
 
 set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/engine")
@@ -45,7 +48,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# add Config.h to include directories
+# add EngineConfig.h to include directories
 target_include_directories(${PROJECT_NAME} PRIVATE "${PROJECT_BINARY_DIR}/config")
 
 # GLFW
