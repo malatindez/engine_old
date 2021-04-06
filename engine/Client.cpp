@@ -1,9 +1,10 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
-#include "Config.h"
+#include "EngineConfig.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#undef STB_IMAGE_IMPLEMENTATION
 
 #include <functional>
 #include <iostream>
@@ -34,7 +35,7 @@ int main() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   auto window = std::make_shared<engine::client::Window>(
-      1366, 768, "engine " + std::string(ENGINE_VERSION), nullptr, nullptr);
+      1366, 768, "engine " + std::string(kEngineVersion), nullptr, nullptr);
   window->SetInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   window->MakeContextCurrent();
 
