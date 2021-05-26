@@ -1,6 +1,11 @@
-
 #include <memory>
 #include <mutex>
+#include <glm/glm.hpp>
+#include <unordered_map>
+#include <iostream>
+#include <streambuf>
+
+#include <json.hpp>
 
 #include "EngineConfig.h"
 
@@ -50,8 +55,28 @@ class Config {
     return kOpenGLVersionMinor;
   }
 
+  std::string_view operator[](std::string temp) const inline noexcept {
+    if (config_.find(temp) == config_.end()) {
+      return "";
+    }
+    return config_.at(temp);
+  }
+
  private:
-  Config() {}
+  Config() { 
+    // TODO: file loading in separate class
+    std::ifstream conf_file;
+    conf_file.open("config.json");
+    std::string conf((std::istreambuf_iterator<char>(conf_file)),
+                    std::istreambuf_iterator<char>());
+    auto temp = nlohmann::json::parse(conf);
+    for (auto& [key, val] : temp.items()) {
+      config_[key] = std::string(val);
+    }
+  }
+
+
+  std::unordered_map<std::string, std::string> config_;
 
   static std::mutex config_creation_mutex_;
   static std::shared_ptr<Config> config_ptr_;
