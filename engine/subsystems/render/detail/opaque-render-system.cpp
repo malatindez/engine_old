@@ -517,6 +517,52 @@ namespace engine::render::_opaque_detail
             material_change.removed_entities.emplace(entity);
         }
     }
+    void OpaqueRenderSystem::ProcessTreeChanges(entt::registry &registry)
+    {
+        // If ObserveOpaqueChanges didn't catch any changes -> no instances were removed / added
+        // So we don't need to resize instance_buffer_, therefore we will only update transforms where we need to
+        // instance_buffer_.map
+        if(only_transform)
+        {
+            auto mapping = instance_buffer_.Map();
+            OpaqueInstance *dst = static_cast<OpaqueInstance *>(mapping.pData);
+
+            uint32_t total_instances = 0;
+            // traverse both model_instances_ and model_instance_changes_:
+            for (size_t model_instance_id = 0; model_instance_id < model_instances_.size(); model_instance_id++)
+            {
+                if(model_instance_changes_.contains(model_instance_id))
+                {
+                    auto &model_changes = model_instance_changes_[model_instance_id];
+                    // ...
+                        // ...
+                            // ...
+                                // dst[total_instances++] = OpaqueInstance{.model = registry.get<TransformComponent>(entity), ...}
+                }
+                else
+                {
+                    // update total_instances
+                    for (auto &mesh_instance : model_instance.mesh_instances)
+                        for (auto const &material_instance : mesh_instance.material_instances)
+                            total_instances += uint32_t(material_instance.instances.size());
+                }
+            }
+            instance_buffer_.Unmap();
+        }
+        else // instance_buffer should be resized, so we create a new instance buffer
+        {
+            uint32_t total_instances = 0;
+            /// @todo calculate total_instances including changes: removed and added instances
+
+            direct3d::DynamicVertexBuffer<OpaqueInstance> new_instance_buffer_;
+            new_instance_buffer_.Init(total_instances);
+        
+            /// similar to the code above, but we memcpy from previous instance_buffer instances that weren't changed
+
+            instance_buffer_ = new_instance_buffer_;
+        }
+    }
+
     void OpaqueRenderSystem::CacheAddInstance(components::OpaqueComponent &component, entt::entity entity)
     {
         if(auto model = model_instance_changes_.find(component.model_instance_id);
