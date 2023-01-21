@@ -19,19 +19,24 @@ namespace engine::render
     }
     void OpaqueMaterial::BindTextures() const
     {
-        if (albedo_map != nullptr) {
+        if (albedo_map != nullptr)
+        {
             direct3d::api().devcon4->PSSetShaderResources(0, 1, &albedo_map);
         }
-        if (normal_map != nullptr) {
+        if (normal_map != nullptr)
+        {
             direct3d::api().devcon4->PSSetShaderResources(1, 1, &normal_map);
         }
-        if (metalness_map != nullptr) {
+        if (metalness_map != nullptr)
+        {
             direct3d::api().devcon4->PSSetShaderResources(2, 1, &metalness_map);
         }
-        if (roughness_map != nullptr) {
+        if (roughness_map != nullptr)
+        {
             direct3d::api().devcon4->PSSetShaderResources(3, 1, &roughness_map);
         }
-        if (opacity_map != nullptr) {
+        if (opacity_map != nullptr)
+        {
             direct3d::api().devcon4->PSSetShaderResources(4, 1, &opacity_map);
         }
     }
@@ -86,16 +91,16 @@ namespace engine::render::_opaque_detail
         auto path = std::filesystem::current_path();
 
         std::vector<D3D11_INPUT_ELEMENT_DESC> d3d_input_desc{
-             {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-             {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-             {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0},
-             {"TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0},
-             {"BITANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D11_INPUT_PER_VERTEX_DATA, 0},
-             { "ROWX",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0, D3D11_INPUT_PER_INSTANCE_DATA,  1},
-             { "ROWY",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1},
-             { "ROWZ",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1},
-             { "ROWW",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1},
-             { "ENTITY_ID", 0, DXGI_FORMAT_R32_UINT, 1, 64, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+            {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+            {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+            {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0},
+            {"TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0},
+            {"BITANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D11_INPUT_PER_VERTEX_DATA, 0},
+            {"ROWX", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+            {"ROWY", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+            {"ROWZ", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+            {"ROWW", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+            {"ENTITY_ID", 0, DXGI_FORMAT_R32_UINT, 1, 64, D3D11_INPUT_PER_INSTANCE_DATA, 1},
         };
 
         {
@@ -106,18 +111,14 @@ namespace engine::render::_opaque_detail
         }
         {
             auto vs = core::ShaderManager::instance()->CompileVertexShader(path / opaque_vs_depth_only_shader_path);
-            auto gs = core::ShaderManager::instance()->CompileGeometryShader(core::ShaderCompileInput
-                                                                             {
-                                                                                 direct3d::ShaderType::GeometryShader,
-                                                                                 path / opaque_gs_depth_only_cubemap_shader_path,
-                                                                                 "cubemapGS"
-                                                                             });
-            auto gs2 = core::ShaderManager::instance()->CompileGeometryShader(core::ShaderCompileInput
-                                                                              {
-                                                                                  direct3d::ShaderType::GeometryShader,
-                                                                                  path / opaque_gs_depth_only_texture_shader_path,
-                                                                                  "cubemapGS"
-                                                                              });
+            auto gs = core::ShaderManager::instance()->CompileGeometryShader(core::ShaderCompileInput{
+                direct3d::ShaderType::GeometryShader,
+                path / opaque_gs_depth_only_cubemap_shader_path,
+                "cubemapGS"});
+            auto gs2 = core::ShaderManager::instance()->CompileGeometryShader(core::ShaderCompileInput{
+                direct3d::ShaderType::GeometryShader,
+                path / opaque_gs_depth_only_texture_shader_path,
+                "cubemapGS"});
             auto ps = core::ShaderManager::instance()->CompilePixelShader(path / opaque_ps_depth_only_shader_path);
             auto il = std::make_shared<InputLayout>(vs->blob(), d3d_input_desc);
             opaque_cubemap_shader_.SetVertexShader(vs).SetGeometryShader(gs).SetPixelShader(ps).SetInputLayout(il);
@@ -290,6 +291,7 @@ namespace engine::render::_opaque_detail
 
     void OpaqueRenderSystem::UpdateInstances(entt::registry &registry)
     {
+
         uint32_t total_instances = 0;
         for (auto &model_instance : model_instances_)
             for (auto &mesh_instance : model_instance.mesh_instances)
@@ -314,11 +316,9 @@ namespace engine::render::_opaque_detail
                     auto &instances = perMaterial.instances;
                     for (auto entity : instances)
                     {
-                        dst[copiedNum++] = OpaqueInstance
-                        {
+                        dst[copiedNum++] = OpaqueInstance{
                             .world_transform = instance_group.get<components::TransformComponent>(entity).model,
-                            .entity_id = static_cast<uint32_t>(entity)
-                        };
+                            .entity_id = static_cast<uint32_t>(entity)};
                     }
                 }
             }
@@ -328,7 +328,7 @@ namespace engine::render::_opaque_detail
 
     ModelInstance *OpaqueRenderSystem::GetInstancePtr(uint64_t model_id)
     {
-        auto it = std::find_if(model_instances_.begin(), model_instances_.end(), [&model_id] (auto const &instance)
+        auto it = std::find_if(model_instances_.begin(), model_instances_.end(), [&model_id](auto const &instance)
                                { return instance.model_id == model_id; });
         if (it != model_instances_.end())
         {
@@ -338,18 +338,18 @@ namespace engine::render::_opaque_detail
     }
     ModelInstance &OpaqueRenderSystem::GetInstance(uint64_t model_id)
     {
-        auto it = std::find_if(model_instances_.begin(), model_instances_.end(), [&model_id] (auto const &instance)
+        auto it = std::find_if(model_instances_.begin(), model_instances_.end(), [&model_id](auto const &instance)
                                { return instance.model_id == model_id; });
         if (it != model_instances_.end())
         {
             return *it;
         }
-        model_instances_.emplace_back(ModelInstance{ .model = ModelSystem::GetModel(model_id), .model_id = model_id });
+        model_instances_.emplace_back(ModelInstance{.model = ModelSystem::GetModel(model_id), .model_id = model_id});
         auto &instance = model_instances_.back();
         for (auto const &mesh : instance.model.meshes)
         {
             MeshInstance value;
-            MaterialInstance material_instance{ .material = OpaqueMaterial(instance.model.materials[mesh.loaded_material_id]) };
+            MaterialInstance material_instance{.material = OpaqueMaterial(instance.model.materials[mesh.loaded_material_id])};
             value.material_instances.emplace_back(std::move(material_instance));
             instance.mesh_instances.emplace_back(std::move(value));
         }
@@ -363,7 +363,7 @@ namespace engine::render::_opaque_detail
         {
             auto const &mesh = instance.model.meshes[mesh_index];
             auto &material_instances = instance.mesh_instances[mesh_index].material_instances;
-            MaterialInstance material_instance{ .material = OpaqueMaterial(instance.model.materials[mesh.loaded_material_id]) };
+            MaterialInstance material_instance{.material = OpaqueMaterial(instance.model.materials[mesh.loaded_material_id])};
             bool add_new_material = true;
             for (auto &mat_instance : material_instances)
             {
@@ -380,7 +380,7 @@ namespace engine::render::_opaque_detail
                 mat.instances.push_back(entity);
             }
         }
-        registry.emplace_or_replace<components::OpaqueComponent>(entity, components::OpaqueComponent{ .model_id = model_id });
+        registry.emplace_or_replace<components::OpaqueComponent>(entity, components::OpaqueComponent{.model_id = model_id});
     }
 
     void OpaqueRenderSystem::AddInstance(uint64_t model_id, entt::registry &registry, entt::entity entity, std::vector<OpaqueMaterial> const &materials)
@@ -390,7 +390,7 @@ namespace engine::render::_opaque_detail
         for (size_t mesh_index = 0; mesh_index < instance.model.meshes.size(); mesh_index++)
         {
             auto &material_instances = instance.mesh_instances[mesh_index].material_instances;
-            MaterialInstance material_instance{ .material = OpaqueMaterial(materials[mesh_index]) };
+            MaterialInstance material_instance{.material = OpaqueMaterial(materials[mesh_index])};
             bool add_new_material = true;
             for (auto &mat_instance : material_instances)
             {
@@ -407,6 +407,154 @@ namespace engine::render::_opaque_detail
                 mat.instances.push_back(entity);
             }
         }
-        registry.emplace<components::OpaqueComponent>(entity, components::OpaqueComponent{ .model_id = model_id });
+        registry.emplace<components::OpaqueComponent>(entity, components::OpaqueComponent{.model_id = model_id});
+    }
+    void OpaqueRenderSystem::LinkToRegistry(entt::registry &registry)
+    {
+        model_instances_.clear();
+        /// @todo add existing instances
+        opaque_component_update_observer_ = entt::observer{registry,
+                                                           entt::collector.update<components::OpaqueComponent>.where<components::TransformComponent>()};
+
+        transform_component_update_observer_ = entt::observer{registry,
+                                                              entt::collector.update<components::TransformComponent>.where<components::OpaqueComponent>()};
+    }
+    void OpaqueRenderSystem::Update(core::Scene *scene)
+    {
+        auto &registry = scene->registry;
+#if 0
+        /// @todo add temporary tree to add and delete entities more efficiently using erase-remove
+        /// This is the change tree, it is being used if there's 20 or more changes in the system.
+        /// After completing the construction of the tree we use it to update instances faster then it would be using the method below.
+        std::vector<ModelInstanceChanges>
+#endif
+        // Receives update of the opaque components such as material/model changes
+        for (auto const entity : opaque_component_update_observer_)
+        {
+            auto &opaque_component = registry.get<components::OpaqueComponent>(entity);
+            RemoveInstance(opaque_component, entity);
+            AddInstance(opaque_component, entity);
+        }
+        opaque_component_update_observer_.clear();
+        // Receives update of the transform changes
+
+        for (const auto entity : transform_component_update_observer_)
+        {
+        }
+        transform_component_update_observer_.clear();
+    }
+
+    void OpaqueRenderSystem::ObserveOpaqueChanges(entt::registry &registry)
+    {
+        for (auto entity : opaque_component_update_observer_)
+        {
+            components::OpaqueComponent &opaque_component = registry.get<components::OpaqueComponent>(entity);
+            if (opaque_component.saved_model_id != opaque_component.model_id)
+            {
+                Model &model = ModelSystem::GetModel(opaque_component.model_id);
+                if(model.meshes.size() != opaque_component.material_hashes.size())
+                {
+                    // invalid component: -> remove
+#ifdef _DEBUG
+                    spdlog::warning("Wrong amount of materials was set to the component @ entity #{}", std::reinterpret_cast<uint32_t>(entity));
+#endif
+                    CacheRemoveInstance(opaque_component, entity);
+                    opaque_component.instance_reset();
+                    continue;
+                }
+
+                /// @todo cache material changes
+
+            }
+            if (opaque_component.material_hashes.size() != opaque_component.saved_material_hashes.size())
+            {
+                // invalid component: -> remove
+#ifdef _DEBUG
+                spdlog::warning("Wrong amount of materials was set to the component @ entity #{}", std::reinterpret_cast<uint32_t>(entity));
+#endif
+                CacheRemoveInstance(opaque_component, entity);
+                opaque_component.instance_reset();
+                continue;
+            }
+            auto current = opaque_component.material_hashes.begin();
+            auto saved = opaque_component.saved_material_hashes.begin();
+            while (current != opaque_component.material_hashes.end() && saved != opaque_component.saved_material_hashes.end())
+            {
+                if (*current != *saved)
+                {
+                    /// @todo cache changes for the material
+                }
+                ++current;
+                ++saved;
+                
+            }
+        }
+        opaque_component_update_observer_.clear();
+    }
+    bool OpaqueRenderSystem::ObserveTransformChanges(entt::registry &registry)
+    {
+        /// @todo implement this
+        /// pretty much the same as the ObserveOpaqueChanges
+    }
+
+    void OpaqueRenderSystem::CacheRemoveInstance(components::OpaqueComponent &component, entt::entity entity)
+    {
+        if(auto model = model_instance_changes_.find(component.model_instance_id);
+           model)
+        {
+            auto it = component.material_instance_ids.begin();
+            for(auto &mesh : model.mesh_changes)
+            {
+                auto &material_change = mesh.material_changes[*(it++)];
+                material_change.removed_entities.emplace(entity);
+            } 
+        }
+        auto &[model_instance_id, model_changes] = model_instance_changes_.emplace(component.model_instance_id, _opaque_helpers::ModelInstanceChange{});
+        for(auto &material_instance_id : component.material_instance_ids)
+        {
+            auto &mesh_change = model_changes.mesh_changes.emplace(_opaque_helpers::MeshInstanceChange{});
+            auto &material_change = mesh_change.material_changes[material_instance_id];
+            material_change.removed_entities.emplace(entity);
+        }
+    }
+    void OpaqueRenderSystem::CacheAddInstance(components::OpaqueComponent &component, entt::entity entity)
+    {
+        if(auto model = model_instance_changes_.find(component.model_instance_id);
+           model)
+        {
+            auto it = component.material_instance_ids.begin();
+            for(auto &mesh : model.mesh_changes)
+            {
+                auto &material_change = mesh.material_changes[*(it++)];
+                material_change.added_entities.emplace(entity);
+            } 
+        }
+        auto &[model_instance_id, model_changes] = model_instance_changes_.emplace(component.model_instance_id, _opaque_helpers::ModelInstanceChange{});
+        for(auto &material_instance_id : component.material_instance_ids)
+        {
+            auto &mesh_change = model_changes.mesh_changes.emplace(_opaque_helpers::MeshInstanceChange{});
+            auto &material_change = mesh_change.material_changes[material_instance_id];
+            material_change.added_entities.emplace(entity);
+        }
+    }
+    void OpaqueRenderSystem::CacheUpdateInstance(components::OpaqueComponent &component, entt::entity entity)
+    {
+        if(auto model = model_instance_changes_.find(component.model_instance_id);
+           model)
+        {
+            auto it = component.material_instance_ids.begin();
+            for(auto &mesh : model.mesh_changes)
+            {
+                auto &material_change = mesh.material_changes[*(it++)];
+                material_change.updated_entities.emplace(entity);
+            } 
+        }
+        auto &[model_instance_id, model_changes] = model_instance_changes_.emplace(component.model_instance_id, _opaque_helpers::ModelInstanceChange{});
+        for(auto &material_instance_id : component.material_instance_ids)
+        {
+            auto &mesh_change = model_changes.mesh_changes.emplace(_opaque_helpers::MeshInstanceChange{});
+            auto &material_change = mesh_change.material_changes[material_instance_id];
+            material_change.updated_entities.emplace(entity);
+        }
     }
 }
